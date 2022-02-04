@@ -8,7 +8,6 @@ PreChunk:
     description: Pre generate your world!
     usage: /prechunk [size] [world]
     permission: prechunk.gen
-    permission message: <&3>You need the permission <&b><permission> <&3>to use that command!
     tab complete:
     - if <context.args.is_empty>:
         - determine <list[16|32|64|128|256].alphanumeric>
