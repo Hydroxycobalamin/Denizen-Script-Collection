@@ -109,4 +109,4 @@ flagvisualizer_teleport:
 flagvisualizer_format:
     type: format
     debug: false
-    format: <yellow>[Flag Visualizer] <gray><text>
+    format: <yellow>[Flag Visualizer] <gray><[text]>
