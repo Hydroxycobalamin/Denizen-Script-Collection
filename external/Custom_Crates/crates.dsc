@@ -118,7 +118,7 @@ crates_handler:
         - wait 1t
         - if <script[crates_config].data_key[show_tripwire].if_null[true]>:
             - equip <entry[<[type]>].spawned_entity> head:<item[tripwire_hook].with[enchantments=durability,1]>
-        - define uuid <util.random.uuid>
+        - define uuid <util.random_uuid>
         - definemap properties type:<[type]> uuid:<[uuid]>
         - flag <entry[<[type]>].spawned_entity>|<entry[name].spawned_entity> crates:<[properties]>
         - flag <context.location> crates:<[properties]>
@@ -166,7 +166,7 @@ crates_gamble_task:
 crates_format:
     type: format
     debug: false
-    format: <gold>[Crates] <white><text>
+    format: <gold>[Crates] <white><[text]>
 crates_chest_light:
     type: item
     debug: false
