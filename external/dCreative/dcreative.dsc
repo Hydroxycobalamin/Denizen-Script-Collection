@@ -1,0 +1,1504 @@
+#Version 1.0
+#Author Icecapade
+#Date 2021-09-24
+creative_command:
+    type: command
+    debug: false
+    name: dcreative
+    description: server sided creative mode with benefits
+    usage: /dcreative
+    aliases:
+    - creative
+    permission: dcreative
+    script:
+    - if <player.has_flag[dcreative.active]>:
+        - flag <player> dcreative.active:!
+        - adjust <player> can_fly:false
+        - adjust <player> gamemode:survival
+        - narrate "Set own gamemode to Survival Mode"
+    - else:
+        - flag <player> dcreative.active
+        - adjust <player> can_fly:true
+        - narrate "Set own gamemode to Creative Mode"
+creative_handlers:
+    type: world
+    debug: false
+    creative_inventory_check:
+    - define item <context.item>
+    - if <[item].has_flag[inventory]>:
+        - inventory open d:<[item].flag[inventory]>
+        - stop
+    - if <context.cursor_item.material.name> != air:
+        - take cursoritem quantity:<context.cursor_item.quantity>
+        - stop
+    - if <[item].material.name> == air:
+        - stop
+    events:
+        on server start server_flagged:dcreative.inventories:
+        - foreach <server.flag[dcreative.inventories]> as:note_name:
+            - note remove as:<[note_name]>
+        - flag server dcreative:!
+        ##creative handlers
+        after player join flagged:dcreative.active:
+        - adjust <player> can_fly:true
+        on entity targets player flagged:dcreative.active:
+        - determine cancelled
+        on player damaged flagged:dcreative.active:
+        - determine cancelled
+        on player changes food level flagged:dcreative.active:
+        - determine cancelled
+        on player item takes damage flagged:dcreative.active:
+        - determine cancelled
+        after player places block flagged:dcreative.active:
+        - wait 1t
+        - give <context.material.item> slot:<player.held_item_slot>
+        on player swaps items flagged:dcreative.active:
+        - determine passively cancelled
+        - wait 1t
+        - define hotbar <player.inventory.slot[<util.list_numbers_to[9]>].parse[material.name]>
+        - define slot <[hotbar].find[air]>
+        - define item <player.cursor_on.material.item.if_null[<player.item_in_hand>]>
+        - if <[hotbar].contains[<[item].material.name>]>:
+            - adjust <player> item_slot:<[hotbar].find[<[item].material.name>]>
+            - stop
+        - if <[slot]> <= 0:
+            - inventory set slot:hand origin:<[item]>
+            - stop
+        - inventory set slot:<[slot]> origin:<[item]>
+        - adjust <player> item_slot:<[slot]>
+        after player left clicks !*air flagged:dcreative.active:
+        - ratelimit <player> 2t
+        - wait 2t
+        - if <context.location.inventory.list_contents.any.if_null[false]>:
+            - drop <context.location.center> <context.location.inventory.list_contents>
+        - playsound sound:block_stone_break <context.location> source:<player>
+        - modifyblock <context.location> air
+        after player clicks air in inventory with:air flagged:dcreative.active:
+        - if <context.inventory.id_holder> != <player>:
+            - stop
+        - inventory open d:creative_inventory
+        after player steps on block flagged:dcreative.active:
+        - ratelimit <player> 2s
+        - define barrier <player.location.find_blocks[barrier].within[30]>
+        - define light <player.location.find_blocks[light].within[30]>
+        - if <[barrier].any>:
+            - playeffect effect:barrier at:<[barrier].parse[center]> offset:0 targets:<player>
+        - if <[light].any>:
+            - playeffect effect:light at:<[light].parse[center]> offset:0 targets:<player>
+        ##creative_inventory handlers
+        after player left clicks item_flagged:type in creative_inventory:
+        - define items <script[creative_data].data_key[inventory.<context.item.flag[type]>]>
+        - run creative_inventory_creation_task def:<list_single[<[items]>].include[<context.item.flag[type]>]>
+        after player left clicks item_flagged:denizen in creative_inventory:
+        - define items <server.scripts.filter[data_key[type].equals[item]].parse[name]>
+        - run creative_inventory_creation_task def:<list_single[<[items]>].include[denizen]>
+        after player left clicks item_flagged:potions in creative_inventory:
+        - foreach <server.potion_types> as:effect:
+            - define potion:|:<item[potion].with[potion_effects=<[effect]>,false,false].if_null[null]>|<item[potion].with[potion_effects=<[effect]>,false,true].if_null[null]>
+            - define splash_potion:|:<item[splash_potion].with[potion_effects=<[effect]>,false,false].if_null[null]>|<item[splash_potion].with[potion_effects=<[effect]>,false,true].if_null[null]>
+            - define lingering_potion:|:<item[lingering_potion].with[potion_effects=<[effect]>,false,false].if_null[null]>|<item[lingering_potion].with[potion_effects=<[effect]>,false,true].if_null[null]>
+        - define items <[potion].include[<[splash_potion]>].include[<[lingering_potion]>].exclude[null]>
+        - run creative_inventory_creation_task def:<list_single[<[items]>].include[potions]>
+        after player left clicks item_flagged:enchanted_books in creative_inventory:
+        - foreach <server.enchantments> as:enchantment:
+            - repeat <enchantment[<[enchantment]>].max_level>:
+                - define items:->:<item[enchanted_book].with[enchantments=<map[<[enchantment]>=<[value]>]>]>
+        - run creative_inventory_creation_task def:<list_single[<[items]>].include[enchanted_books]>
+        after player left clicks item_flagged:search in creative_inventory:
+        - flag <player> dcreative.search expire:30s
+        - inventory close
+        - narrate "Enter the name of the material or script you searching for. You have 30 seconds."
+        on player chats flagged:dcreative.search:
+        - determine cancelled passively
+        - flag <player> dcreative.search:!
+        - define matches <server.material_types.parse[item.material.name].include[<server.scripts.filter[data_key[type].equals[item]].parse[name]>].filter[contains_any_text[<context.message>]]>
+        - if <[matches].is_empty>:
+            - narrate "No Match! :("
+            - inventory open d:creative_inventory
+            - stop
+        - run creative_inventory_creation_task def:<list_single[<[matches]>].include[search]>
+        ##shortcut handlers
+        after player left clicks item_flagged:shortcuts in creative_inventory:
+        - if <context.item.flag[shortcuts]> != null:
+            - inventory clear
+            - inventory set destination:<player.inventory> o:<player.flag[dcreative.shortcuts.<context.item.flag[shortcuts]>.items]>
+            - stop
+        - flag <player> dcreative.shortcuts.creation:<context.slot> expiration:60s
+        - inventory close
+        - narrate "How should the shortcut be named? Type cancel to cancel the creation."
+        after player right clicks item_flagged:shortcuts in creative_inventory:
+        - if <context.item.flag[shortcuts]> == null:
+            - stop
+        - flag <player> dcreative.shortcuts.<context.item.flag[shortcuts]>:!
+        - inventory set slot:<context.slot> destination:<player.open_inventory> "origin:<item[writable_book].with_flag[shortcuts:null].with[display=Empty Shortcut;lore=<gray>Left click to set a shortcut]>"
+        - narrate "Shortcut <context.item.display> removed."
+        on player chats flagged:dcreative.shortcuts.creation:
+        - determine passively cancelled
+        - if <context.message> == cancel:
+            - narrate "Shortcut cancelled."
+            - flag <player> dcreative.shortcuts.creation:!
+            - stop
+        - narrate "Shortcut created."
+        - define name "<context.message.trim_to_character_set[abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890-_&# ]>"
+        - definemap shortcut items:<player.inventory.list_contents> slot:<player.flag[dcreative.shortcuts.creation]>
+        - flag <player> dcreative.shortcuts.<[name]>:<[shortcut]>
+        - flag <player> dcreative.shortcuts.creation:!
+        - inventory open destination:creative_inventory
+        ##creative_inventory_data handlers
+        after player left clicks item in creative_inventory_data:
+        - inject <script> path:creative_inventory_check
+        - if <context.clicked_inventory.id_type> == PLAYER:
+            - stop
+        - if !<player.inventory.can_fit[<[item]>]>:
+            - adjust <player> item_on_cursor:<[item]>
+            - stop
+        - give <[item]>
+        after player number_key clicks item in creative_inventory_data:
+        - inject <script> path:creative_inventory_check
+        - if <context.clicked_inventory.id_type> == PLAYER:
+            - stop
+        - inventory set slot:<context.hotbar_button> origin:<[item]>
+        after player shift_left clicks item in creative_inventory_data:
+        - inject <script> path:creative_inventory_check
+        - if <context.clicked_inventory.id_type> == PLAYER:
+            - inventory set origin:air slot:<context.slot>
+            - stop
+        - if !<player.inventory.can_fit[<[item]>].quantity[64]>:
+            - adjust <player> item_on_cursor:<[item].with[quantity=64]>
+            - stop
+        - give <[item]> quantity:64
+creative_inventory_creation_task:
+    type: task
+    debug: false
+    definitions: items|type
+    script:
+    - define items <[items].sub_lists[45]>
+    - if <inventory[creative_inventory_data_<[type]>_1].exists> && <[type]> != search:
+        - define has_opened true
+        - inventory open destination:creative_inventory_data_<[type]>_1
+    - wait 1t
+    - foreach <[items]> as:page:
+        - waituntil rate:10s max:3m <server.online_players.filter[open_inventory.script.name.equals[creative_inventory_data]].is_empty>
+        - note <inventory[creative_inventory_data]> as:creative_inventory_data_<[type]>_<[loop_index]>
+        - flag server dcreative.inventories:->:creative_inventory_data_<[type]>_<[loop_index]>
+        - adjust <inventory[creative_inventory_data_<[type]>_<[loop_index]>]> contents:<[page]>
+        - if <[items].size> > 1 && <[loop_index]> != <[items].size>:
+            - inventory set destination:creative_inventory_data_<[type]>_<[loop_index]> slot:53 origin:<item[light[block_material=light[level=<element[<[loop_index].add[1].is_more_than[15]>].if_true[15].if_false[<[loop_index].add[1]>]>]]].with_flag[inventory:creative_inventory_data_<[type]>_<[loop_index].add[1]>].with[display=<white>Forward]>
+        - if <[loop_index]> != 1:
+            - inventory set destination:creative_inventory_data_<[type]>_<[loop_index]> slot:47 origin:<item[light[block_material=light[level=<element[<[loop_index].sub[1].is_more_than[15]>].if_true[15].if_false[<[loop_index].sub[1]>]>]]].with_flag[inventory:creative_inventory_data_<[type]>_<[loop_index].sub[1]>].with[display=<white>Backward]>
+        - inventory set destination:creative_inventory_data_<[type]>_<[loop_index]> slot:50 origin:<item[grass_block].with_flag[inventory:creative_inventory].with[display=<&f>Back]>
+    - if <[has_opened].exists>:
+        - stop
+    - inventory open destination:creative_inventory_data_<[type]>_1
+creative_inventory:
+    type: inventory
+    debug: false
+    data:
+    #number of possible shortcuts, must be an integer
+        shortcuts: 6
+    inventory: CHEST
+    title: Creative
+    gui: true
+    definitions:
+        trees_and_logs: <item[oak_sapling].with_flag[type:trees_and_logs].with[display=<&color[#954520]>Trees and Logs]>
+        ores: <item[diamond_ore].with_flag[type:ores].with[display=<&color[#C0C0C0]>Ores]>
+        stairs_and_slabs: <item[stone_brick_stairs].with_flag[type:stairs_and_slabs].with[display=<&color[#999999]>Stairs and Slabs]>
+        redstone: <item[redstone].with_flag[type:redstone].with[display=<red>Redstone]>
+        transport: <item[powered_rail].with_flag[type:transportation].with[display=<&f>Transportation]>
+        wool: <item[white_wool].with_flag[type:wool].with[display=<&f>Wool and Colors]>
+        oceanic: <item[horn_coral].with_flag[type:oceanic].with[display=<aqua>Oceanic]>
+        light: <item[light[block_material=light[level=15]]].with_flag[type:light].with[display=<yellow>Light]>
+        nature: <item[poppy].with_flag[type:nature].with[display=<green>Nature]>
+        food: <item[apple].with_flag[type:food].with[display=<red>Food]>
+        glass: <item[glass].with_flag[type:glass].with[display=<&f>Glass]>
+        tools: <item[iron_pickaxe].with_flag[type:tools].with[display=<&f>Tools]>
+        weapons_and_armor: <item[iron_sword].with_flag[type:weapons_and_armor].with[display=<&f>Weapons and Armor]>
+        blocks: <item[grass_block].with_flag[type:blocks].with[display=<&f>Building Blocks]>
+        copper: <item[copper_block].with_flag[type:copper].with[display=<&color[#c9803c]>Copper]>
+        container: <item[chest].with_flag[type:container].with[display=<&f>Container]>
+        interactables: <item[smoker].with_flag[type:interactables].with[display=<&f>Interactables]>
+        fences_and_walls: <item[oak_fence].with_flag[type:fences_and_walls].with[display=<&color[#bd9476]>Fences and Walls]>
+        terracotta: <item[terracotta].with_flag[type:terracotta].with[display=<&f>Terracotta]>
+        spawn_eggs: <item[axolotl_spawn_egg].with_flag[type:spawn_eggs].with[display=<&f>Spawn Eggs]>
+        misc: <item[lava_bucket].with_flag[type:misc].with[display=<&f>Miscellaneous]>
+        special: <item[barrier].with_flag[type:special].with[display=<light_purple>Special]>
+        banner: <item[red_banner].with_flag[type:banner].with[display=<&f>Banner]>
+        brewing: <item[brewing_stand].with_flag[type:brewing].with[display=<&f>Brewing]>
+        potions: <item[potion].with_flag[potions].with[display=<&f>Potions]>
+        enchanted_books: <item[enchanted_book].with_flag[enchanted_books].with[display=<dark_purple>Enchanted Books]>
+        denizen: <item[stick].with_flag[denizen:items].with[display=<yellow>Denizen]>
+        search: <item[spyglass].with_flag[search].with[display=<&f>Search]>
+    procedural items:
+    - define book "<item[writable_book].with_flag[shortcuts:null].with[display=Empty Shortcut;lore=<gray>Left click to set a shortcut]>"
+    - define number_of_shortcuts <script.data_key[data.shortcuts]>
+    - if !<player.flag[dcreative.shortcuts].exists> || <player.flag[dcreative.shortcuts].is_empty>:
+        - determine <[book].repeat_as_list[<[number_of_shortcuts]>]>
+    - define shortcuts <list.pad_right[<[number_of_shortcuts]>]>
+    - foreach <player.flag[dcreative.shortcuts]> key:name as:shortcut:
+        - define shortcuts "<[shortcuts].set[<[book].with_flag[shortcuts:<[name]>].with[display=<[name].parse_color>;material=book;lore=<gray>Right click to remove the shortcut]>].at[<[shortcut.slot].sub[36]>]>"
+    - define shortcuts <[shortcuts].replace[<empty>].with[<[book]>]>
+    - determine <[shortcuts]>
+    slots:
+    - [trees_and_logs] [nature] [oceanic] [brewing] [potions] [air] [food] [tools] [weapons_and_armor]
+    - [glass] [terracotta] [wool] [enchanted_books] [air] [transport] [redstone] [light] [misc]
+    - [blocks] [ores] [copper] [air] [air] [fences_and_walls] [stairs_and_slabs] [container] [interactables]
+    - [air] [air] [air] [air] [air] [air] [denizen] [special] [spawn_eggs]
+    - [] [] [] [] [] [] [] [] [search]
+    - [] [] [] [] [] [] [] [] []
+creative_inventory_data:
+    type: inventory
+    debug: false
+    gui: true
+    inventory: CHEST
+    size: 54
+creative_data:
+    type: data
+    debug: false
+    inventory:
+        trees_and_logs:
+            - oak_sapling
+            - spruce_sapling
+            - birch_sapling
+            - jungle_sapling
+            - acacia_sapling
+            - dark_oak_sapling
+            - oak_leaves
+            - spruce_leaves
+            - birch_leaves
+            - jungle_leaves
+            - acacia_leaves
+            - dark_oak_leaves
+            - azalea_leaves
+            - flowering_azalea_leaves
+            - oak_log
+            - spruce_log
+            - birch_log
+            - jungle_log
+            - acacia_log
+            - dark_oak_log
+            - crimson_stem
+            - warped_stem
+            - stripped_oak_log
+            - stripped_spruce_log
+            - stripped_birch_log
+            - stripped_jungle_log
+            - stripped_acacia_log
+            - stripped_dark_oak_log
+            - stripped_crimson_stem
+            - stripped_warped_stem
+            - stripped_oak_wood
+            - stripped_spruce_wood
+            - stripped_birch_wood
+            - stripped_jungle_wood
+            - stripped_acacia_wood
+            - stripped_dark_oak_wood
+            - stripped_crimson_hyphae
+            - stripped_warped_hyphae
+            - oak_wood
+            - spruce_wood
+            - birch_wood
+            - jungle_wood
+            - acacia_wood
+            - dark_oak_wood
+            - crimson_hyphae
+            - warped_hyphae
+            - oak_planks
+            - spruce_planks
+            - birch_planks
+            - jungle_planks
+            - acacia_planks
+            - dark_oak_planks
+            - crimson_planks
+            - warped_planks
+        ores:
+            - coal_ore
+            - deepslate_coal_ore
+            - iron_ore
+            - deepslate_iron_ore
+            - copper_ore
+            - deepslate_copper_ore
+            - gold_ore
+            - deepslate_gold_ore
+            - redstone_ore
+            - deepslate_redstone_ore
+            - emerald_ore
+            - deepslate_emerald_ore
+            - lapis_ore
+            - deepslate_lapis_ore
+            - diamond_ore
+            - deepslate_diamond_ore
+            - nether_gold_ore
+            - nether_quartz_ore
+            - obsidian
+            - small_amethyst_bud
+            - medium_amethyst_bud
+            - large_amethyst_bud
+            - amethyst_cluster
+            - coal_block
+            - raw_iron_block
+            - raw_copper_block
+            - raw_gold_block
+            - amethyst_block
+            - budding_amethyst
+            - iron_block
+            - copper_block
+            - gold_block
+            - redstone_block
+            - lapis_block
+            - emerald_block
+            - diamond_block
+            - netherite_block
+            - coal
+            - charcoal
+            - iron_nugget
+            - raw_iron
+            - iron_ingot
+            - raw_copper
+            - copper_ingot
+            - gold_nugget
+            - raw_gold
+            - gold_ingot
+            - redstone
+            - emerald
+            - lapis_lazuli
+            - diamond
+            - netherite_ingot
+            - netherite_scrap
+            - quartz
+            - amethyst_shard
+        stairs_and_slabs:
+            - cut_copper_stairs
+            - cut_copper_slab
+            - exposed_cut_copper_stairs
+            - exposed_cut_copper_slab
+            - weathered_cut_copper_stairs
+            - weathered_cut_copper_slab
+            - oxidized_cut_copper_stairs
+            - oxidized_cut_copper_slab
+            - waxed_cut_copper_stairs
+            - waxed_cut_copper_slab
+            - waxed_exposed_cut_copper_stairs
+            - waxed_exposed_cut_copper_slab
+            - waxed_weathered_cut_copper_stairs
+            - waxed_weathered_cut_copper_slab
+            - waxed_oxidized_cut_copper_stairs
+            - waxed_oxidized_cut_copper_slab
+            - purpur_stairs
+            - purpur_slab
+            - oak_stairs
+            - oak_slab
+            - cobblestone_stairs
+            - cobblestone_slab
+            - brick_stairs
+            - brick_slab
+            - stone_brick_stairs
+            - stone_brick_slab
+            - nether_brick_stairs
+            - nether_brick_slab
+            - spruce_stairs
+            - spruce_slab
+            - birch_stairs
+            - birch_slab
+            - jungle_stairs
+            - jungle_slab
+            - crimson_stairs
+            - crimson_slab
+            - warped_stairs
+            - warped_slab
+            - sandstone_stairs
+            - sandstone_slab
+            - quartz_stairs
+            - quartz_slab
+            - acacia_stairs
+            - acacia_slab
+            - dark_oak_stairs
+            - dark_oak_slab
+            - prismarine_stairs
+            - prismarine_slab
+            - prismarine_brick_stairs
+            - prismarine_brick_slab
+            - dark_prismarine_stairs
+            - dark_prismarine_slab
+            - red_sandstone_stairs
+            - red_sandstone_slab
+            - polished_granite_stairs
+            - polished_granite_slab
+            - smooth_red_sandstone_stairs
+            - mossy_stone_brick_stairs
+            - mossy_stone_brick_slab
+            - polished_diorite_stairs
+            - polished_diorite_slab
+            - mossy_cobblestone_stairs
+            - mossy_cobblestone_slab
+            - end_stone_brick_stairs
+            - end_stone_brick_slab
+            - stone_stairs
+            - stone_slab
+            - smooth_sandstone_stairs
+            - smooth_sandstone_slab
+            - smooth_quartz_stairs
+            - smooth_quartz_slab
+            - granite_stairs
+            - granite_slab
+            - andesite_stairs
+            - andesite_slab
+            - red_nether_brick_stairs
+            - red_nether_brick_slab
+            - polished_andesite_stairs
+            - polished_andesite_slab
+            - diorite_stairs
+            - diorite_slab
+            - cobbled_deepslate_stairs
+            - cobbled_deepslate_slab
+            - polished_deepslate_stairs
+            - polished_deepslate_slab
+            - deepslate_brick_stairs
+            - deepslate_brick_slab
+            - deepslate_tile_stairs
+            - deepslate_tile_slab
+            - blackstone_stairs
+            - blackstone_slab
+            - polished_blackstone_stairs
+            - polished_blackstone_slab
+            - polished_blackstone_brick_stairs
+            - polished_blackstone_brick_slab
+            - smooth_stone_slab
+            - cut_sandstone_slab
+            - petrified_oak_slab
+            - cut_red_sandstone_slab
+            - smooth_red_sandstone_slab
+        redstone:
+            - redstone
+            - redstone_torch
+            - redstone_block
+            - repeater
+            - comparator
+            - piston
+            - sticky_piston
+            - slime_block
+            - honey_block
+            - observer
+            - hopper
+            - dispenser
+            - dropper
+            - lectern
+            - target
+            - lever
+            - lightning_rod
+            - daylight_detector
+            - tripwire_hook
+            - trapped_chest
+            - tnt
+            - redstone_lamp
+            - note_block
+            - stone_button
+            - stone_pressure_plate
+            - light_weighted_pressure_plate
+            - polished_blackstone_button
+            - polished_blackstone_pressure_plate
+            - sculk_sensor
+            - air
+            - air
+            - air
+            - air
+            - air
+            - air
+            - air
+            - oak_door
+            - spruce_door
+            - birch_door
+            - jungle_door
+            - acacia_door
+            - dark_oak_door
+            - crimson_door
+            - warped_door
+            - iron_door
+            - oak_button
+            - spruce_button
+            - birch_button
+            - jungle_button
+            - acacia_button
+            - dark_oak_button
+            - crimson_button
+            - warped_button
+            - air
+            - oak_pressure_plate
+            - spruce_pressure_plate
+            - birch_pressure_plate
+            - jungle_pressure_plate
+            - acacia_pressure_plate
+            - dark_oak_pressure_plate
+            - crimson_pressure_plate
+            - warped_pressure_plate
+            - heavy_weighted_pressure_plate
+            - oak_trapdoor
+            - spruce_trapdoor
+            - birch_trapdoor
+            - jungle_trapdoor
+            - acacia_trapdoor
+            - dark_oak_trapdoor
+            - crimson_trapdoor
+            - warped_trapdoor
+            - iron_trapdoor
+            - oak_fence_gate
+            - spruce_fence_gate
+            - birch_fence_gate
+            - jungle_fence_gate
+            - acacia_fence_gate
+            - dark_oak_fence_gate
+            - crimson_fence_gate
+            - warped_fence_gate
+        transportation:
+            - powered_rail
+            - detector_rail
+            - rail
+            - activator_rail
+            - saddle
+            - minecart
+            - chest_minecart
+            - furnace_minecart
+            - tnt_minecart
+            - hopper_minecart
+            - carrot_on_a_stick
+            - warped_fungus_on_a_stick
+            - elytra
+            - oak_boat
+            - spruce_boat
+            - birch_boat
+            - jungle_boat
+            - acacia_boat
+            - dark_oak_boat
+        wool:
+            - white_dye
+            - orange_dye
+            - magenta_dye
+            - light_blue_dye
+            - yellow_dye
+            - lime_dye
+            - pink_dye
+            - gray_dye
+            - light_gray_dye
+            - cyan_dye
+            - purple_dye
+            - blue_dye
+            - brown_dye
+            - green_dye
+            - red_dye
+            - black_dye
+            - air
+            - air
+            - white_wool
+            - orange_wool
+            - magenta_wool
+            - light_blue_wool
+            - yellow_wool
+            - lime_wool
+            - pink_wool
+            - gray_wool
+            - light_gray_wool
+            - cyan_wool
+            - purple_wool
+            - blue_wool
+            - brown_wool
+            - green_wool
+            - red_wool
+            - black_wool
+            - air
+            - air
+            - white_carpet
+            - orange_carpet
+            - magenta_carpet
+            - light_blue_carpet
+            - yellow_carpet
+            - lime_carpet
+            - pink_carpet
+            - gray_carpet
+            - light_gray_carpet
+            - cyan_carpet
+            - purple_carpet
+            - blue_carpet
+            - brown_carpet
+            - green_carpet
+            - red_carpet
+            - black_carpet
+            - air
+            - air
+            - white_bed
+            - orange_bed
+            - magenta_bed
+            - light_blue_bed
+            - yellow_bed
+            - lime_bed
+            - pink_bed
+            - gray_bed
+            - light_gray_bed
+            - cyan_bed
+            - purple_bed
+            - blue_bed
+            - brown_bed
+            - green_bed
+            - red_bed
+            - black_bed
+        oceanic:
+            - tube_coral_block
+            - brain_coral_block
+            - bubble_coral_block
+            - fire_coral_block
+            - horn_coral_block
+            - tube_coral
+            - brain_coral
+            - bubble_coral
+            - fire_coral
+            - horn_coral
+            - tube_coral_fan
+            - brain_coral_fan
+            - bubble_coral_fan
+            - fire_coral_fan
+            - horn_coral_fan
+            - dead_tube_coral_block
+            - dead_brain_coral_block
+            - dead_bubble_coral_block
+            - dead_fire_coral_block
+            - dead_horn_coral_block
+            - dead_brain_coral
+            - dead_bubble_coral
+            - dead_fire_coral
+            - dead_horn_coral
+            - dead_tube_coral
+            - dead_tube_coral_fan
+            - dead_brain_coral_fan
+            - dead_bubble_coral_fan
+            - dead_fire_coral_fan
+            - dead_horn_coral_fan
+            - sponge
+            - wet_sponge
+            - sand
+            - dirt
+            - gravel
+            - clay_block
+            - water_bucket
+            - pufferfish_bucket
+            - salmon_bucket
+            - cod_bucket
+            - tropical_fish_bucket
+            - axolotl_bucket
+            - seagrass
+            - sea_lantern
+            - sea_pickle
+        concrete:
+            - white_concrete
+            - orange_concrete
+            - magenta_concrete
+            - light_blue_concrete
+            - yellow_concrete
+            - lime_concrete
+            - pink_concrete
+            - gray_concrete
+            - light_gray_concrete
+            - cyan_concrete
+            - purple_concrete
+            - blue_concrete
+            - brown_concrete
+            - green_concrete
+            - red_concrete
+            - black_concrete
+            - air
+            - air
+            - white_concrete_powder
+            - orange_concrete_powder
+            - magenta_concrete_powder
+            - light_blue_concrete_powder
+            - yellow_concrete_powder
+            - lime_concrete_powder
+            - pink_concrete_powder
+            - gray_concrete_powder
+            - light_gray_concrete_powder
+            - cyan_concrete_powder
+            - purple_concrete_powder
+            - blue_concrete_powder
+            - brown_concrete_powder
+            - green_concrete_powder
+            - red_concrete_powder
+            - black_concrete_powder
+        light:
+            - candle
+            - white_candle
+            - orange_candle
+            - magenta_candle
+            - light_blue_candle
+            - yellow_candle
+            - lime_candle
+            - pink_candle
+            - gray_candle
+            - light_gray_candle
+            - cyan_candle
+            - purple_candle
+            - blue_candle
+            - brown_candle
+            - green_candle
+            - red_candle
+            - black_candle
+            - torch
+            - soul_torch
+            - redstone_torch
+            - lantern
+            - soul_lantern
+            - jack_o_lantern
+            - shroomlight
+            - glowstone
+            - campfire
+            - soul_campfire
+            - sea_lantern
+            - sea_pickle
+            - magma_block
+            - end_rod
+            - small_amethyst_bud
+            - medium_amethyst_bud
+            - large_amethyst_bud
+            - amethyst_cluster
+            - light[block_material=light[level=15]]
+        nature:
+            - oak_sapling
+            - spruce_sapling
+            - birch_sapling
+            - jungle_sapling
+            - acacia_sapling
+            - dark_oak_sapling
+            - oak_sapling
+            - spruce_sapling
+            - birch_sapling
+            - jungle_sapling
+            - acacia_sapling
+            - dark_oak_sapling
+            - cobweb
+            - flower_pot
+            - grass
+            - tall_grass
+            - fern
+            - large_fern
+            - azalea
+            - flowering_azalea
+            - dead_bush
+            - seagrass
+            - sea_pickle
+            - dandelion
+            - poppy
+            - blue_orchid
+            - allium
+            - azure_bluet
+            - red_tulip
+            - orange_tulip
+            - white_tulip
+            - pink_tulip
+            - oxeye_daisy
+            - cornflower
+            - lily_of_the_valley
+            - sunflower
+            - lilac
+            - rose_bush
+            - peony
+            - wither_rose
+            - spore_blossom
+            - brown_mushroom
+            - red_mushroom
+            - crimson_fungus
+            - warped_fungus
+            - crimson_roots
+            - warped_roots
+            - nether_sprouts
+            - weeping_vines
+            - twisting_vines
+            - sugar_cane
+            - kelp
+            - moss_carpet
+            - moss_block
+            - hanging_roots
+            - big_dripleaf
+            - small_dripleaf
+            - bamboo
+            - chorus_plant
+            - chorus_flower
+            - farmland
+            - cactus
+            - vine
+            - brown_mushroom_block
+            - red_mushroom_block
+            - mushroom_stem
+            - lily_pad
+            - glow_lichen
+            - pointed_dripstone
+            - mossy_cobblestone
+            - mossy_stone_bricks
+            - mossy_cobblestone_wall
+            - mossy_stone_brick_wall
+            - mossy_stone_brick_stairs
+            - mossy_cobblestone_stairs
+            - mossy_stone_brick_slab
+            - mossy_stone_brick_slab
+        food:
+            - apple
+            - mushroom_stew
+            - suspicious_stew
+            - bread
+            - porkchop
+            - cooked_porkchop
+            - golden_apple
+            - enchanted_golden_apple
+            - cod
+            - salmon
+            - tropical_fish
+            - pufferfish
+            - cooked_cod
+            - cooked_salmon
+            - cake
+            - cookie
+            - melon
+            - melon_slice
+            - dried_kelp
+            - beef
+            - cooked_beef
+            - chicken
+            - cooked_chicken
+            - rotten_flesh
+            - spider_eye
+            - carrot
+            - potato
+            - baked_potato
+            - poisonous_potato
+            - pumpkin
+            - pumpkin_pie
+            - rabbit
+            - cooked_rabbit
+            - rabbit_stew
+            - mutton
+            - cooked_mutton
+            - beetroot
+            - beetroot_soup
+            - sweet_berries
+            - glow_berries
+            - honey_bottle
+        glass:
+            - glass
+            - white_stained_glass
+            - orange_stained_glass
+            - magenta_stained_glass
+            - light_blue_stained_glass
+            - yellow_stained_glass
+            - lime_stained_glass
+            - pink_stained_glass
+            - gray_stained_glass
+            - light_gray_stained_glass
+            - cyan_stained_glass
+            - purple_stained_glass
+            - blue_stained_glass
+            - brown_stained_glass
+            - green_stained_glass
+            - red_stained_glass
+            - black_stained_glass
+            - tinted_glass
+            - glass_pane
+            - white_stained_glass_pane
+            - orange_stained_glass_pane
+            - magenta_stained_glass_pane
+            - light_blue_stained_glass_pane
+            - yellow_stained_glass_pane
+            - lime_stained_glass_pane
+            - pink_stained_glass_pane
+            - gray_stained_glass_pane
+            - light_gray_stained_glass_pane
+            - cyan_stained_glass_pane
+            - purple_stained_glass_pane
+            - blue_stained_glass_pane
+            - brown_stained_glass_pane
+            - green_stained_glass_pane
+            - red_stained_glass_pane
+            - black_stained_glass_pane
+            - glass_bottle
+        tools:
+            - flint_and_steel
+            - wooden_shovel
+            - wooden_pickaxe
+            - wooden_axe
+            - wooden_hoe
+            - stone_shovel
+            - stone_pickaxe
+            - stone_axe
+            - stone_hoe
+            - golden_shovel
+            - golden_pickaxe
+            - golden_axe
+            - golden_hoe
+            - iron_sword
+            - iron_shovel
+            - iron_pickaxe
+            - iron_axe
+            - iron_hoe
+            - diamond_shovel
+            - diamond_pickaxe
+            - diamond_axe
+            - diamond_hoe
+            - netherite_shovel
+            - netherite_pickaxe
+            - netherite_axe
+            - netherite_hoe
+            - compass
+            - fishing_rod
+            - clock
+            - spyglass
+            - shears
+            - lead
+            - name_tag
+            - armor_stand
+        weapons_and_armor:
+            - wooden_sword
+            - stone_sword
+            - golden_sword
+            - iron_sword
+            - diamond_sword
+            - netherite_sword
+            - shield
+            - trident
+            - totem_of_undying
+            - crossbow
+            - bow
+            - arrow
+            - spectral_arrow
+            - turtle_shell
+            - turtle_helmet
+            - leather_helmet
+            - leather_chestplate
+            - leather_leggings
+            - leather_boots
+            - chainmail_helmet
+            - chainmail_chestplate
+            - chainmail_leggings
+            - chainmail_boots
+            - iron_helmet
+            - iron_chestplate
+            - iron_leggings
+            - iron_boots
+            - diamond_helmet
+            - diamond_chestplate
+            - diamond_leggings
+            - diamond_boots
+            - golden_helmet
+            - golden_chestplate
+            - golden_leggings
+            - golden_boots
+            - netherite_helmet
+            - netherite_chestplate
+            - netherite_leggings
+            - netherite_boots
+            - iron_horse_armor
+            - golden_horse_armor
+            - diamond_horse_armor
+            - leather_horse_armor
+        blocks:
+            - stone
+            - granite
+            - polished_granite
+            - diorite
+            - polished_diorite
+            - andesite
+            - polished_andesite
+            - deepslate
+            - cobbled_deepslate
+            - polished_deepslate
+            - calcite
+            - tuff
+            - dripstone_block
+            - grass_block
+            - dirt
+            - coarse_dirt
+            - podzol
+            - rooted_dirt
+            - crimson_nylium
+            - warped_nylium
+            - cobblestone
+            - oak_planks
+            - spruce_planks
+            - birch_planks
+            - jungle_planks
+            - acacia_planks
+            - dark_oak_planks
+            - crimson_planks
+            - warped_planks
+            - bedrock
+            - sand
+            - red_sand
+            - gravel
+            - ancient_debris
+            - sandstone
+            - chiseled_sandstone
+            - cut_sandstone
+            - smooth_quartz
+            - smooth_red_sandstone
+            - smooth_sandstone
+            - smooth_stone
+            - bricks
+            - bookshelf
+            - mossy_cobblestone
+            - purpur_block
+            - purpur_pillar
+            - ancient_debris
+            - sandstone
+            - chiseled_sandstone
+            - cut_sandstone
+            - smooth_quartz
+            - smooth_red_sandstone
+            - smooth_sandstone
+            - smooth_stone
+            - bricks
+            - bookshelf
+            - mossy_cobblestone
+            - obsidian
+            - purpur_block
+            - purpur_pillar
+            - snow
+            - ice
+            - snow_block
+            - clay
+            - netherrack
+            - soul_sand
+            - soul_soil
+            - basalt
+            - polished_basalt
+            - smooth_basalt
+            - infested_stone
+            - infested_cobblestone
+            - infested_stone_bricks
+            - infested_mossy_stone_bricks
+            - infested_cracked_stone_bricks
+            - infested_chiseled_stone_bricks
+            - infested_deepslate
+            - iron_bars
+            - chain
+            - stone_bricks
+            - mossy_stone_bricks
+            - cracked_stone_bricks
+            - chiseled_stone_bricks
+            - deepslate_bricks
+            - cracked_deepslate_bricks
+            - deepslate_tiles
+            - cracked_deepslate_tiles
+            - chiseled_deepslate
+            - mycelium
+            - nether_bricks
+            - cracked_nether_bricks
+            - chiseled_nether_bricks
+            - end_stone
+            - end_stone_bricks
+            - chiseled_quartz_block
+            - quartz_block
+            - quartz_bricks
+            - quartz_pillar
+            - hay_block
+            - packed_ice
+            - dirt_path
+            - prismarine
+            - prismarine_bricks
+            - dark_prismarine
+            - red_sandstone
+            - chiseled_red_sandstone
+            - cut_red_sandstone
+            - nether_wart_block
+            - warped_wart_block
+            - red_nether_bricks
+            - bone_block
+            - blue_ice
+            - honeycomb_block
+            - crying_obsidian
+            - blackstone
+            - gilded_blackstone
+            - polished_blackstone
+            - chiseled_polished_blackstone
+            - polished_blackstone_bricks
+            - cracked_polished_blackstone_bricks
+        copper:
+            - exposed_copper
+            - weathered_copper
+            - oxidized_copper
+            - cut_copper
+            - exposed_cut_copper
+            - weathered_cut_copper
+            - oxidized_cut_copper
+            - waxed_copper_block
+            - waxed_exposed_copper
+            - waxed_weathered_copper
+            - waxed_oxidized_copper
+            - waxed_cut_copper
+            - waxed_exposed_cut_copper
+            - waxed_weathered_cut_copper
+            - waxed_oxidized_cut_copper
+            - cut_copper_stairs
+            - cut_copper_slab
+            - exposed_cut_copper_stairs
+            - exposed_cut_copper_slab
+            - weathered_cut_copper_stairs
+            - weathered_cut_copper_slab
+            - oxidized_cut_copper_stairs
+            - oxidized_cut_copper_slab
+            - waxed_cut_copper_stairs
+            - waxed_cut_copper_slab
+            - waxed_exposed_cut_copper_stairs
+            - waxed_exposed_cut_copper_slab
+            - waxed_weathered_cut_copper_stairs
+            - waxed_weathered_cut_copper_slab
+            - waxed_oxidized_cut_copper_stairs
+            - waxed_oxidized_cut_copper_slab
+        container:
+            - ender_chest
+            - chest
+            - trapped_chest
+            - barrel
+            - shulker_box
+            - white_shulker_box
+            - orange_shulker_box
+            - magenta_shulker_box
+            - light_blue_shulker_box
+            - yellow_shulker_box
+            - lime_shulker_box
+            - pink_shulker_box
+            - gray_shulker_box
+            - light_gray_shulker_box
+            - cyan_shulker_box
+            - purple_shulker_box
+            - blue_shulker_box
+            - brown_shulker_box
+            - green_shulker_box
+            - red_shulker_box
+            - black_shulker_box
+            - bundle
+        interactables:
+            - ladder
+            - vine
+            - crafting_table
+            - chest
+            - furnace
+            - jukebox
+            - enchanting_table
+            - end_portal_frame
+            - ender_chest
+            - scaffolding
+            - item_frame
+            - glow_item_frame
+            - painting
+            - loom
+            - composter
+            - barrel
+            - smoker
+            - blast_furnace
+            - cartography_table
+            - fletching_table
+            - grindstone
+            - smithing_table
+            - brewing_stand
+            - cauldron
+            - anvil
+            - chipped_anvil
+            - damaged_anvil
+            - stonecutter
+            - bell
+            - bee_nest
+            - beehive
+            - lodestone
+            - respawn_anchor
+            - end_crystal
+            - carved_pumpkin
+            - jack_o_lantern
+            - dried_kelp_block
+            - oak_sign
+            - spruce_sign
+            - birch_sign
+            - jungle_sign
+            - acacia_sign
+            - dark_oak_sign
+            - crimson_sign
+            - warped_sign
+        fences_and_walls:
+            - cobblestone_wall
+            - mossy_cobblestone_wall
+            - brick_wall
+            - prismarine_wall
+            - red_sandstone_wall
+            - mossy_stone_brick_wall
+            - granite_wall
+            - stone_brick_wall
+            - nether_brick_wall
+            - andesite_wall
+            - red_nether_brick_wall
+            - sandstone_wall
+            - end_stone_brick_wall
+            - diorite_wall
+            - blackstone_wall
+            - polished_blackstone_wall
+            - polished_blackstone_brick_wall
+            - cobbled_deepslate_wall
+            - polished_deepslate_wall
+            - deepslate_brick_wall
+            - deepslate_tile_wall
+            - oak_fence
+            - spruce_fence
+            - birch_fence
+            - jungle_fence
+            - acacia_fence
+            - dark_oak_fence
+            - crimson_fence
+            - warped_fence
+            - nether_brick_fence
+            - oak_fence_gate
+            - spruce_fence_gate
+            - birch_fence_gate
+            - jungle_fence_gate
+            - acacia_fence_gate
+            - dark_oak_fence_gate
+            - crimson_fence_gate
+            - warped_fence_gate
+        terracotta:
+            - terracotta
+            - white_terracotta
+            - orange_terracotta
+            - magenta_terracotta
+            - light_blue_terracotta
+            - yellow_terracotta
+            - lime_terracotta
+            - pink_terracotta
+            - gray_terracotta
+            - light_gray_terracotta
+            - cyan_terracotta
+            - purple_terracotta
+            - blue_terracotta
+            - brown_terracotta
+            - green_terracotta
+            - red_terracotta
+            - black_terracotta
+            - white_glazed_terracotta
+            - orange_glazed_terracotta
+            - magenta_glazed_terracotta
+            - light_blue_glazed_terracotta
+            - yellow_glazed_terracotta
+            - lime_glazed_terracotta
+            - pink_glazed_terracotta
+            - gray_glazed_terracotta
+            - light_gray_glazed_terracotta
+            - cyan_glazed_terracotta
+            - purple_glazed_terracotta
+            - blue_glazed_terracotta
+            - brown_glazed_terracotta
+            - green_glazed_terracotta
+            - red_glazed_terracotta
+            - black_glazed_terracotta
+        spawn_eggs:
+            - spawner
+            - axolotl_spawn_egg
+            - bat_spawn_egg
+            - bee_spawn_egg
+            - blaze_spawn_egg
+            - cat_spawn_egg
+            - cave_spider_spawn_egg
+            - chicken_spawn_egg
+            - cod_spawn_egg
+            - cow_spawn_egg
+            - creeper_spawn_egg
+            - dolphin_spawn_egg
+            - donkey_spawn_egg
+            - drowned_spawn_egg
+            - elder_guardian_spawn_egg
+            - enderman_spawn_egg
+            - endermite_spawn_egg
+            - evoker_spawn_egg
+            - fox_spawn_egg
+            - ghast_spawn_egg
+            - glow_squid_spawn_egg
+            - goat_spawn_egg
+            - guardian_spawn_egg
+            - hoglin_spawn_egg
+            - horse_spawn_egg
+            - husk_spawn_egg
+            - llama_spawn_egg
+            - magma_cube_spawn_egg
+            - mooshroom_spawn_egg
+            - mule_spawn_egg
+            - ocelot_spawn_egg
+            - panda_spawn_egg
+            - parrot_spawn_egg
+            - phantom_spawn_egg
+            - pig_spawn_egg
+            - piglin_spawn_egg
+            - piglin_brute_spawn_egg
+            - pillager_spawn_egg
+            - polar_bear_spawn_egg
+            - pufferfish_spawn_egg
+            - rabbit_spawn_egg
+            - ravager_spawn_egg
+            - salmon_spawn_egg
+            - sheep_spawn_egg
+            - shulker_spawn_egg
+            - silverfish_spawn_egg
+            - skeleton_spawn_egg
+            - skeleton_horse_spawn_egg
+            - slime_spawn_egg
+            - spider_spawn_egg
+            - squid_spawn_egg
+            - stray_spawn_egg
+            - strider_spawn_egg
+            - trader_llama_spawn_egg
+            - tropical_fish_spawn_egg
+            - turtle_spawn_egg
+            - vex_spawn_egg
+            - villager_spawn_egg
+            - vindicator_spawn_egg
+            - wandering_trader_spawn_egg
+            - witch_spawn_egg
+            - wither_skeleton_spawn_egg
+            - wolf_spawn_egg
+            - zoglin_spawn_egg
+            - zombie_spawn_egg
+            - zombie_horse_spawn_egg
+            - zombie_villager_spawn_egg
+            - zombified_piglin_spawn_egg
+        misc:
+            - beacon
+            - turtle_egg
+            - conduit
+            - scute
+            - stick
+            - bowl
+            - string
+            - feather
+            - gunpowder
+            - wheat_seeds
+            - wheat
+            - flint
+            - bucket
+            - water_bucket
+            - lava_bucket
+            - powder_snow_bucket
+            - snowball
+            - leather
+            - milk_bucket
+            - pufferfish_bucket
+            - salmon_bucket
+            - cod_bucket
+            - tropical_fish_bucket
+            - axolotl_bucket
+            - brick
+            - clay_ball
+            - paper
+            - book
+            - slime_ball
+            - egg
+            - glowstone_dust
+            - ink_sac
+            - glow_ink_sac
+            - cocoa_beans
+            - bone_meal
+            - bone
+            - sugar
+            - pumpkin_seeds
+            - melon_seeds
+            - ender_pearl
+            - blaze_rod
+            - nether_wart
+            - eye_of_ender
+            - experience_bottle
+            - fire_charge
+            - writable_book
+            - bundle
+            - map
+            - nether_star
+            - firework_rocket
+            - firework_star
+            - nether_brick
+            - prismarine_shard
+            - prismarine_crystals
+            - rabbit_hide
+            - chorus_fruit
+            - popped_chorus_fruit
+            - beetroot_seeds
+            - shulker_shell
+            - music_disc_13
+            - music_disc_cat
+            - music_disc_blocks
+            - music_disc_chirp
+            - music_disc_far
+            - music_disc_mall
+            - music_disc_mellohi
+            - music_disc_stal
+            - music_disc_strad
+            - music_disc_ward
+            - music_disc_11
+            - music_disc_wait
+            - music_disc_pigstep
+            - nautilus_shell
+            - heart_of_the_sea
+            - honeycomb
+            - dragon_egg
+            - skeleton_skull
+            - wither_skeleton_skull
+            - player_head
+            - zombie_head
+            - creeper_head
+            - dragon_head
+        special:
+            - barrier
+            - structure_void
+            - debug_stick
+            - command_block_minecart
+            - command_block
+            - repeating_command_block
+            - chain_command_block
+            - structure_block
+            - jigsaw
+            - spawner
+            - light[block_material=light[level=1]]
+            - light[block_material=light[level=2]]
+            - light[block_material=light[level=3]]
+            - light[block_material=light[level=4]]
+            - light[block_material=light[level=5]]
+            - light[block_material=light[level=6]]
+            - light[block_material=light[level=7]]
+            - light[block_material=light[level=8]]
+            - light[block_material=light[level=9]]
+            - light[block_material=light[level=10]]
+            - light[block_material=light[level=11]]
+            - light[block_material=light[level=12]]
+            - light[block_material=light[level=13]]
+            - light[block_material=light[level=14]]
+            - light[block_material=light[level=15]]
+        banner:
+            - white_banner
+            - orange_banner
+            - magenta_banner
+            - light_blue_banner
+            - yellow_banner
+            - lime_banner
+            - pink_banner
+            - gray_banner
+            - light_gray_banner
+            - cyan_banner
+            - purple_banner
+            - blue_banner
+            - brown_banner
+            - green_banner
+            - red_banner
+            - black_banner
+            - flower_banner_pattern
+            - creeper_banner_pattern
+            - skull_banner_pattern
+            - mojang_banner_pattern
+            - globe_banner_pattern
+            - piglin_banner_pattern
+        brewing:
+            - brewing_stand
+            - cauldron
+            - ghast_tear
+            - fermented_spider_eye
+            - blaze_powder
+            - magma_cream
+            - ender_eye
+            - glistering_melon_slice
+            - golden_carrot
+            - rabbit_foot
+            - dragon_breath
+            - phantom_membrane
