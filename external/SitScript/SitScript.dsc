@@ -101,7 +101,7 @@ simplesitteleport:
 simplesitformat:
     type: format
     debug: false
-    format: <gold>[SimpleSit] <white><text>
+    format: <gold>[SimpleSit] <white><[text]>
 simplesitdata:
     type: data
     debug: false

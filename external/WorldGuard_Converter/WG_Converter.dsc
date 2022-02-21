@@ -68,4 +68,4 @@ WGConverter:
 WGConverter_format:
     type: format
     debug: false
-    format: <yellow>[WGConverter] <gray><text>
+    format: <yellow>[WGConverter] <gray><[text]>
