@@ -79,7 +79,9 @@ street_light_handler:
             - narrate "Light removed." format:street_light_format
         ##Prevent the light from being destroyed
         on player breaks block location_flagged:light:
-        - determine cancelled
+        - determine cancelled passively
+        - ratelimit <player> 2t
+        - narrate "You can't destroy this light. Remove it first with the <item[street_light_tool].display.on_hover[<item[street_light_tool]>].type[SHOW_ITEM]>!" format:street_light_format
         on block destroyed by explosion location_flagged:light:
         - determine cancelled
         on piston extends:
@@ -103,6 +105,11 @@ street_light_toggle:
     definitions: state|blocks|world
     script:
     - foreach <[world].flag[light.locations].if_null[<list>]> key:material as:locations:
+        #Special case workaround for redstone_lamps, to prevent them from going out again immediately.
+        - if <[material]> == redstone_lamp:
+            - modifyblock <[locations]> redstone_lamp[switched=<[state].equals[on].if_true[true].if_false[false]>]
+            - wait 5t
+            - foreach next
         #If the material is unswitchable, set the block.
         - if <script[street_lights_data].data_key[lights.unswitchable].contains[<[material]>]>:
             #If <[blocks].get[<[material]>]> is_null set the <[material]> instead.
