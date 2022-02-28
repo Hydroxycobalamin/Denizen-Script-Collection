@@ -16,6 +16,7 @@ street_lights_cmd:
     usage: /lights (show/on/off)
     tab completions:
         1: show|on|off
+    permission: lights.admin
     script:
     - choose <context.args.size>:
         - case 0:
