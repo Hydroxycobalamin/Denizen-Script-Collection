@@ -44,6 +44,8 @@ street_lights_cmd:
                         - define "output:->:<[material].color[aqua]> <[locations].parse[simple].space_separated.color[yellow]>"
                     - narrate "<&[emphasis]>List of Lights"
                     - narrate <[output].separated_by[<n>]>
+                - default:
+                    - narrate "Syntax: <script.data_key[usage].custom_color[emphasis]>" format:street_light_format
         - default:
             - narrate "Syntax: <script.data_key[usage].custom_color[emphasis]>" format:street_light_format
 street_light_tool:
