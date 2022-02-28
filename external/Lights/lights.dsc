@@ -33,7 +33,7 @@ street_lights_cmd:
                     - run street_light_toggle def.state:on def.blocks:<script[street_lights_data].data_key[lights.unswitchable].invert> def.world:<player.world>
                 - case off:
                     - narrate "You've turned the lights <&[emphasis]>off <&[base]>in world <player.world.name.custom_color[emphasis]>!" format:street_light_format
-                    - run street_light_toggle def.state:on def.blocks:<script[street_lights_data].data_key[lights.unswitchable].invert> def.world:<player.world>
+                    - run street_light_toggle def.state:off def.blocks:<script[street_lights_data].data_key[lights.unswitchable]> def.world:<player.world>
                 - case show:
                     #If the world doesn't has any lights yet, stop the script.
                     - if !<player.world.has_flag[light.locations]>:
