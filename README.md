@@ -5,20 +5,19 @@ Collection of simple Denizen Scripts for everyone.
 
 Please download the scripts from the forum linked below, scripts on the forum are considered as stable. Feel free to review them.
 
-1. [Custom Crates](https://forum.denizenscript.com/resources/custom-crates.45/)
-2. [dCreative](https://forum.denizenscript.com/resources/dcreative.51/)
-3. [Flag Visualizer](https://forum.denizenscript.com/resources/flag-visualizer.43/)
-4. [Custom Name Droplets](https://forum.denizenscript.com/resources/custom-name-droplets.61/)
-5. [Griefprevention to dPrevention Converter](https://forum.denizenscript.com/resources/griefprevention-to-dprevention-converter.77/)
-6. [PreChunk](https://forum.denizenscript.com/resources/prechunk.14/)
-7. [WorldGuard Converter](https://forum.denizenscript.com/resources/worldguard-converter.4/)
-8. [SimpleSit](https://forum.denizenscript.com/resources/simplesit.17/)
+1. [Custom Crates](https://forum.denizenscript.com/resources/custom-crates.45/)\[[Wiki](https://github.com/Hydroxycobalamin/Denizen-Script-Collection/wiki/Custom-Crates)\]
+2. [dCreative](https://forum.denizenscript.com/resources/dcreative.51/)\[[Wiki](https://github.com/Hydroxycobalamin/Denizen-Script-Collection/wiki/dCreative)\]
+3. [Flag Visualizer](https://forum.denizenscript.com/resources/flag-visualizer.43/)\[[Wiki](https://github.com/Hydroxycobalamin/Denizen-Script-Collection/wiki/Flag-Visualizer)\]
+4. [Custom Name Droplets](https://forum.denizenscript.com/resources/custom-name-droplets.61/)\[[Wiki](https://github.com/Hydroxycobalamin/Denizen-Script-Collection/wiki/Custom-Name-Droplets)\]
+5. [GriefPrevention to dPrevention Converter](https://forum.denizenscript.com/resources/griefprevention-to-dprevention-converter.77/)\[[Wiki](https://github.com/Hydroxycobalamin/Denizen-Script-Collection/wiki/GriefPrevention-to-dPrevention-Converter)\]
+6. [PreChunk](https://forum.denizenscript.com/resources/prechunk.14/)\[[Wiki](https://github.com/Hydroxycobalamin/Denizen-Script-Collection/wiki/PreChunk)\]
+7. [WorldGuard Converter](https://forum.denizenscript.com/resources/worldguard-converter.4/)\[[Wiki](https://github.com/Hydroxycobalamin/Denizen-Script-Collection/wiki/WorldGuard-Converter)\]
+8. [SimpleSit](https://forum.denizenscript.com/resources/simplesit.17/)\[[Wiki](https://github.com/Hydroxycobalamin/Denizen-Script-Collection/wiki/SimpleSit)\]
 
 See also my other scripts which are not in this repo:
 
-1. [dPrevention](https://forum.denizenscript.com/resources/dprevention.76/)\[[GitHub](https://github.com/Hydroxycobalamin/dPrevention)\]
-2. [Denizen Dynmap Bridge](https://forum.denizenscript.com/resources/dynmap-bridge.70/)\[[GitHub](https://github.com/Hydroxycobalamin/Denizen-DynmapBridge)\]
-
+1. [dPrevention](https://forum.denizenscript.com/resources/dprevention.76/)\[[GitHub](https://github.com/Hydroxycobalamin/dPrevention)\]\[[Wiki](https://github.com/Hydroxycobalamin/dPrevention/wiki)\]
+2. [Denizen Dynmap Bridge](https://forum.denizenscript.com/resources/dynmap-bridge.70/)\[[GitHub](https://github.com/Hydroxycobalamin/Denizen-DynmapBridge)\]\[[Wiki](https://github.com/Hydroxycobalamin/Denizen-DynmapBridge/wiki)\]
 ### Licensing pre-note:
 
 This is an open source project, provided entirely freely, for everyone to use and contribute to.
