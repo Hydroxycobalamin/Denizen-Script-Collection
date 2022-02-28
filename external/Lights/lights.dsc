@@ -96,14 +96,6 @@ street_light_handler:
         ##Lights off
         after time 6:
         - run street_light_toggle def.state:off def.blocks:<script[street_lights_data].data_key[lights.unswitchable]> def.world:<context.world>
-activate:
-    type: task
-    script:
-    - run street_light_toggle def.state:on def.blocks:<script[street_lights_data].data_key[lights.unswitchable].invert> def.world:<player.world>
-deactivate:
-    type: task
-    script:
-    - run street_light_toggle def.state:off def.blocks:<script[street_lights_data].data_key[lights.unswitchable]> def.world:<player.world>
 street_light_toggle:
     type: task
     debug: false
