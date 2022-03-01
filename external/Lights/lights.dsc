@@ -65,7 +65,7 @@ street_light_handler:
     debug: false
     events:
         ##Lights add/remove
-        after player right clicks *candle|redstone_lamp|sea_lantern|glowstone|jack_o_lantern|shroomlight|end_rod with:street_light_tool:
+        after player right clicks *campfire|*candle|redstone_lamp|sea_lantern|glowstone|jack_o_lantern|shroomlight|end_rod with:street_light_tool:
         - define location <context.location>
         #If the location don't has the flag light, add the location as light.
         - if !<[location].has_flag[light]>:
@@ -94,7 +94,7 @@ street_light_handler:
         after player drops street_light_tool:
         - remove <context.entity>
         ##Lights on
-        after time 18:
+        after time 19:
         - run street_light_toggle def.state:on def.blocks:<script[street_lights_data].data_key[lights.unswitchable].invert> def.world:<context.world>
         ##Lights off
         after time 6:
