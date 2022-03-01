@@ -13,6 +13,7 @@ Please download the scripts from the forum linked below, scripts on the forum ar
 6. [PreChunk](https://forum.denizenscript.com/resources/prechunk.14/)\[[Wiki](https://github.com/Hydroxycobalamin/Denizen-Script-Collection/wiki/PreChunk)\]
 7. [WorldGuard Converter](https://forum.denizenscript.com/resources/worldguard-converter.4/)\[[Wiki](https://github.com/Hydroxycobalamin/Denizen-Script-Collection/wiki/WorldGuard-Converter)\]
 8. [SimpleSit](https://forum.denizenscript.com/resources/simplesit.17/)\[[Wiki](https://github.com/Hydroxycobalamin/Denizen-Script-Collection/wiki/SimpleSit)\]
+9. [Street-Lights](https://forum.denizenscript.com/resources/street-lights.80/)\[[Wiki](https://github.com/Hydroxycobalamin/Denizen-Script-Collection/wiki/Street-Lights)\]
 
 See also my other scripts which are not in this repo:
 
