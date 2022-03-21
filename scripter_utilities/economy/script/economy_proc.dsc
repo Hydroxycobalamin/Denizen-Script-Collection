@@ -1,6 +1,6 @@
 currency_parser:
     type: procedure
-    debug: false
+    debug: true
     data:
         currency:
             copper: <&chr[Eff1].font[economy-icons]>
@@ -10,11 +10,9 @@ currency_parser:
             emerald: <&chr[Eff5].font[economy-icons]>
     definitions: amount
     script:
-    #Define the list, to prevent VSCode errors.
-    - define currencies <list>
     - foreach <script.parsed_key[data.currency]> key:currency as:icon:
-        #Do the math. Do only show the icon if the highest currency isn't 0.
-        - if <[amount].mod[1].mul[100]> == 0 && !<[currencies].is_empty>:
+        #Do the math. Do not show icons if there's nothing to parse.
+        - if <[amount]> == 0:
             - define amount <[amount].round_down.div[100]>
             - foreach next
         #If the it's the last item, don't divide it anymore.
