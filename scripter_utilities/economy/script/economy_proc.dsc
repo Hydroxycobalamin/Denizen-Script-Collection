@@ -21,6 +21,7 @@ currency_parser:
         - if <[currency]> == emerald:
             - define currencies:->:<[icon]><[amount].mul[100]>
             - foreach next
-        - define currencies:->:<[icon]><[amount].mod[1].mul[100]>
+        #Add .round to prevent decimals in the copper value.
+        - define currencies:->:<[icon]><[amount].mod[1].mul[100].round>
         - define amount <[amount].round_down.div[100]>
     - determine <[currencies].space_separated>
