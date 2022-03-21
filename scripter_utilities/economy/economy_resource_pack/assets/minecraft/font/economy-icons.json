@@ -1,0 +1,49 @@
+{
+        "providers":[
+            {
+                "type": "bitmap",
+                "file": "minecraft:item/copper_ingot.png",
+                "ascent": 10,
+                "height": 12,
+                "chars": [
+                    "\uEff1"
+                ]
+            },
+            {
+                "type": "bitmap",
+                "file": "minecraft:item/iron_ingot.png",
+                "ascent": 10,
+                "height": 12,
+                "chars": [
+                    "\uEff2"
+                ]
+            },
+            {
+                "type": "bitmap",
+                "file": "minecraft:item/gold_ingot.png",
+                "ascent": 10,
+                "height": 12,
+                "chars": [
+                    "\uEff3"
+                ]
+            },
+            {
+                "type": "bitmap",
+                "file": "minecraft:item/diamond.png",
+                "ascent": 10,
+                "height": 12,
+                "chars": [
+                    "\uEff4"
+                ]
+            },
+            {
+                "type": "bitmap",
+                "file": "minecraft:item/emerald.png",
+                "ascent": 10,
+                "height": 12,
+                "chars": [
+                    "\uEff5"
+                ]
+            }
+        ]
+}
