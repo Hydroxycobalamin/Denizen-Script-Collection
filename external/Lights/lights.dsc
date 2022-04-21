@@ -17,7 +17,7 @@ street_lights_data:
             #You can add more materials to this list to allow more lights.
             #Format:
             #<material>: <material>
-            ##You must add a material matcher of the first material to the event which handles adding lights.
+            ##You must add a material matcher of the first material to the event which handles adds lights.
             ##Each material must be unique!
             sea_lantern: white_stained_glass
             glowstone: yellow_stained_glass
