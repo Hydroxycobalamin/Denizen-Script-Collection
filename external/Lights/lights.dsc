@@ -120,14 +120,10 @@ street_light_handler:
         - run street_light_toggle def.state:off def.world:<context.world>
 street_light_toggle:
     type: task
+    debug: false
     definitions: state|world
     script:
     - foreach <[world].flag[light.locations].if_null[<list>]> key:material as:locations:
-        #Special case workaround for redstone_lamps, to prevent them from going out again immediately.
-        - if <[material]> == redstone_lamp:
-            - modifyblock <[locations]> redstone_lamp[switched=<[state].equals[on].if_true[true].if_false[false]>]
-            - wait 5t
-            - foreach next
         #If the material is unswitchable, set the block manually.
         - if <script[street_lights_data].data_key[lights.unswitchable].contains[<[material]>]>:
             - foreach <[locations]> as:location:
@@ -135,7 +131,8 @@ street_light_toggle:
                     #Load the chunk to read the location flag which contains material properties.
                     - chunkload <[location].chunk> duration:1t
                     #Turn the light on.
-                    - modifyblock <[location]> <material[<[material]>].with_map[<[location].flag[light.<[state]>].if_null[<map>]>]>
+                    - narrate <[location].flag[light.<[state]>].if_null[<[material]>]>
+                    - modifyblock <[location]> <[location].flag[light.<[state]>].if_null[<[material]>]> no_physics
                     #Update location flags if previous version(1.0.0) of Street-Lights was used.
                     - if !<[location].has_flag[light.<[state]>]>:
                         - flag <[location]> light.<[state]>:<[location].material>
@@ -145,7 +142,7 @@ street_light_toggle:
                 - modifyblock <[location]> <script[street_lights_data].data_key[lights.unswitchable.<[material]>]> no_physics
         #Else, switch the block.
         - else:
-            - switch <[locations]> state:<[state]>
+            - switch <[locations]> state:<[state]> no_physics
         - wait 5t
 street_light_format:
     type: format
