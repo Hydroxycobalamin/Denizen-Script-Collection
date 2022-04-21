@@ -64,19 +64,20 @@ street_light_handler:
     type: world
     debug: false
     events:
-        ##Lights add/remove
-        after player right clicks *campfire|*candle|redstone_lamp|sea_lantern|glowstone|jack_o_lantern|shroomlight|end_rod with:street_light_tool:
+        ##Add Lights
+        after player right clicks *campfire|*candle|redstone_lamp|sea_lantern|glowstone|jack_o_lantern|shroomlight|end_rod with:street_light_tool permission:lights.admin:
         - define location <context.location>
-        #If the location don't has the flag light, add the location as light.
+        #If the location doesn't have the flag light, add the location as light.
         - if !<[location].has_flag[light]>:
             - flag <[location].world> light.locations.<[location].material.name>:->:<[location]>
             - flag <[location]> light:<[location].material.property_map>
             - narrate "Light added." format:street_light_format
-        #Else remove the location being a light.
-        - else:
-            - flag <[location].world> light.locations.<[location].material.name>:<-:<[location]>
-            - flag <[location]> light:!
-            - narrate "Light removed." format:street_light_format
+        ##Remove lights
+        after player right clicks block location_flagged:light with:street_light_tool permission:lights.admin:
+        - define location <context.location>
+        - flag <[location].world> light.locations.<[location].material.name>:<-:<[location]>
+        - flag <[location]> light:!
+        - narrate "Light removed." format:street_light_format
         ##Prevent the light from being destroyed
         on player breaks block location_flagged:light:
         - determine cancelled passively
