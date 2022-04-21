@@ -123,6 +123,7 @@ street_light_toggle:
                     - define properties <[location].flag[light].if_true[<map>].if_false[]>
                     #Turn the light on.
                     - modifyblock <[location]> <material[<[material]>].with_map[<[properties]>]>
+                    - wait 1t
                     - foreach next
                 #Turn the light off.
                 - modifyblock <[location]> <[blocks].get[<[material]>]>
