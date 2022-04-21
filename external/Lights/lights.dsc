@@ -70,7 +70,7 @@ street_light_handler:
         #If the location doesn't have the flag light, add the location as light.
         - if !<[location].has_flag[light]>:
             - flag <[location].world> light.locations.<[location].material.name>:->:<[location]>
-            - flag <[location]> light:<[location].material.property_map>
+            - flag <[location]> light.on:<[location].material.property_map>
             - narrate "Light added." format:street_light_format
         ##Remove lights
         after player right clicks block location_flagged:light with:street_light_tool permission:lights.admin:
@@ -119,10 +119,11 @@ street_light_toggle:
                 - if <[state]> == on:
                     #Load the chunk to read the location flag which contains material properties.
                     - chunkload <[location].chunk> duration:1t
-                    #Fallback if previous version(1.0.0) of Street-Lights was used.
-                    - define properties <[location].flag[light].if_true[<map>].if_false[]>
                     #Turn the light on.
-                    - modifyblock <[location]> <material[<[material]>].with_map[<[properties]>]>
+                    - modifyblock <[location]> <material[<[material]>].with_map[<[location].flag[light.<[state]>].if_null[<map>]>]>
+                    #Update location flags if previous version(1.0.0) of Street-Lights was used.
+                    - if !<[location].has_flag[light.<[state]>]>:
+                        - flag <[location]> light.<[state]>:<[location].material.property_map>
                     - wait 1t
                     - foreach next
                 #Turn the light off.
