@@ -1,3 +1,13 @@
+##########################################################################################
+#                                                                                        #
+#                                      Street-Lights                                     #
+#                                  Turn your lights on!                                  #
+#                Version: 1.0.1                            Author: Icecapade             #
+#                                                                                        #
+#                                     Documentation:                                     #
+#    https://github.com/Hydroxycobalamin/Denizen-Script-Collection/wiki/Street-Lights    #
+#                                                                                        #
+##########################################################################################
 street_lights_data:
     type: data
     debug: false
