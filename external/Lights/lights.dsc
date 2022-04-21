@@ -31,10 +31,10 @@ street_lights_cmd:
             - choose <context.args.first>:
                 - case on:
                     - narrate "You've turned the lights <&[emphasis]>on <&[base]>in world <player.world.name.custom_color[emphasis]>!" format:street_light_format
-                    - run street_light_toggle def.state:on def.blocks:<script[street_lights_data].data_key[lights.unswitchable].invert> def.world:<player.world>
+                    - run street_light_toggle def.state:on def.world:<player.world>
                 - case off:
                     - narrate "You've turned the lights <&[emphasis]>off <&[base]>in world <player.world.name.custom_color[emphasis]>!" format:street_light_format
-                    - run street_light_toggle def.state:off def.blocks:<script[street_lights_data].data_key[lights.unswitchable]> def.world:<player.world>
+                    - run street_light_toggle def.state:off def.world:<player.world>
                 - case show:
                     #If the world doesn't has any lights yet, stop the script.
                     - if !<player.world.has_flag[light.locations]>:
@@ -98,14 +98,13 @@ street_light_handler:
         - remove <context.entity>
         ##Lights on
         after time 19:
-        - run street_light_toggle def.state:on def.blocks:<script[street_lights_data].data_key[lights.unswitchable].invert> def.world:<context.world>
+        - run street_light_toggle def.state:on def.world:<context.world>
         ##Lights off
         after time 6:
-        - run street_light_toggle def.state:off def.blocks:<script[street_lights_data].data_key[lights.unswitchable]> def.world:<context.world>
+        - run street_light_toggle def.state:off def.world:<context.world>
 street_light_toggle:
     type: task
-    debug: false
-    definitions: state|blocks|world
+    definitions: state|world
     script:
     - foreach <[world].flag[light.locations].if_null[<list>]> key:material as:locations:
         #Special case workaround for redstone_lamps, to prevent them from going out again immediately.
@@ -127,7 +126,7 @@ street_light_toggle:
                     - wait 1t
                     - foreach next
                 #Turn the light off.
-                - modifyblock <[location]> <[blocks].get[<[material]>]>
+                - modifyblock <[location]> <script[street_lights_data].data_key[lights.unswitchable.<[material]>]> no_physics
         #Else, switch the block.
         - else:
             - switch <[locations]> state:<[state]>
