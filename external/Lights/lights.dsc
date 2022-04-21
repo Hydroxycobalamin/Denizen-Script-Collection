@@ -74,7 +74,7 @@ street_light_tool:
     - <gold>[Rightclick to Use]
     - <gray>Turn your lights on!
     enchantments:
-    - durability:1
+    - vanishing_curse:1
     mechanisms:
         hides: ALL
 street_light_handler:
