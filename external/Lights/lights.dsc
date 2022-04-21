@@ -71,7 +71,8 @@ street_light_tool:
     material: stick
     display name: <yellow>Light Tool
     lore:
-    - <gray>Turn the lights on!
+    - <gold>[Rightclick to Use]
+    - <gray>Turn your lights on!
     enchantments:
     - durability:1
     mechanisms:
