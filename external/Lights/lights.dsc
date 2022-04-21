@@ -70,7 +70,7 @@ street_light_handler:
         #If the location don't has the flag light, add the location as light.
         - if !<[location].has_flag[light]>:
             - flag <[location].world> light.locations.<[location].material.name>:->:<[location]>
-            - flag <[location]> light
+            - flag <[location]> light:<[location].material.property_map>
             - narrate "Light added." format:street_light_format
         #Else remove the location being a light.
         - else:
@@ -112,10 +112,19 @@ street_light_toggle:
             - modifyblock <[locations]> redstone_lamp[switched=<[state].equals[on].if_true[true].if_false[false]>]
             - wait 5t
             - foreach next
-        #If the material is unswitchable, set the block.
+        #If the material is unswitchable, set the block manually.
         - if <script[street_lights_data].data_key[lights.unswitchable].contains[<[material]>]>:
-            #If <[blocks].get[<[material]>]> is_null set the <[material]> instead.
-            - modifyblock <[locations]> <[blocks].get[<[material]>].if_null[<[material]>]>
+            - foreach <[locations]> as:location:
+                - if <[state]> == on:
+                    #Load the chunk to read the location flag which contains material properties.
+                    - chunkload <[location].chunk> duration:1t
+                    #Fallback if previous version(1.0.0) of Street-Lights was used.
+                    - define properties <[location].flag[light].if_true[<map>].if_false[]>
+                    #Turn the light on.
+                    - modifyblock <[location]> <material[<[material]>].with_map[<[properties]>]>
+                    - foreach next
+                #Turn the light off.
+                - modifyblock <[location]> <[blocks].get[<[material]>]>
         #Else, switch the block.
         - else:
             - switch <[locations]> state:<[state]>
