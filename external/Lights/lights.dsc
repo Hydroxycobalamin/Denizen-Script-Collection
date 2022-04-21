@@ -131,7 +131,6 @@ street_light_toggle:
                     #Load the chunk to read the location flag which contains material properties.
                     - chunkload <[location].chunk> duration:1t
                     #Turn the light on.
-                    - narrate <[location].flag[light.<[state]>].if_null[<[material]>]>
                     - modifyblock <[location]> <[location].flag[light.<[state]>].if_null[<[material]>]> no_physics
                     #Update location flags if previous version(1.0.0) of Street-Lights was used.
                     - if !<[location].has_flag[light.<[state]>]>:
