@@ -80,7 +80,7 @@ street_light_handler:
         ##Prevent the light from being destroyed
         on player breaks block location_flagged:light:
         - determine cancelled passively
-        - ratelimit <player> 2t
+        - ratelimit <player> 1s
         - narrate "You can't destroy this light. Remove it first with the <item[street_light_tool].display.on_hover[<item[street_light_tool]>].type[SHOW_ITEM]>!" format:street_light_format
         on block destroyed by explosion location_flagged:light:
         - determine cancelled
@@ -92,7 +92,7 @@ street_light_handler:
             - determine cancelled
         on entity changes block location_flagged:light:
         - determine cancelled
-        ##Prevent misuse of the Light Tool.
+        ##Remove the tool on drop.
         after player drops street_light_tool:
         - remove <context.entity>
         ##Lights on
