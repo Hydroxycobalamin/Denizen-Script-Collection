@@ -90,6 +90,8 @@ street_light_handler:
         on piston retracts:
         - if <context.blocks.filter_tag[<[filter_value].has_flag[light]>].any>:
             - determine cancelled
+        on entity changes block location_flagged:light:
+        - determine cancelled
         ##Prevent misuse of the Light Tool.
         after player drops street_light_tool:
         - remove <context.entity>
