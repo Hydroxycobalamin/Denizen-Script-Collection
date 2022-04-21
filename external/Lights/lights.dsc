@@ -3,6 +3,12 @@ street_lights_data:
     debug: false
     lights:
         unswitchable:
+            #Light on: Light off structure of the unswitchable blocks.
+            #You can add more materials to this list to allow more lights.
+            #Format:
+            #<material>: <material>
+            ##You must add a material matcher of the first material to the event which handles adding lights.
+            ##Each material must be unique!
             sea_lantern: white_stained_glass
             glowstone: yellow_stained_glass
             jack_o_lantern: pumpkin
@@ -24,7 +30,7 @@ street_lights_cmd:
             - if !<player.inventory.can_fit[street_light_tool]>:
                 - narrate "You don't have enough space in your inventory!" format:street_light_format
                 - stop
-            #Else, give him the Light Tool.
+            #Else, give them the Light Tool.
             - give street_light_tool
             - narrate "You received the <item[street_light_tool].display.on_hover[<item[street_light_tool]>].type[SHOW_ITEM]>!" format:street_light_format
         - case 1:
@@ -70,7 +76,7 @@ street_light_handler:
         #If the location doesn't have the flag light, add the location as light.
         - if !<[location].has_flag[light]>:
             - flag <[location].world> light.locations.<[location].material.name>:->:<[location]>
-            - flag <[location]> light.on:<[location].material.property_map>
+            - flag <[location]> light.on:<[location].material>
             - narrate "Light added." format:street_light_format
         ##Remove lights
         after player right clicks block location_flagged:light with:street_light_tool permission:lights.admin:
@@ -122,7 +128,7 @@ street_light_toggle:
                     - modifyblock <[location]> <material[<[material]>].with_map[<[location].flag[light.<[state]>].if_null[<map>]>]>
                     #Update location flags if previous version(1.0.0) of Street-Lights was used.
                     - if !<[location].has_flag[light.<[state]>]>:
-                        - flag <[location]> light.<[state]>:<[location].material.property_map>
+                        - flag <[location]> light.<[state]>:<[location].material>
                     - wait 1t
                     - foreach next
                 #Turn the light off.
