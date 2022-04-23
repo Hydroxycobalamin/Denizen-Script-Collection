@@ -42,6 +42,7 @@ simplesit:
                 - narrate "<&[error]>You can't sit on corners!" format:simplesit_format
                 - stop
         - if !<[config.players-reach-any-block]>:
+            - if <[location].y> > <player.location.y.add[1]> || ( !<player.is_on_ground> && <[location].y.sub[0.24]> > <player.location.y> ):
                 - narrate "<&[error]>You can't reach the block!" format:simplesit_format
                 - stop
         #Define the proper location of the armor stand to make the player sit in the correct direction.
