@@ -57,8 +57,12 @@ simplesit:
         - flag server simplesit.sitters:->:<player>
         - flag <player> simplesit.armorstand:<[map]>
         after player exits vehicle flagged:simplesit:
+        #Stop the queue if the player went offline. Workaround since the event fires when they player went offline.
+        - if !<player.is_online>:
+            - stop
+        #Remove the armor stand.
         - define location <context.entity.location.add[0,2.2,0]>
-        - inject simplesitcancel
+        - inject <script> path:simplesit_cancel
         - teleport <[location]>
         on player quits flagged:simplesit:
         - inject simplesitcancel
