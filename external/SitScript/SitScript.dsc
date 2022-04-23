@@ -25,7 +25,7 @@ simplesit:
     events:
         ##Sit
         after player right clicks *_stairs with:air:
-        - ratelimit <player> 10t
+        - ratelimit <player> 5t
         - define location <context.location>
         #Check if the player is currently sitting or the stair the player clicked can't be sit on.
         - if <player.has_flag[simplesit]> || <[location].material.half> == TOP || <[location].above.material.is_solid>:
