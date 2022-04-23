@@ -27,11 +27,13 @@ simplesit:
         - define location <context.location>
         - if <player.has_flag[simplesit]> || <player.is_sneaking> || <[location].material.half> == TOP || <[location].above.material.is_solid>:
             - stop
-        - if !<script.data_key[data.config.sit-on-corners].if_null[true]>:
+        #Check the config options.
+        - define config <script.data_key[data.config]>
+        - if !<[config.sit-on-corners]>:
             - if <[location].material.shape> != STRAIGHT:
                 - stop
-        - if !<script.data_key[data.config.players-reach-any-block].if_null[false]>:
-            - if <[location].y.sub[<player.location.y>]> >= 1.5 || !<player.is_on_ground>:
+        - if !<[config.players-reach-any-block]>:
+            - if <[location].y.sub[<player.location.y>]> > 1 || !<player.is_on_ground> && <[location].y.sub[<player.location.y>]> > 0:
                 - stop
         - choose <[location].material.direction>:
             - case NORTH:
