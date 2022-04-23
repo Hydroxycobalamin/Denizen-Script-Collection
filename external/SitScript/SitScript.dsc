@@ -17,6 +17,11 @@ simplesit:
             sit-on-corners: true
             #If true, players can sit on any stair even if they can not reach the location
             players-reach-any-block: false
+    simplesit_cancel:
+        - define properties <player.flag[simplesit.armorstand]>
+        #Remove the armor_stand and the players flag so he can sit again.
+        - remove <[properties.entity]>
+        - flag <player> simplesit:!
     events:
         after player right clicks *_stairs with:air:
         - define location <context.location>
