@@ -56,12 +56,12 @@ simplesit:
             - case EAST:
                 - define spawn_location <[location].add[0.4,-1.2,0.5].with_yaw[90].with_pitch[0]>
         #Spawn the armor stand, make the player sit on it.
-        - spawn <[spawn_location]> armor_stand[visible=false;collidable=false;gravity=false] save:chair
+        - spawn <[spawn_location]> simplesit_chair save:chair
         - mount <player>|<entry[chair].spawned_entity>
         - flag <player> simplesit.armorstand.entity:<entry[chair].spawned_entity>
         - flag <player> simplesit.armorstand.location:<[location]>
         ##Cancel Sit
-        after player exits vehicle flagged:simplesit:
+        after player exits simplesit_chair:
         #Stop the queue if the player went offline. Workaround since the event fires when they player went offline.
         - if !<player.is_online>:
             - stop
@@ -73,3 +73,11 @@ simplesit_format:
     type: format
     debug: false
     format: <gold>[SimpleSit] <[text].custom_color[base]>
+simplesit_chair:
+    type: entity
+    debug: false
+    entity_type: armor_stand
+    mechanisms:
+        visible: false
+        collidable: false
+        gravity: false
