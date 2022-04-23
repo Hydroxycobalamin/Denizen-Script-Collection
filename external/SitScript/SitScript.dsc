@@ -17,11 +17,6 @@ simplesit:
             sit-on-corners: true
             #If true, players can sit on any stair even if they can not reach the location
             players-reach-any-block: false
-    simplesit_cancel:
-        - define properties <player.flag[simplesit.armorstand]>
-        #Remove the armor_stand and the players flag so he can sit again.
-        - remove <[properties.entity]>
-        - flag <player> simplesit:!
     events:
         ##Sit
         after player right clicks *_stairs with:air:
@@ -65,9 +60,12 @@ simplesit:
         #Stop the queue if the player went offline. Workaround since the event fires when they player went offline.
         - if !<player.is_online>:
             - stop
-        #Remove the armor stand.
+        #Remove the armor_stand and the players flag so he can sit again.
+        - define properties <player.flag[simplesit.armorstand]>
+        - remove <[properties.entity]>
+        - flag <player> simplesit:!
+        #Prevent the player from glitching inside the block.
         - define location <context.entity.location.add[0,2.2,0]>
-        - inject <script> path:simplesit_cancel
         - teleport <[location]>
 simplesit_format:
     type: format
