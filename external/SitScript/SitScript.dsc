@@ -23,9 +23,17 @@ simplesit:
         - remove <[properties.entity]>
         - flag <player> simplesit:!
     events:
+        ##Sit
         after player right clicks *_stairs with:air:
+        - ratelimit <player> 10t
         - define location <context.location>
-        - if <player.has_flag[simplesit]> || <player.is_sneaking> || <[location].material.half> == TOP || <[location].above.material.is_solid>:
+        #Check if the player is currently sitting or the stair the player clicked can't be sit on.
+        - if <player.has_flag[simplesit]> || <[location].material.half> == TOP || <[location].above.material.is_solid>:
+            - narrate "This stair is occupied, upside down or you already sitting." format:simplesit_format
+            - stop
+        #Prevent the player from stand up immediately.
+        - if <player.is_sneaking>:
+            - narrate "You can't sit while sneaking." format:simplesit_format
             - stop
         #Check the config options.
         - define config <script.data_key[data.config]>
