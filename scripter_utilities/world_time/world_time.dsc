@@ -1,6 +1,6 @@
 ##########################################################################################
 #                                                                                        #
-#                                       WorldTime                                        #
+#                                     TimeFormatter                                      #
 #                   A procedure which gets and formats the worlds time                   #
 #                Version: 1.0.0                            Author: Icecapade             #
 #                                                                                        #
@@ -8,17 +8,27 @@
 #      https://github.com/Hydroxycobalamin/Denizen-Script-Collection/wiki/WorldTime      #
 #                                                                                        #
 ##########################################################################################
-world_time:
+time_formatter:
     type: procedure
     debug: false
-    definitions: world|format|add_period
+    definitions: object|format|add_period
     script:
-    # Get the current world time.
-    - define time <[world].time>
+    # Get the current time.
+    - define time <[object].time.if_null[<[object]>]>
+    - if !<[time].is_integer>:
+        - debug error "<&[error]>The object provided is not an integer, valid player or world."
+    - define time <[time].mod[24000]>
     # If add_period is true, save the period in a definition. Default case is false.
     - define add_period <[add_period].if_null[false]>
     - if <[add_period]>:
-        - define period " <[world].time.period.to_titlecase>"
+        - if <[time]> >= 23000:
+            - define period Dawn
+        - else if:
+            - define period Night
+        - else if:
+            - define period Dusk
+        - else if:
+            - define period Day
     # Calculate time
     - define hour <[time].div[1000].add[6].mod[24]>
     - define minute <[hour].mod[1].mul[60].round_down>
