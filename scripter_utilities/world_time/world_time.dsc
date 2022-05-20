@@ -22,13 +22,13 @@ format_time:
     - define add_period <[add_period].if_null[false]>
     - if <[add_period]>:
         - if <[time]> >= 23000:
-            - define period Dawn
+            - define period " Dawn"
         - else if <[time]> >= 13500:
-            - define period Night
+            - define period " Night"
         - else if <[time]> >= 12500:
-            - define period Dusk
+            - define period " Dusk"
         - else:
-            - define period Day
+            - define period " Day"
     # Calculate time
     - define hour <[time].div[1000].add[6].mod[24]>
     - define minute <[hour].mod[1].mul[60].round_down>
