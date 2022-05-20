@@ -20,7 +20,7 @@ world_time:
     - if <[add_period]>:
         - define period <[world].time.period.to_titlecase>
     # Calculate time
-    - define hour <[time].div[1000].add[6].mod[24]>
+    - define hour <[time].div[1000].add[6].mod[24].round_down>
     - define minute <[hour].mod[1].mul[60].round_down>
     # 24 hour format.
     - if <[format]> == 24:
@@ -37,4 +37,4 @@ world_time:
     # If no format is given, output an error.
     - else:
         - debug error "<&[error]>No format given. Add 24 or 12 to the format argument."
-    - determine "<[hour].round_down.pad_left[2].with[0]>:<[minute].pad_left[2].with[0]><[meridiem]> <[period].if_null[<empty>]>"
+    - determine "<&[emphasis]><[hour].pad_left[2].with[0]><element[:].custom_color[base]><[minute].pad_left[2].with[0]><[meridiem].custom_color[base]> <[period].if_null[<empty>]>"
