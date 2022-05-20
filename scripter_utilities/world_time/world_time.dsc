@@ -1,14 +1,14 @@
 ##########################################################################################
 #                                                                                        #
 #                                     TimeFormatter                                      #
-#                   A procedure which gets and formats the worlds time                   #
-#                Version: 1.0.0                            Author: Icecapade             #
+#                             A procedure which formats time                             #
+#                Version: 1.0.1                            Author: Icecapade             #
 #                                                                                        #
 #                                     Documentation:                                     #
-#      https://github.com/Hydroxycobalamin/Denizen-Script-Collection/wiki/WorldTime      #
+#    https://github.com/Hydroxycobalamin/Denizen-Script-Collection/wiki/TimeFormatter    #
 #                                                                                        #
 ##########################################################################################
-time_formatter:
+format_time:
     type: procedure
     debug: false
     definitions: object|format|add_period
