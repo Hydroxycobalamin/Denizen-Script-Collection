@@ -20,20 +20,21 @@ world_time:
     - if <[add_period]>:
         - define period <[world].time.period.to_titlecase>
     # Calculate time
-    - define hour <[time].div[1000].add[6].mod[24].round_down>
+    - define hour <[time].div[1000].add[6].mod[24]>
     - define minute <[hour].mod[1].mul[60].round_down>
     # 24 hour format.
     - if <[format]> == 24:
+        - define hour <[hour].round_down>
         - define meridiem <empty>
     # 12 hour format.
     - else if <[format]> == 12:
-        - define minute <[hour].mod[1].mul[60].round_down>
-        - if <[hour]> > 12:
-            - define hour <[hour].sub[12]>
+        - define hour <[hour].round_down>
         - if <[hour]> < 12:
             - define meridiem AM
         - else:
             - define meridiem PM
+        - if <[hour]> > 12:
+            - define hour <[hour].sub[12]>
     # If no format is given, output an error.
     - else:
         - debug error "<&[error]>No format given. Add 24 or 12 to the format argument."
