@@ -30,9 +30,9 @@ world_time:
     - else if <[format]> == 12:
         - define hour <[hour].round_down>
         - if <[hour]> < 12:
-            - define meridiem " AM"
+            - define meridiem AM
         - else:
-            - define meridiem " PM"
+            - define meridiem PM
         - if <[hour]> > 12:
             - define hour <[hour].sub[12]>
     # If no format is given, output an error.
