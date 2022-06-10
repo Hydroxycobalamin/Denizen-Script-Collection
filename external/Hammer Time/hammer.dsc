@@ -12,7 +12,7 @@ hammer_handler:
     type: world
     debug: false
     data:
-        #Add a list of materials which will be breakable by the hammer.
+        # Add a list of materials which will be broken by the hammer.
         materials:
             - stone
             - andesite
