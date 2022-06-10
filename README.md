@@ -17,7 +17,7 @@ Please download the scripts from the forum linked below, scripts on the forum ar
 10. [Currency Parser](https://forum.denizenscript.com/resources/currency-parser-incl-resource-pack.84/)\[[Wiki](https://github.com/Hydroxycobalamin/Denizen-Script-Collection/wiki/Currency-Parser)\]
 11. [TimeFormatter](https://forum.denizenscript.com/resources/timeformatter.101/)\[[Wiki](https://github.com/Hydroxycobalamin/Denizen-Script-Collection/wiki/TimeFormatter)\]
 12. [HammerTime](https://forum.denizenscript.com/resources/hammer-time-incl-resource-pack.104/)\[[Wiki](https://github.com/Hydroxycobalamin/Denizen-Script-Collection/wiki/Hammer-Time)\]
-13. [PlayerExporter](https://forum.denizenscript.com/resources/player-exporter.105/)\[Wiki](https://github.com/Hydroxycobalamin/Denizen-Script-Collection/wiki/Player-Exporter)\]
+13. [PlayerExporter](https://forum.denizenscript.com/resources/player-exporter.105/)\[[Wiki](https://github.com/Hydroxycobalamin/Denizen-Script-Collection/wiki/Player-Exporter)\]
 
 See also my other scripts which are not in this repo:
 
