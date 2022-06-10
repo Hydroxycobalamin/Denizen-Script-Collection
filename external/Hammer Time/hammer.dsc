@@ -2,7 +2,7 @@
 #                                                                                        #
 #                                       Hammer Time                                      #
 #                                    It's Hammer time!                                   #
-#                Version: 1.0.0                            Author: Icecapade             #
+#                Version: 1.0.5                            Author: Icecapade             #
 #                                                                                        #
 #                                     Documentation:                                     #
 #     https://github.com/Hydroxycobalamin/Denizen-Script-Collection/wiki/Hammer-Time     #
