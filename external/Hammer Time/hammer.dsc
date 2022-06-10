@@ -1,16 +1,16 @@
 ##########################################################################################
 #                                                                                        #
-#                                         Hammers                                        #
+#                                       Hammer Time                                      #
 #                                    It's Hammer time!                                   #
 #                Version: 1.0.0                            Author: Icecapade             #
 #                                                                                        #
 #                                     Documentation:                                     #
-#       https://github.com/Hydroxycobalamin/Denizen-Script-Collection/wiki/Hammers       #
+#     https://github.com/Hydroxycobalamin/Denizen-Script-Collection/wiki/Hammer-Time     #
 #                                                                                        #
 ##########################################################################################
 hammer_handler:
     type: world
-    debug: true
+    debug: false
     data:
         #Add a list of materials which will be breakable by the hammer.
         materials:
