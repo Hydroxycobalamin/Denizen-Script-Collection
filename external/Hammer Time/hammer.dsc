@@ -59,9 +59,9 @@ hammer_handler:
             - define cuboid <[location].add[-1,0,-1].to_cuboid[<[location].add[1,0,1]>]>
         - else if <[vector]> == 0,0,1 || <[vector]> == 0,0,-1:
             - define cuboid <[location].add[-1,-1,0].to_cuboid[<[location].add[1,1,0]>]>
-        - define blocks <[cuboid].blocks[<script.data_key[data.materials]>].exclude[<[location]>]>
+        - define blocks <[cuboid].blocks[<script.data_key[data.materials].separated_by[|]>].exclude[<[location]>]>
         - modifyblock <[blocks]> air naturally:<player.item_in_hand> source:<player>
-        - run hammer_durability_helper def.item:<player.item_in_hand> def.blocks:<[blocks].size> def.cuboid:<[cuboid]> def.location:<[location]>
+        - run hammer_durability_helper def.item:<player.item_in_hand> def.durability:<[blocks].size>
         on player left clicks !*air with:*_hammer:
         - flag <player> hammer.vector:<context.location.sub[<context.relative>].xyz>
         - run <script> path:start_effect
@@ -74,16 +74,16 @@ hammer_handler:
 hammer_durability_helper:
     type: task
     debug: false
-    definitions: item|blocks|cuboid
+    definitions: item|durability
     script:
     - if <player.gamemode> == creative:
         - stop
-    - define durability <[blocks].sub[<[cuboid].blocks[<script[hammer_handler].data_key[data.materials]>].exclude[<[location]>].size>]>
-    - inventory adjust slot:hand durability:<[item].durability.add[<[durability]>]>
-    - if <player.item_in_hand.durability> >= <player.item_in_hand.max_durability>:
+    - if <[item].durability.add[<[durability]>]> >= <[item].max_durability>:
         - inventory set slot:hand o:air
         - playeffect effect:ITEM_CRACK at:<player.location.above[0.5].forward[0.4]> special_data:<[item].material.name> offset:0.2 quantity:15
         - playsound <player.location> sound:ENTITY_ITEM_BREAK
+    - else:
+        - inventory adjust slot:hand durability:<[item].durability.add[<[durability]>]>
 wooden_hammer:
     type: item
     debug: false
