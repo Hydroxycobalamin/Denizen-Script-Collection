@@ -65,9 +65,9 @@ hammer_handler:
         on player left clicks !*air with:*_hammer:
         - flag <player> hammer.vector:<context.location.sub[<context.relative>].xyz>
         - run <script> path:start_effect
-        after player left clicks block flagged:effect.slow_digging with:!*_hammer priority:-1:
+        after player left clicks block flagged:hammer.effect.slow_digging with:!*_hammer priority:-1:
         - run <script> path:stop_effect
-        after player drops *_hammer flagged:effect.slow_digging:
+        after player drops *_hammer flagged:hammer.effect.slow_digging:
         - run <script> path:stop_effect
         after player scrolls their hotbar item:!*_hammer:
         - run <script> path:stop_effect
