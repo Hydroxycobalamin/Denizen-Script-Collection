@@ -2,7 +2,7 @@
 #                                                                                        #
 #                                       Hammer Time                                      #
 #                                    It's Hammer time!                                   #
-#                Version: 1.0.5                            Author: Icecapade             #
+#                Version: 1.0.6                            Author: Icecapade             #
 #                                                                                        #
 #                                     Documentation:                                     #
 #     https://github.com/Hydroxycobalamin/Denizen-Script-Collection/wiki/Hammer-Time     #
@@ -46,7 +46,7 @@ hammer_handler:
         - flag <player> hammer.effect.preserve:<player.effects_data.filter[get[type].equals[SLOW_DIGGING]].first>
     # Apply the slow digging effect for hammers.
     - cast slow_digging duration:600s no_ambient no_icon hide_particles
-    - flag <player> hammer.effect.slow_digging expire:600s
+    - flag <player> hammer.effect.slow_digging
     events:
         on player breaks block with:*_hammer:
         - ratelimit <player> 1t
@@ -69,7 +69,7 @@ hammer_handler:
         - run <script> path:stop_effect
         after player drops *_hammer flagged:hammer.effect.slow_digging:
         - run <script> path:stop_effect
-        after player scrolls their hotbar item:!*_hammer:
+        after player scrolls their hotbar item:!*_hammer flagged:hammer.effect.slow_digging:
         - run <script> path:stop_effect
 hammer_durability_helper:
     type: task
