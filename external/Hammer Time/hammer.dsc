@@ -48,7 +48,7 @@ hammer_handler:
     - cast slow_digging duration:99999s no_ambient no_icon hide_particles
     - flag <player> hammer.effect.slow_digging expire:99999s
     events:
-        after player breaks block with:*_hammer:
+        on player breaks block with:*_hammer:
         - ratelimit <player> 1t
         - run <script> path:stop_effect
         - define location <context.location>
