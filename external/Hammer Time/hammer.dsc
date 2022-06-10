@@ -91,9 +91,9 @@ wooden_hammer:
     display name: <white>Wooden Hammer
     lore:
         - <empty>
-        - <gray>When in Main Hand<&co>
-        - <dark_green> 4 Attack Damage
-        - <dark_green> 0.6 Attack Speed
+        - <gray><&translate[item.modifiers.mainhand]>
+        - <dark_green> 4 <&translate[attribute.name.generic.attack_damage]>
+        - <dark_green> 0.6 <&translate[attribute.name.generic.attack_speed]>
     mechanisms:
         custom_model_data: 101
         hides: ATTRIBUTES
@@ -129,9 +129,9 @@ stone_hammer:
     display name: <white>Stone Hammer
     lore:
         - <empty>
-        - <gray>When in Main Hand<&co>
-        - <dark_green> 5 Attack Damage
-        - <dark_green> 0.6 Attack Speed
+        - <gray><&translate[item.modifiers.mainhand]>
+        - <dark_green> 5 <&translate[attribute.name.generic.attack_damage]>
+        - <dark_green> 0.6 <&translate[attribute.name.generic.attack_speed]>
     mechanisms:
         custom_model_data: 102
         hides: ATTRIBUTES
@@ -167,9 +167,9 @@ iron_hammer:
     display name: <white>Iron Hammer
     lore:
         - <empty>
-        - <gray>When in Main Hand<&co>
-        - <dark_green> 6 Attack Damage
-        - <dark_green> 0.675 Attack Speed
+        - <gray><&translate[item.modifiers.mainhand]>
+        - <dark_green> 6 <&translate[attribute.name.generic.attack_damage]>
+        - <dark_green> 0.675 <&translate[attribute.name.generic.attack_speed]>
     mechanisms:
         custom_model_data: 103
         hides: ATTRIBUTES
@@ -205,9 +205,9 @@ golden_hammer:
     display name: <white>Golden Hammer
     lore:
         - <empty>
-        - <gray>When in Main Hand<&co>
-        - <dark_green> 4 Attack Damage
-        - <dark_green> 0.75 Attack Speed
+        - <gray><&translate[item.modifiers.mainhand]>
+        - <dark_green> 4 <&translate[attribute.name.generic.attack_damage]>
+        - <dark_green> 0.75 <&translate[attribute.name.generic.attack_speed]>
     mechanisms:
         custom_model_data: 104
         hides: ATTRIBUTES
@@ -243,9 +243,9 @@ diamond_hammer:
     display name: <white>Diamond Hammer
     lore:
         - <empty>
-        - <gray>When in Main Hand<&co>
-        - <dark_green> 7 Attack Damage
-        - <dark_green> 0.75 Attack Speed
+        - <gray><&translate[item.modifiers.mainhand]>
+        - <dark_green> 7 <&translate[attribute.name.generic.attack_damage]>
+        - <dark_green> 0.75 <&translate[attribute.name.generic.attack_speed]>
     mechanisms:
         custom_model_data: 105
         hides: ATTRIBUTES
@@ -281,9 +281,9 @@ netherite_hammer:
     display name: <white>Netherite Hammer
     lore:
         - <empty>
-        - <gray>When in Main Hand<&co>
-        - <dark_green> 8 Attack Damage
-        - <dark_green> 0.75 Attack Speed
+        - <gray><&translate[item.modifiers.mainhand]>
+        - <dark_green> 8 <&translate[attribute.name.generic.attack_damage]>
+        - <dark_green> 0.75 <&translate[attribute.name.generic.attack_speed]>
     mechanisms:
         custom_model_data: 106
         hides: ATTRIBUTES
