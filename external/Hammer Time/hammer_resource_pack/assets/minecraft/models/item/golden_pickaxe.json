@@ -1,0 +1,14 @@
+{
+    "parent": "minecraft:item/handheld",
+    "textures": {
+        "layer0": "minecraft:item/golden_pickaxe"
+    },
+    "overrides": [
+        {
+            "predicate": {
+                "custom_model_data": 104
+            },
+            "model": "item/hammer/golden_hammer"
+        }
+    ]
+}
