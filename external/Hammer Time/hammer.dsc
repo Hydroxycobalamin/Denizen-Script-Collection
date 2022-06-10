@@ -2,7 +2,7 @@
 #                                                                                        #
 #                                       Hammer Time                                      #
 #                                    It's Hammer time!                                   #
-#                Version: 1.0.6                            Author: Icecapade             #
+#                Version: 1.0.7                            Author: Icecapade             #
 #                                                                                        #
 #                                     Documentation:                                     #
 #     https://github.com/Hydroxycobalamin/Denizen-Script-Collection/wiki/Hammer-Time     #
@@ -103,18 +103,15 @@ wooden_hammer:
                     operation: add_number
                     amount: 3
                     slot: hand
-                    id: 10000000-1000-1000-1000-100000000000
             generic_attack_speed:
                 1:
                     operation: add_number
                     amount: -3.2
                     slot: hand
-                    id: 10000000-1000-1000-1000-100000000000
                 2:
                     operation: add_scalar
                     amount: -0.25
                     slot: hand
-                    id: 10000000-1000-1000-1000-100000000000
     recipes:
         1:
             type: shaped
@@ -141,18 +138,15 @@ stone_hammer:
                     operation: add_number
                     amount: 4
                     slot: hand
-                    id: 10000000-1000-1000-1000-100000000000
             generic_attack_speed:
                 1:
                     operation: add_number
                     amount: -3.2
                     slot: hand
-                    id: 10000000-1000-1000-1000-100000000000
                 2:
                     operation: add_scalar
                     amount: -0.25
                     slot: hand
-                    id: 10000000-1000-1000-1000-100000000000
     recipes:
         1:
             type: shaped
@@ -179,18 +173,15 @@ iron_hammer:
                     operation: add_number
                     amount: 5
                     slot: hand
-                    id: 10000000-1000-1000-1000-100000000000
             generic_attack_speed:
                 1:
                     operation: add_number
                     amount: -3.1
                     slot: hand
-                    id: 10000000-1000-1000-1000-100000000000
                 2:
                     operation: add_scalar
                     amount: -0.25
                     slot: hand
-                    id: 10000000-1000-1000-1000-100000000000
     recipes:
         1:
             type: shaped
@@ -217,18 +208,15 @@ golden_hammer:
                     operation: ADD_NUMBER
                     amount: 3
                     slot: hand
-                    id: 10000000-1000-1000-1000-100000000000
             generic_attack_speed:
                 1:
                     operation: add_number
                     amount: -3
                     slot: hand
-                    id: 10000000-1000-1000-1000-100000000000
                 2:
                     operation: add_scalar
                     amount: -0.25
                     slot: hand
-                    id: 10000000-1000-1000-1000-100000000000
     recipes:
         1:
             type: shaped
@@ -255,18 +243,15 @@ diamond_hammer:
                     operation: ADD_NUMBER
                     amount: 6
                     slot: hand
-                    id: 10000000-1000-1000-1000-100000000000
             generic_attack_speed:
                 1:
                     operation: add_number
                     amount: -3
                     slot: hand
-                    id: 10000000-1000-1000-1000-100000000000
                 2:
                     operation: add_scalar
                     amount: -0.25
                     slot: hand
-                    id: 10000000-1000-1000-1000-100000000000
     recipes:
         1:
             type: shaped
@@ -293,18 +278,15 @@ netherite_hammer:
                     operation: ADD_NUMBER
                     amount: 7
                     slot: hand
-                    id: 10000000-1000-1000-1000-100000000000
             generic_attack_speed:
                 1:
                     operation: add_number
                     amount: -3
                     slot: hand
-                    id: 10000000-1000-1000-1000-100000000000
                 2:
                     operation: add_scalar
                     amount: -0.25
                     slot: hand
-                    id: 10000000-1000-1000-1000-100000000000
     recipes:
         1:
             type: smithing
