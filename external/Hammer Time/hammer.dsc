@@ -45,8 +45,8 @@ hammer_handler:
     - if <player.has_effect[slow_digging]> && !<player.has_flag[hammer.effect.slow_digging]>:
         - flag <player> hammer.effect.preserve:<player.effects_data.filter[get[type].equals[SLOW_DIGGING]].first>
     # Apply the slow digging effect for hammers.
-    - cast slow_digging duration:99999s no_ambient no_icon hide_particles
-    - flag <player> hammer.effect.slow_digging expire:99999s
+    - cast slow_digging duration:600s no_ambient no_icon hide_particles
+    - flag <player> hammer.effect.slow_digging expire:600s
     events:
         on player breaks block with:*_hammer:
         - ratelimit <player> 1t
