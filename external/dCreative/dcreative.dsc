@@ -67,12 +67,8 @@ creative_handlers:
         - inventory set slot:<[slot]> origin:<[item]>
         - adjust <player> item_slot:<[slot]>
         after player left clicks !*air flagged:dcreative.active:
-        - ratelimit <player> 2t
-        - wait 2t
-        - if <context.location.inventory.list_contents.any.if_null[false]>:
-            - drop <context.location.center> <context.location.inventory.list_contents>
-        - playsound sound:block_stone_break <context.location> source:<player>
-        - modifyblock <context.location> air
+        - ratelimit <context.location> 1t
+        - wait 1t
         after player clicks air in inventory with:air flagged:dcreative.active:
         - if <context.inventory.id_holder> != <player>:
             - stop
