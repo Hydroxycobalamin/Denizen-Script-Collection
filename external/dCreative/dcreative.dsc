@@ -84,7 +84,7 @@ creative_handlers:
         - if <[barrier].any>:
             - playeffect effect:barrier at:<[barrier].parse[center]> offset:0 targets:<player>
         - if <[light].any>:
-            - playeffect effect:light at:<[light].parse[center]> offset:0 targets:<player>
+            - playeffect effect:block_marker special_data:light at:<[light].parse[center]> offset:0 targets:<player>
         ##creative_inventory handlers
         after player left clicks item_flagged:type in creative_inventory:
         - define items <script[creative_data].data_key[inventory.<context.item.flag[type]>]>
