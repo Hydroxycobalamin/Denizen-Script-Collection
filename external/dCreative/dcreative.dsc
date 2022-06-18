@@ -220,6 +220,8 @@ creative_inventory_creation_helper:
         - foreach <[items]> as:page:
             - define name creative_inventory_data_<[type]>_<[loop_index]>
             - waituntil rate:5s max:1m <inventory[creative_inventory_data_<[type]>_<[loop_index]>].viewers.if_null[<list>].is_empty>
+            - if !<inventory[creative_inventory_data_<[type]>_<[loop_index]>].viewers.if_null[<list>].is_empty>:
+                - foreach next
             - inject <script> path:create_inventory
     - if <[has_opened].exists>:
         - stop
