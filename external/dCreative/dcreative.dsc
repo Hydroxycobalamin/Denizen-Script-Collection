@@ -1,6 +1,13 @@
-#Version 1.0
-#Author Icecapade
-#Date 2021-09-24
+##########################################################################################
+#                                                                                        #
+#                                        dCreative                                       #
+#                               A server-sided creative mode                             #
+#                Version: 1.1.0                            Author: Icecapade             #
+#                                                                                        #
+#                                     Documentation:                                     #
+#      https://github.com/Hydroxycobalamin/Denizen-Script-Collection/wiki/dCreative      #
+#                                                                                        #
+##########################################################################################
 creative_command:
     type: command
     debug: false
