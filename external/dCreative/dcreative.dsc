@@ -69,6 +69,11 @@ creative_handlers:
         after player left clicks !*air flagged:dcreative.active:
         - ratelimit <context.location> 1t
         - wait 1t
+        - define location <context.location>
+        - if <[location].inventory.list_contents.any.if_null[false]>:
+            - drop <[location].center> <[location].inventory.list_contents>
+        - playsound sound:block_stone_break <[location]>
+        - modifyblock <[location]> air source:<player>
         after player clicks air in inventory with:air flagged:dcreative.active:
         - if <context.inventory.id_holder> != <player>:
             - stop
