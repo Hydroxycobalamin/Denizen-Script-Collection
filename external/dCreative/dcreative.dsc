@@ -281,6 +281,7 @@ creative_inventory_data:
 creative_data:
     type: data
     debug: false
+    #TODO: Add Goathorns
     inventory:
         trees_and_logs:
             - oak_sapling
@@ -289,12 +290,14 @@ creative_data:
             - jungle_sapling
             - acacia_sapling
             - dark_oak_sapling
+            - mangrove_propagule
             - oak_leaves
             - spruce_leaves
             - birch_leaves
             - jungle_leaves
             - acacia_leaves
             - dark_oak_leaves
+            - mangrove_leaves
             - azalea_leaves
             - flowering_azalea_leaves
             - oak_log
@@ -303,6 +306,9 @@ creative_data:
             - jungle_log
             - acacia_log
             - dark_oak_log
+            - mangrove_log
+            - mangrove_roots
+            - muddy_mangrove_roots
             - crimson_stem
             - warped_stem
             - stripped_oak_log
@@ -311,6 +317,7 @@ creative_data:
             - stripped_jungle_log
             - stripped_acacia_log
             - stripped_dark_oak_log
+            - stripped_mangrove_log
             - stripped_crimson_stem
             - stripped_warped_stem
             - stripped_oak_wood
@@ -319,6 +326,7 @@ creative_data:
             - stripped_jungle_wood
             - stripped_acacia_wood
             - stripped_dark_oak_wood
+            - stripped_mangrove_wood
             - stripped_crimson_hyphae
             - stripped_warped_hyphae
             - oak_wood
@@ -327,6 +335,7 @@ creative_data:
             - jungle_wood
             - acacia_wood
             - dark_oak_wood
+            - mangrove_wood
             - crimson_hyphae
             - warped_hyphae
             - oak_planks
@@ -335,6 +344,7 @@ creative_data:
             - jungle_planks
             - acacia_planks
             - dark_oak_planks
+            - mangrove_planks
             - crimson_planks
             - warped_planks
         ores:
@@ -524,7 +534,8 @@ creative_data:
             - polished_blackstone_button
             - polished_blackstone_pressure_plate
             - sculk_sensor
-            - air
+            - sculk_shrieker
+            - sculk_catalyst
             - air
             - air
             - air
@@ -590,11 +601,19 @@ creative_data:
             - warped_fungus_on_a_stick
             - elytra
             - oak_boat
+            - oak_chest_boat
             - spruce_boat
+            - spruce_chest_boat
             - birch_boat
+            - birch_chest_boat
             - jungle_boat
+            - jungle_chest_boat
             - acacia_boat
+            - acacia_chest_boat
             - dark_oak_boat
+            - dark_oak_chest_boat
+            - mangrove_boat
+            - mangrove_chest_boat
         wool:
             - white_dye
             - orange_dye
@@ -709,6 +728,7 @@ creative_data:
             - cod_bucket
             - tropical_fish_bucket
             - axolotl_bucket
+            - tadpole_bucket
             - seagrass
             - sea_lantern
             - sea_pickle
@@ -772,6 +792,9 @@ creative_data:
             - soul_lantern
             - jack_o_lantern
             - shroomlight
+            - ochre_froglight
+            - verdant_froglight
+            - pearlescent_froglight
             - glowstone
             - campfire
             - soul_campfire
@@ -791,12 +814,7 @@ creative_data:
             - jungle_sapling
             - acacia_sapling
             - dark_oak_sapling
-            - oak_sapling
-            - spruce_sapling
-            - birch_sapling
-            - jungle_sapling
-            - acacia_sapling
-            - dark_oak_sapling
+            - mangrove_sapling
             - cobweb
             - flower_pot
             - grass
@@ -853,6 +871,8 @@ creative_data:
             - mushroom_stem
             - lily_pad
             - glow_lichen
+            - frogspawn
+            - sculk_vein
             - pointed_dripstone
             - mossy_cobblestone
             - mossy_stone_bricks
@@ -969,6 +989,7 @@ creative_data:
             - netherite_axe
             - netherite_hoe
             - compass
+            - recovery_compass
             - fishing_rod
             - clock
             - spyglass
@@ -1104,11 +1125,14 @@ creative_data:
             - mossy_stone_bricks
             - cracked_stone_bricks
             - chiseled_stone_bricks
+            - packed_mud
+            - mud_bricks
             - deepslate_bricks
             - cracked_deepslate_bricks
             - deepslate_tiles
             - cracked_deepslate_tiles
             - chiseled_deepslate
+            - reinforced_deepslate
             - mycelium
             - nether_bricks
             - cracked_nether_bricks
@@ -1141,6 +1165,7 @@ creative_data:
             - chiseled_polished_blackstone
             - polished_blackstone_bricks
             - cracked_polished_blackstone_bricks
+            - sculk
         copper:
             - exposed_copper
             - weathered_copper
@@ -1317,6 +1342,7 @@ creative_data:
             - black_glazed_terracotta
         spawn_eggs:
             - spawner
+            - allay_spawn_egg
             - axolotl_spawn_egg
             - bat_spawn_egg
             - bee_spawn_egg
@@ -1335,6 +1361,7 @@ creative_data:
             - endermite_spawn_egg
             - evoker_spawn_egg
             - fox_spawn_egg
+            - frog_spawn_egg
             - ghast_spawn_egg
             - glow_squid_spawn_egg
             - goat_spawn_egg
@@ -1369,12 +1396,14 @@ creative_data:
             - squid_spawn_egg
             - stray_spawn_egg
             - strider_spawn_egg
+            - tadpole_spawn_egg
             - trader_llama_spawn_egg
             - tropical_fish_spawn_egg
             - turtle_spawn_egg
             - vex_spawn_egg
             - villager_spawn_egg
             - vindicator_spawn_egg
+            - warden_spawn_egg
             - wandering_trader_spawn_egg
             - witch_spawn_egg
             - wither_skeleton_spawn_egg
@@ -1456,10 +1485,14 @@ creative_data:
             - music_disc_ward
             - music_disc_11
             - music_disc_wait
+            - music_disc_5
             - music_disc_pigstep
+            - disc_fragment_5
             - nautilus_shell
             - heart_of_the_sea
             - honeycomb
+            - frogspawn
+            - echo_shard
             - dragon_egg
             - skeleton_skull
             - wither_skeleton_skull
