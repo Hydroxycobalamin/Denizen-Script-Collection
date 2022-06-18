@@ -120,8 +120,7 @@ creative_handlers:
         - run creative_inventory_creation_task def.items:<[items]> def.type:potions
         after player left clicks item_flagged:enchanted_books in creative_inventory:
         - foreach <server.enchantments> as:enchantment:
-            - repeat <enchantment[<[enchantment]>].max_level>:
-                - define items:->:<item[enchanted_book].with[enchantments=<map[<[enchantment]>=<[value]>]>]>
+            - define items:|:<util.list_numbers_to[<enchantment[<[enchantment]>].max_level>].parse_tag[enchanted_book[enchantments=[<[enchantment]>=<[parse_value]>]]]>
         - run creative_inventory_creation_task def:<list_single[<[items]>].include[enchanted_books]>
         after player left clicks item_flagged:search in creative_inventory:
         - flag <player> dcreative.search expire:30s
