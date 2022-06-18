@@ -26,7 +26,7 @@ creative_handlers:
     creative_inventory_check:
     - define item <context.item>
     - if <[item].has_flag[inventory]>:
-        - inventory open d:<[item].flag[inventory]>
+        - inventory open destination:<[item].flag[inventory]>
         - stop
     - if <context.cursor_item.material.name> != air:
         - take cursoritem quantity:<context.cursor_item.quantity>
@@ -88,11 +88,9 @@ creative_handlers:
             - playeffect effect:block_marker special_data:light at:<[light].parse[center]> offset:0 targets:<player>
         ##creative_inventory handlers
         after player left clicks item_flagged:type in creative_inventory:
-        - define items <script[creative_data].data_key[inventory.<context.item.flag[type]>]>
-        - run creative_inventory_creation_task def:<list_single[<[items]>].include[<context.item.flag[type]>]>
+        - run creative_inventory_creation_helper def.items:<script[creative_data].data_key[inventory.<context.item.flag[type]>]> def.type:<context.item.flag[type]>
         after player left clicks item_flagged:denizen in creative_inventory:
-        - define items <server.scripts.filter[data_key[type].equals[item]].parse[name]>
-        - run creative_inventory_creation_task def:<list_single[<[items]>].include[denizen]>
+        - run creative_inventory_creation_helper def.items:<server.scripts.filter[container_type.equals[item]].parse[name]> def.type:denizen
         after player left clicks item_flagged:potions in creative_inventory:
         - foreach <server.potion_types> as:effect:
             - choose <[effect]>:
@@ -118,11 +116,11 @@ creative_handlers:
                     - define splash_potions:|:splash_potion[potion_effects=<[potion_base]>]|splash_potion[potion_effects=<[upgraded]>]|splash_potion[potion_effects=<[extended]>]
                     - define lingering_potions:|:lingering_potion[potion_effects=<[potion_base]>]|lingering_potion[potion_effects=<[upgraded]>]|lingering_potion[potion_effects=<[extended]>]
         - define items <[potions].include[<[splash_potions]>].include[<[lingering_potions]>]>
-        - run creative_inventory_creation_task def.items:<[items]> def.type:potions
+        - run creative_inventory_creation_helper def.items:<[items]> def.type:potions
         after player left clicks item_flagged:enchanted_books in creative_inventory:
         - foreach <server.enchantments> as:enchantment:
             - define items:|:<util.list_numbers_to[<enchantment[<[enchantment]>].max_level>].parse_tag[enchanted_book[enchantments=[<[enchantment]>=<[parse_value]>]]]>
-        - run creative_inventory_creation_task def:<list_single[<[items]>].include[enchanted_books]>
+        - run creative_inventory_creation_helper def.items:<[items]> def.type:enchanted_books
         after player left clicks item_flagged:search in creative_inventory:
         - flag <player> dcreative.search expire:30s
         - inventory close
@@ -135,7 +133,7 @@ creative_handlers:
             - narrate "No Match! :("
             - inventory open d:creative_inventory
             - stop
-        - run creative_inventory_creation_task def:<list_single[<[matches]>].include[search]>
+        - run creative_inventory_creation_helper def.items:<[matches]> def.type:search
         ##shortcut handlers
         after player left clicks item_flagged:shortcuts in creative_inventory:
         - if <context.item.flag[shortcuts]> != null:
@@ -186,29 +184,39 @@ creative_handlers:
             - adjust <player> item_on_cursor:<[item].with[quantity=64]>
             - stop
         - give <[item]> quantity:64
-creative_inventory_creation_task:
+creative_inventory_creation_helper:
     type: task
     debug: false
     definitions: items|type
+    create_inventory:
+    - note <inventory[creative_inventory_data]> as:<[name]>
+    - flag server dcreative.inventories:->:<[name]>
+    - inventory set destination:<[name]> origin:<[page]>
+    - if <[items].size> > 1 && <[loop_index]> != <[items].size>:
+        - inventory set destination:<[name]> slot:53 origin:<item[light[block_material=light[level=<element[<[loop_index].add[1].is_more_than[15]>].if_true[15].if_false[<[loop_index].add[1]>]>]]].with_flag[inventory:<[name].before_last[_]>_<[loop_index].add[1]>].with[display=<white>Forward]>
+    - if <[loop_index]> != 1:
+        - inventory set destination:<[name]> slot:47 origin:<item[light[block_material=light[level=<element[<[loop_index].sub[1].is_more_than[15]>].if_true[15].if_false[<[loop_index].sub[1]>]>]]].with_flag[inventory:<[name].before_last[_]>_<[loop_index].sub[1]>].with[display=<white>Backward]>
+    - inventory set destination:<[name]> slot:50 origin:<item[grass_block].with_flag[inventory:creative_inventory].with[display=<&f>Back]>
     script:
     - define items <[items].sub_lists[45]>
     - if <inventory[creative_inventory_data_<[type]>_1].exists> && <[type]> != search:
         - define has_opened true
         - inventory open destination:creative_inventory_data_<[type]>_1
     - wait 1t
-    - foreach <[items]> as:page:
-        - waituntil rate:10s max:3m <server.online_players.filter[open_inventory.script.name.equals[creative_inventory_data]].is_empty>
-        - note <inventory[creative_inventory_data]> as:creative_inventory_data_<[type]>_<[loop_index]>
-        - flag server dcreative.inventories:->:creative_inventory_data_<[type]>_<[loop_index]>
-        - adjust <inventory[creative_inventory_data_<[type]>_<[loop_index]>]> contents:<[page]>
-        - if <[items].size> > 1 && <[loop_index]> != <[items].size>:
-            - inventory set destination:creative_inventory_data_<[type]>_<[loop_index]> slot:53 origin:<item[light[block_material=light[level=<element[<[loop_index].add[1].is_more_than[15]>].if_true[15].if_false[<[loop_index].add[1]>]>]]].with_flag[inventory:creative_inventory_data_<[type]>_<[loop_index].add[1]>].with[display=<white>Forward]>
-        - if <[loop_index]> != 1:
-            - inventory set destination:creative_inventory_data_<[type]>_<[loop_index]> slot:47 origin:<item[light[block_material=light[level=<element[<[loop_index].sub[1].is_more_than[15]>].if_true[15].if_false[<[loop_index].sub[1]>]>]]].with_flag[inventory:creative_inventory_data_<[type]>_<[loop_index].sub[1]>].with[display=<white>Backward]>
-        - inventory set destination:creative_inventory_data_<[type]>_<[loop_index]> slot:50 origin:<item[grass_block].with_flag[inventory:creative_inventory].with[display=<&f>Back]>
+    - if <[type]> == search:
+        - define destination creative_inventory_data_<[type]>_<player.uuid>_1
+        - foreach <[items]> as:page:
+            - define name creative_inventory_data_<[type]>_<player.uuid>_<[loop_index]>
+            - inject <script> path:create_inventory
+    - else:
+        - define destination creative_inventory_data_<[type]>_1
+        - foreach <[items]> as:page:
+            - define name creative_inventory_data_<[type]>_<[loop_index]>
+            - waituntil rate:5s max:1m <inventory[creative_inventory_data_<[type]>_<[loop_index]>].viewers.if_null[<list>].is_empty>
+            - inject <script> path:create_inventory
     - if <[has_opened].exists>:
         - stop
-    - inventory open destination:creative_inventory_data_<[type]>_1
+    - inventory open destination:<[destination]>
 creative_inventory:
     type: inventory
     debug: false
