@@ -65,7 +65,7 @@ simplesit:
         - remove <[properties.entity]>
         - flag <player> simplesit:!
         #Prevent the player from glitching inside the block.
-        - define location <context.entity.location.add[0,2.2,0]>
+        - define location <context.entity.location.above>
         - teleport <[location]>
 simplesit_format:
     type: format

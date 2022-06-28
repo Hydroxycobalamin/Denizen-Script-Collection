@@ -13,7 +13,7 @@ player_exporter:
     type: task
     debug: false
     script:
-    - if <server.has_file[../../player_names.json]>:
+    - if <util.has_file[../../player_names.json]>:
         - narrate "<&[error]>A file called player_names.json already exist in the server directory. You must remove it first."
         - stop
     - ~yaml create id:names

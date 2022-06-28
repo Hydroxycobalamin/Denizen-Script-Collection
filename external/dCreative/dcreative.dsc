@@ -97,7 +97,7 @@ creative_handlers:
         after player left clicks item_flagged:type in creative_inventory:
         - run creative_inventory_creation_helper def.items:<script[creative_data].data_key[inventory.<context.item.flag[type]>]> def.type:<context.item.flag[type]>
         after player left clicks item_flagged:denizen in creative_inventory:
-        - run creative_inventory_creation_helper def.items:<server.scripts.filter[container_type.equals[item]].parse[name]> def.type:denizen
+        - run creative_inventory_creation_helper def.items:<util.scripts.filter[container_type.equals[item]].parse[name]> def.type:denizen
         after player left clicks item_flagged:potions in creative_inventory:
         - foreach <server.potion_types> as:effect:
             - choose <[effect]>:
@@ -135,7 +135,7 @@ creative_handlers:
         on player chats flagged:dcreative.search:
         - determine cancelled passively
         - flag <player> dcreative.search:!
-        - define matches <server.material_types.parse[item.material.name].include[<server.scripts.filter[data_key[type].equals[item]].parse[name]>].filter[contains_any_text[<context.message>]]>
+        - define matches <server.material_types.parse[item.material.name].include[<util.scripts.filter[data_key[type].equals[item]].parse[name]>].filter[contains_any_text[<context.message>]]>
         - if <[matches].is_empty>:
             - narrate "No Match! :("
             - inventory open d:creative_inventory
