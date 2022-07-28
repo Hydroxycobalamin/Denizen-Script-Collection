@@ -2,7 +2,7 @@
 #                                                                                        #
 #                                       SimpleSit                                        #
 #                             Let your players sit on stairs                             #
-#                Version: 1.4.0                            Author: Icecapade             #
+#                Version: 1.4.1                            Author: Icecapade             #
 #                                                                                        #
 #                                     Documentation:                                     #
 #      https://github.com/Hydroxycobalamin/Denizen-Script-Collection/wiki/SimpleSit      #
