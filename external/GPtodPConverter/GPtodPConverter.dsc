@@ -20,20 +20,20 @@ GP_to_dP_converter:
         - define cuboid <cuboid[<[id]>]>
         #If the claim is an adminclaim, create a dPrevention admin claim.
         - if <[claim].is_adminclaim>:
-            - if <[claim].cuboid.world.flag[dPrevention.areas.admin.cuboids].contains[<[id]>].if_null[false]>:
+            - if <[claim].cuboid.world.flag[dPrevention.areas.admin.cuboids].contains[<[cuboid]>].if_null[false]>:
                 - announce to_console "An admin claim with the id <[id].custom_color[emphasis]> exists already!"
                 - foreach next
             - run dPrevention_area_creation def:<list_single[<[cuboid]>]>
-            - flag <[cuboid].world> dPrevention.areas.admin.cuboids:->:<[id]>
+            - flag <[cuboid].world> dPrevention.areas.admin.cuboids:->:<[cuboid]>
             - announce to_console "An admin claim was created, with id: <[id].color[red]>"
         - else:
         #If the claim is not an admin claim, create a dPrevention claim and set the owner.
-            - if <[claim].cuboid.world.flag[dPrevention.areas.cuboids].contains[<[id]>].if_null[false]>:
+            - if <[claim].cuboid.world.flag[dPrevention.areas.cuboids].contains[<[cuboid]>].if_null[false]>:
                 - announce to_console "A player claim with the id <[id].custom_color[emphasis]> exists already!"
                 - foreach next
             - run dPrevention_area_creation def:<list_single[<[cuboid]>].include[<[claim].owner>]>
-            - flag <[cuboid].world> dPrevention.areas.cuboids:->:<[id]>
-            - flag <[claim].owner> dPrevention.areas.cuboids:->:<[id]>
+            - flag <[cuboid].world> dPrevention.areas.cuboids:->:<[cuboid]>
+            - flag <[claim].owner> dPrevention.areas.cuboids:->:<[cuboid]>
             - announce to_console "A player claim was created, with id: <[id].color[red]>. Owner: <[claim].owner.name.color[gold]>"
         #If the GriefPrevention claim does have builders listed, whitelist them onto the claim.
         - if !<[claim].builders.is_empty>:
