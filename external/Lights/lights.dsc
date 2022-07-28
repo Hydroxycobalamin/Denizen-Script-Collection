@@ -2,7 +2,7 @@
 #                                                                                        #
 #                                      Street-Lights                                     #
 #                                  Turn your lights on!                                  #
-#                Version: 1.1.0                            Author: Icecapade             #
+#                Version: 1.1.1                            Author: Icecapade             #
 #                                                                                        #
 #                                     Documentation:                                     #
 #    https://github.com/Hydroxycobalamin/Denizen-Script-Collection/wiki/Street-Lights    #
@@ -24,6 +24,9 @@ street_lights_data:
             jack_o_lantern: pumpkin
             shroomlight: mushroom_stem
             end_rod: glass_pane
+            ochre_froglight: yellow_stained_glass
+            verdant_froglight: lime_stained_glass
+            perlescent_froglight: purple_stained_glass
 street_lights_cmd:
     type: command
     debug: false
