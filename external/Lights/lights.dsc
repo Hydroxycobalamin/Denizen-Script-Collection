@@ -2,7 +2,7 @@
 #                                                                                        #
 #                                      Street-Lights                                     #
 #                                  Turn your lights on!                                  #
-#                Version: 1.1.1                            Author: Icecapade             #
+#                Version: 1.1.2                            Author: Icecapade             #
 #                                                                                        #
 #                                     Documentation:                                     #
 #    https://github.com/Hydroxycobalamin/Denizen-Script-Collection/wiki/Street-Lights    #
@@ -27,6 +27,8 @@ street_lights_data:
             ochre_froglight: yellow_stained_glass
             verdant_froglight: lime_stained_glass
             perlescent_froglight: purple_stained_glass
+        # Chance between 0 and 100. If value is higher than 0, some lights won't turn on.
+        random_break_chance: 0
 street_lights_cmd:
     type: command
     debug: false
@@ -127,11 +129,14 @@ street_light_toggle:
     debug: false
     definitions: state|world
     script:
+    - define chance <script[street_lights_data].data_key[lights.random_break_chance].if_null[0]>
     - foreach <[world].flag[light.locations].if_null[<list>]> key:material as:locations:
         #If the material is unswitchable, set the block manually.
         - if <script[street_lights_data].data_key[lights.unswitchable].contains[<[material]>]>:
             - foreach <[locations]> as:location:
                 - if <[state]> == on:
+                    - if <util.random_chance[<[chance]>]>:
+                        - foreach next
                     #Load the chunk to read the location flag which contains material properties.
                     - chunkload <[location].chunk> duration:1t
                     #Turn the light on.
@@ -145,6 +150,8 @@ street_light_toggle:
                 - modifyblock <[location]> <script[street_lights_data].data_key[lights.unswitchable.<[material]>]> no_physics
         #Else, switch the block.
         - else:
+            - if <[state]> == on:
+                - define locations <[locations].filter_tag[<util.random_chance[<[chance]>].not>]>
             - switch <[locations]> state:<[state]> no_physics
         - wait 5t
 street_light_format:
