@@ -122,6 +122,8 @@ crates_handler:
         - definemap properties type:<[type]> uuid:<[uuid]>
         - flag <entry[<[type]>].spawned_entity>|<entry[name].spawned_entity> crates:<[properties]>
         - flag <context.location> crates:<[properties]>
+        on player right clicks ender_chest location_flagged:crates:
+        - determine cancelled
 crates_gamble_task:
     type: task
     debug: false
