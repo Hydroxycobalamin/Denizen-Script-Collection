@@ -100,8 +100,11 @@ crates_handler:
             - narrate "Your key doesn't match the crate." format:crates_format
             - stop
         - run crates_gamble_task def:<context.entity.flag[crates.type]>|<context.entity.location.find_blocks_flagged[crates].within[3].filter[flag[crates.uuid].equals[<context.entity.flag[crates.uuid]>]].first>
-        on player right clicks ender_chest location_flagged:crates with:crates_key_*:
+        on player right clicks ender_chest location_flagged:crates:
         - determine passively cancelled
+        - if !<context.item.advanced_matches[crates_key_*]>:
+            - narrate "This crate requires a key to open it." format:crates_format
+            - stop
         - define type <context.location.flag[crates.type]>
         - if <context.item.flag[crates.type]> != <[type]>:
             - narrate "Your key doesn't match the crate." format:crates_format
