@@ -27,6 +27,9 @@ PreChunk:
         - repeat <[loops]>:
             - chunkload <chunk[<[X]>,<[Y]>,<[world]>]> duration:1t
             - repeat <[loops]>:
+                - if <chunk[<[X]>,<[Y]>,<[world]>].is_generated>:
+                    - define Y:++
+                    - repeat next
                 - chunkload <chunk[<[X]>,<[Y]>,<[world]>]> duration:1t
                 #- announce to_console <[X]>/<[Y]>
                 - define Y:++
