@@ -2,7 +2,7 @@
 #                                                                                        #
 #                                      MetricNumber                                      #
 #                   A procedure which formats numbers to k, M, G and T                   #
-#                Version: 1.0.1                            Author: Icecapade             #
+#                Version: 1.0.0                            Author: Icecapade             #
 #                                                                                        #
 #                                     Documentation:                                     #
 #     https://github.com/Hydroxycobalamin/Denizen-Script-Collection/wiki/MetricNumber    #
