@@ -2,7 +2,7 @@
 #                                                                                        #
 #                                     LoreFormatter                                      #
 #                             A procedure which formats lore                             #
-#                Version: 1.0.0                            Author: Icecapade             #
+#                Version: 1.0.1                            Author: Icecapade             #
 #                                                                                        #
 #                                     Documentation:                                     #
 #    https://github.com/Hydroxycobalamin/Denizen-Script-Collection/wiki/LoreFormatter    #
@@ -24,9 +24,9 @@ format_lore:
         - debug error "<&[error]> Script <[script].name.custom_color[emphasis]> does not have a data key with the path: <element[data.lore].custom_color[emphasis]>!"
         - determine null
     - define data <script.parsed_key[data]>
-    - foreach <[lore].parsed> as:line:
+    - foreach <[lore]> as:line:
         - if <[line]> in <[data.parseables]>:
             - define lore[<[loop_index]>]:<[data.parseables.<[line]>]>
             - foreach next
-        - define lore[<[loop_index]>]:<[line].split_lines_by_width[<[data.width]>].lines_to_colored_list.separated_by[<n>]>
+        - define lore[<[loop_index]>]:<[line].parsed.split_lines_by_width[<[data.width]>].lines_to_colored_list.separated_by[<n>]>
     - determine <[lore].separated_by[<n>]>
