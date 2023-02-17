@@ -18,6 +18,7 @@ Please download the scripts from the forum linked below, scripts on the forum ar
 11. [TimeFormatter](https://forum.denizenscript.com/resources/timeformatter.101/)\[[Wiki](https://github.com/Hydroxycobalamin/Denizen-Script-Collection/wiki/TimeFormatter)\]
 12. [HammerTime](https://forum.denizenscript.com/resources/hammer-time-incl-resource-pack.104/)\[[Wiki](https://github.com/Hydroxycobalamin/Denizen-Script-Collection/wiki/Hammer-Time)\]
 13. [PlayerExporter](https://forum.denizenscript.com/resources/player-exporter.105/)\[[Wiki](https://github.com/Hydroxycobalamin/Denizen-Script-Collection/wiki/Player-Exporter)\]
+14. [Pyramid](https://forum.denizenscript.com/resources/pyramid.129/)\[[Wiki](https://github.com/Hydroxycobalamin/Denizen-Script-Collection/wiki/Pyramid)\]
 
 See also my other scripts which are not in this repo:
 
@@ -37,7 +38,7 @@ You can do basically whatever you want, except you may not hold any developer li
 
 The MIT License (MIT)
 
-Copyright (c) 2020-2022 Hydroxycobalamin
+Copyright (c) 2020-2023 Hydroxycobalamin
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
