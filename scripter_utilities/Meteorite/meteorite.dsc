@@ -80,7 +80,7 @@ meteorite_handler:
     debug: false
     events:
         on meteorite_fire_ball explodes:
-        - flag <context.location.world> meteorite.<context.entity.flag[id]>:<context.location> expire:1s
+        - flag <context.location.world> meteorite.<context.entity.flag[id]>:<context.location.add[<context.entity.velocity>]> expire:1s
         after meteorite_fire_ball spawns:
         - while <context.entity.is_spawned>:
             - playeffect effect:flame at:<context.entity.location.to_ellipsoid[3,3,3].shell> visibility:300
