@@ -2,7 +2,7 @@
 #                                                                                        #
 #                                   Item Display Editor                                  #
 #                         Place and adjust items in your world!                          #
-#                Version: 1.1.0                            Author: Icecapade             #
+#                Version: 1.0.1                            Author: Icecapade             #
 #                                                                                        #
 #                                     Documentation:                                     #
 # https://github.com/Hydroxycobalamin/Denizen-Script-Collection/wiki/Item-Display-Editor #
@@ -32,13 +32,16 @@ item_display_editor_command:
         - spawn item_display_editor_entity[item=<[item]>] <[location]> save:entity
         - flag <entry[entity].spawned_entity> owner:<player>
     - else if <[argument]> == gui:
-        - if <player.flag[item_display_editor.selected_display]>
-        - inventory open d:item_display_editor_gui
+        - if <player.has_flag[item_display_editor.selected_display]>:
+            - inject IDE_create_inventory
+            - inventory open destination:<[inventory]>
+        - inventory open destination:item_display_editor_gui
     - else if <[argument]> == item:
         - give item_display_editor_item
         - wait 1t
         - if <player.item_in_hand> matches item_display_editor_item:
             - flag <player> item_display_editor.in_selection
+        - narrate "<&[base]>Click <&[emphasis]>F(swap items) <&[base]>after you selected an item display."
     - else:
         - narrate "<&[base]>Syntax: <&[emphasis]>/ide [spawn|gui|item]"
 item_display_editor_entity:
@@ -91,22 +94,7 @@ item_display_editor_gui_handler:
             - narrate "<&[error]>You don't have an item_display selected."
             - stop
         - define data <[display_item].display_entity_data>
-        - define inventory <inventory[item_display_editor_gui]>
-        - inventory adjust slot:1 destination:<[inventory]> "lore:<&[lore]>Transformation<&co> <[data.item_transform].custom_color[emphasis]>"
-        - inventory adjust slot:3 destination:<[inventory]> "lore:<&[lore]>Rotation XL<&co> <[data.transformation_left_rotation].get[1].custom_color[emphasis]>"
-        - inventory adjust slot:4 destination:<[inventory]> "lore:<&[lore]>Rotation XR<&co> <[data.transformation_right_rotation].get[1].custom_color[emphasis]>"
-        - inventory adjust slot:8 destination:<[inventory]> "lore:<&[lore]>Glowing<&co> <[display_item].has_flag[item_display_editor.glowing].custom_color[emphasis]>"
-        - inventory adjust slot:9 destination:<[inventory]> "lore:<&[lore]>Glow color<&co> <&color[<[data.glow_color].if_null[white]>]>COLOR"
-        - inventory adjust slot:12 destination:<[inventory]> "lore:<&[lore]>Rotation YL<&co> <[data.transformation_left_rotation].get[2].custom_color[emphasis]>"
-        - inventory adjust slot:13 destination:<[inventory]> "lore:<&[lore]>Rotation YR<&co> <[data.transformation_right_rotation].get[2].custom_color[emphasis]>"
-        - inventory adjust slot:16 destination:<[inventory]> "lore:<&[lore]>Scale EW<&co> <[data.transformation_scale].x.custom_color[emphasis]>"
-        - inventory adjust slot:17 destination:<[inventory]> "lore:<&[lore]>Scale UD<&co> <[data.transformation_scale].y.custom_color[emphasis]>"
-        - inventory adjust slot:18 destination:<[inventory]> "lore:<&[lore]>Scale NS<&co> <[data.transformation_scale].z.custom_color[emphasis]>"
-        - inventory adjust slot:21 destination:<[inventory]> "lore:<&[lore]>Rotation ZL<&co> <[data.transformation_left_rotation].get[3].custom_color[emphasis]>"
-        - inventory adjust slot:22 destination:<[inventory]> "lore:<&[lore]>Rotation ZR<&co> <[data.transformation_right_rotation].get[3].custom_color[emphasis]>"
-        - inventory adjust slot:25 destination:<[inventory]> "lore:<&[lore]>Location X <[display_item].location.x.round_to[4].custom_color[emphasis]>"
-        - inventory adjust slot:26 destination:<[inventory]> "lore:<&[lore]>Location Y <[display_item].location.y.round_to[4].custom_color[emphasis]>"
-        - inventory adjust slot:27 destination:<[inventory]> "lore:<&[lore]>Location Z <[display_item].location.z.round_to[4].custom_color[emphasis]>"
+        - inject IDE_create_inventory
         - inventory open destination:<[inventory]>
         on player clicks block with:item_flagged:item_display_editor.type:
         - determine passively cancelled
@@ -141,11 +129,11 @@ item_display_editor_gui_handler:
                 - inject IDE_set_transformation_scale
             # Scale X
             - case scale-east-west:
-                - define vector <location[0,0,<[value]>]>
+                - define vector <location[<[value]>,0,0]>
                 - inject IDE_set_transformation_scale
             # Scale Z
             - case scale-north-south:
-                - define vector <location[<[value]>,0,0]>
+                - define vector <location[0,0,<[value]>]>
                 - inject IDE_set_transformation_scale
             # item_transform
             - case item-transform:
@@ -204,6 +192,7 @@ item_display_editor_gui_handler:
             - default:
                 - stop
         on player chats flagged:item_display_editor.chat_input ignorecancelled:true priority:-100:
+        - determine passively cancelled
         - if <player.item_in_hand> not matches item_display_editor_item:
             - narrate "<&[error]>You must hold the item editor in your hand."
             - flag <player> item_display_editor.chat_input:!
@@ -223,15 +212,17 @@ item_display_editor_gui_handler:
         - define location <player.eye_location.ray_trace[range=5;default=air]>
         - define list <[location].find_entities[item_display].within[5]>
         # If no display item is in range. Remove the glowing and the flag.
+        - define display_item <player.flag[item_display_editor.selected_display].if_null[<player>]>
         - if <[list].is_empty>:
             - if <player.has_flag[item_display_editor.selected_display]>:
-                - adjust <player.flag[item_display_editor.selected_display]> glowing:false
+                - if !<[display_item].has_flag[item_display_editor.glowing]>:
+                    - adjust <[display_item]> glowing:false
                 - flag <player> item_display_editor.selected_display:!
             - stop
         - define item_display <[list].first>
         # If the player selected item is not equal the new item, remove the glowing from the old one and add it to the new one.
-        - if <player.flag[item_display_editor.selected_display].if_null[null]> != <[item_display]>:
-            - adjust <player.flag[item_display_editor.selected_display]> glowing:false
+        - if <[display_item]> != <[item_display]> && !<[display_item].has_flag[item_display_editor.glowing]>:
+            - adjust <[display_item]> glowing:false
             - flag <player> item_display_editor.selected_display:<[item_display]>
         - flag <player> item_display_editor.selected_display:<[item_display]>
         - adjust <[item_display]> glowing:true
@@ -242,6 +233,7 @@ item_display_editor_gui_handler:
         on player quits flagged:item_display_editor.in_selection:
         - inject IDE_disable_selection
         after player drops item_display_editor_item:
+        - inject IDE_disable_selection
         - remove <context.entity>
 item_display_editor_item:
     type: item
@@ -258,12 +250,33 @@ item_display_editor_item:
     - <gold>Sneak
     - <&[base]>Sneaking while clicking doubles the value.
 ## Helper methods
+IDE_create_inventory:
+    type: task
+    debug: false
+    script:
+    - define inventory <inventory[item_display_editor_gui]>
+    - inventory adjust slot:1 destination:<[inventory]> "lore:<&[lore]>Transformation<&co> <[data.item_transform].custom_color[emphasis]>"
+    - inventory adjust slot:3 destination:<[inventory]> "lore:<&[lore]>Rotation XL<&co> <[data.transformation_left_rotation].get[1].custom_color[emphasis]>"
+    - inventory adjust slot:4 destination:<[inventory]> "lore:<&[lore]>Rotation XR<&co> <[data.transformation_right_rotation].get[1].custom_color[emphasis]>"
+    - inventory adjust slot:8 destination:<[inventory]> "lore:<&[lore]>Glowing<&co> <[display_item].has_flag[item_display_editor.glowing].custom_color[emphasis]>"
+    - inventory adjust slot:9 destination:<[inventory]> "lore:<&[lore]>Glow color<&co> <&color[<[data.glow_color].if_null[white]>]>COLOR"
+    - inventory adjust slot:12 destination:<[inventory]> "lore:<&[lore]>Rotation YL<&co> <[data.transformation_left_rotation].get[2].custom_color[emphasis]>"
+    - inventory adjust slot:13 destination:<[inventory]> "lore:<&[lore]>Rotation YR<&co> <[data.transformation_right_rotation].get[2].custom_color[emphasis]>"
+    - inventory adjust slot:16 destination:<[inventory]> "lore:<&[lore]>Scale EW<&co> <[data.transformation_scale].x.custom_color[emphasis]>"
+    - inventory adjust slot:17 destination:<[inventory]> "lore:<&[lore]>Scale UD<&co> <[data.transformation_scale].y.custom_color[emphasis]>"
+    - inventory adjust slot:18 destination:<[inventory]> "lore:<&[lore]>Scale NS<&co> <[data.transformation_scale].z.custom_color[emphasis]>"
+    - inventory adjust slot:21 destination:<[inventory]> "lore:<&[lore]>Rotation ZL<&co> <[data.transformation_left_rotation].get[3].custom_color[emphasis]>"
+    - inventory adjust slot:22 destination:<[inventory]> "lore:<&[lore]>Rotation ZR<&co> <[data.transformation_right_rotation].get[3].custom_color[emphasis]>"
+    - inventory adjust slot:25 destination:<[inventory]> "lore:<&[lore]>Location X <[display_item].location.x.round_to[4].custom_color[emphasis]>"
+    - inventory adjust slot:26 destination:<[inventory]> "lore:<&[lore]>Location Y <[display_item].location.y.round_to[4].custom_color[emphasis]>"
+    - inventory adjust slot:27 destination:<[inventory]> "lore:<&[lore]>Location Z <[display_item].location.z.round_to[4].custom_color[emphasis]>"
 IDE_disable_selection:
     type: task
     debug: false
     script:
-    - if !<player.flag[item_display_editor.selected_display].has_flag[item_display_editor.glowing].if_null[true]>:
-        - adjust <player.flag[item_display_editor.selected_display]> glowing:false
+    - if <player.has_flag[item_display_editor.selected_display]>:
+        - if !<player.flag[item_display_editor.selected_display].has_flag[item_display_editor.glowing]>:
+            - adjust <player.flag[item_display_editor.selected_display]> glowing:false
     - flag <player> item_display_editor.selected_display:!
     - flag <player> item_display_editor.in_selection:!
 IDE_set_transformation_scale:
