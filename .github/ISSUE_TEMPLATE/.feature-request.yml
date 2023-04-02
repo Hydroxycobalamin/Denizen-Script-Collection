@@ -11,7 +11,7 @@ body:
           required: true
         - label: "I made sure that this feature does not exist yet by asking on the Discord or reading the Wiki."
           required: true
-  - type: downdown
+  - type: dropdown
     id: project
     attributes:
       label: Script
@@ -34,6 +34,8 @@ body:
         - Meteorite
         - Metric Number
         - Pyramid
+    validations:
+      required: true
   - type: textarea
     id: description
     attributes:
