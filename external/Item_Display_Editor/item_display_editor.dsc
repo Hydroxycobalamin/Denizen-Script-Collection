@@ -85,6 +85,9 @@ item_display_editor_gui_handler:
     events:
         on player clicks item_flagged:item_display_editor.type in item_display_editor_gui:
         - define type <context.item.flag[item_display_editor.type]>
+        - if <player.item_in_hand> not matches item_display_editor_item:
+            - narrate "<&[error]>You must hold the Item Script Editor item in your main hand."
+            - stop
         - inventory flag slot:hand item_display_editor.type:<[type]>
         - inventory flag slot:hand item_display_editor.glow_color:!
         on player swaps items offhand:item_display_editor_item:
