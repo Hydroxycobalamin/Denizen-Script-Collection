@@ -1,0 +1,48 @@
+name: Feature Request
+description: Use this form to request a feature.
+labels: ["Feature"]
+body:
+  - type: checkboxes
+    attributes:
+      label: I confirm that...
+      description: Answer the questions. If the answer is not yes, do what it describes first.
+      options:
+        - label: "I checked the issues page for similar issues. This Feature request won't be a duplicate."
+          required: true
+        - label: "I made sure that this feature does not exist yet by asking on the Discord or reading the Wiki."
+          required: true
+  - type: downdown
+    id: project
+    attributes:
+      label: Script
+      description: What script do you create this Feature Request for?
+      options:
+        - Custom Crates
+        - Custom Name Droplets
+        - dCreative
+        - Flag Visualizer
+        - GriefPrevention to dPrevention Converter
+        - Hammer Time
+        - Item Display Editor
+        - Street Lights
+        - Player Exporter
+        - PreChunk
+        - Simple Sit
+        - WorldGuard Converter
+        - Lore Formatter
+        - Time Formatter
+        - Meteorite
+        - Metric Number
+        - Pyramid
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: |-
+        Describe your feature you would like to see. Try to provide as much information as you can.
+
+        1. Why should it be added?
+        2. How should this feature work?
+        3. Do you have any ideas how this feature could be implemented?
+    validations: 
+      required: true
