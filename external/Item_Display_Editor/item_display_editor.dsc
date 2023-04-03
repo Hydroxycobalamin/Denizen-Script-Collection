@@ -2,7 +2,7 @@
 #                                                                                        #
 #                                   Item Display Editor                                  #
 #                         Place and adjust items in your world!                          #
-#                Version: 1.0.1                            Author: Icecapade             #
+#                Version: 1.0.4                            Author: Icecapade             #
 #                                                                                        #
 #                                     Documentation:                                     #
 # https://github.com/Hydroxycobalamin/Denizen-Script-Collection/wiki/Item-Display-Editor #
@@ -195,7 +195,7 @@ item_display_editor_gui_handler:
                     - define index 1
                 - define transform <[ENUM_LIST].get[<[index]>]>
                 - adjust <[item_display]> display_entity_data:<[data].with[billboard].as[<[transform]>]>
-                - narrate "<&[base]>Transformation set to <[transform].custom_color[emphasis]>."
+                - narrate "<&[base]>Billboard set to <[transform].custom_color[emphasis]>."
             # remove
             - case remove:
                 - if <[item_display].flag[owner].if_null[null]> != <player> && !<player.is_op>:
@@ -286,7 +286,7 @@ item_display_editor_item:
     display name: <white>Item Display Editor
     lore:
     - <gold>Swapping items(F)
-    - <&[base]>When item display is selected, opens the editor.
+    - <&[base]>Opens the editor.
     - <gold>Left click
     - <&[base]>Applies the effect, if any.
     - <gold>Right click
