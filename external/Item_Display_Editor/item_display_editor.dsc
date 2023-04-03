@@ -29,7 +29,7 @@ item_display_editor_command:
         - if <[location]> == null:
             - narrate "<&[error]>You can't place this block here."
             - stop
-        - spawn item_display_editor_entity[item=<[item]>] <[location]> save:entity
+        - spawn item_display_editor_entity[item=<[item].with[quantity=1]>] <[location]> save:entity
         - flag <entry[entity].spawned_entity> owner:<player>
     - else if <[argument]> == gui:
         - inject IDE_open_inventory
@@ -201,7 +201,7 @@ item_display_editor_gui_handler:
                 - if <[item_display].flag[owner].if_null[null]> != <player> && !<player.is_op>:
                     - narrate "<&[error]>This item does not belong to you."
                     - stop
-                - give <[item_display].item>
+                - give <[item_display].item.with[quantity=1]>
                 - remove <[item_display]>
             - case right-x:
                 - run IDE_set_transformation_rotation def.item_display:<[item_display]> def.data:<[data]> def.axis:<list[1|0|0]> def.type:transformation_right_rotation def.click_type:<[click_type]>
