@@ -65,6 +65,7 @@ item_display_editor_gui:
         scale-east-west: copper_block[flag=item_display_editor.type:scale-east-west;display=<white>SCALE EAST/WEST]
         scale-up-down: iron_block[flag=item_display_editor.type:scale-up-down;display=<white>SCALE UP/DOWN]
         scale-north-south: gold_block[flag=item_display_editor.type:scale-north-south;display=<white>SCALE NORTH/SOUTH]
+        scale-all: gold_block[flag=item_display_editor.type:scale-all;display=<white>SCALE ALL]
         remove: barrier[flag=item_display_editor.type:remove;display=<red>REMOVE]
         left-z: campfire[flag=item_display_editor.type:left-z;display=<white>ROTATION LEFT Z]
         right-z: soul_campfire[flag=item_display_editor.type:right-z;display=<white>ROTATION RIGHT Z]
@@ -76,9 +77,9 @@ item_display_editor_gui:
         size: slime_ball[flag=item_display_editor.config:size;display=<white>Size]
         blocks: glass[flag=item_display_editor.config:blocks;display=<white>Ignore Blocks]
     slots:
-    - [item-transform] [air] [left-x] [right-x] [air] [air] [air] [glowing] [glow_color]
-    - [air] [air] [left-y] [right-y] [air] [air] [scale-east-west] [scale-up-down] [scale-north-south]
-    - [remove] [air] [left-z] [right-z] [reset] [air] [x] [y] [z]
+    - [item-transform] [] [left-x] [right-x] [] [] [] [glowing] [glow_color]
+    - [] [] [left-y] [right-y] [] [scale-all] [scale-east-west] [scale-up-down] [scale-north-south]
+    - [remove] [] [left-z] [right-z] [reset] [] [x] [y] [z]
     - [size] [blocks] [] [] [] [] [] [] []
 item_display_editor_gui_handler:
     type: world
@@ -120,11 +121,6 @@ item_display_editor_gui_handler:
         - inventory flag slot:hand item_display_editor.glow_color:!
         on player swaps items offhand:item_display_editor_item:
         - determine passively cancelled
-        - define display_item <player.flag[item_display_editor.selected_display].if_null[null]>
-        - if <[display_item]> == null:
-            - narrate "<&[error]>You don't have an item_display selected."
-            - stop
-        - define data <[display_item].display_entity_data>
         - inject IDE_open_inventory
         on player clicks block with:item_flagged:item_display_editor.type:
         - determine passively cancelled
@@ -164,6 +160,9 @@ item_display_editor_gui_handler:
             # Scale Z
             - case scale-north-south:
                 - define vector <location[0,0,<[value]>]>
+                - inject IDE_set_transformation_scale
+            - case scale-all:
+                - define vector <location[<[value]>,<[value]>,<[value]>]>
                 - inject IDE_set_transformation_scale
             # item_transform
             - case item-transform:
@@ -288,6 +287,8 @@ IDE_open_inventory:
     - inventory adjust slot:28 destination:<[inventory]> "lore:<&[lore]>Size<&co> <[config.size].custom_color[emphasis]>"
     - inventory adjust slot:29 destination:<[inventory]> "lore:<&[lore]>Ignoring Blocks<&co> <[config.blocks].custom_color[emphasis]>"
     - if <player.has_flag[item_display_editor.selected_display]>:
+        - define display_item <player.flag[item_display_editor.selected_display]>
+        - define data <[display_item].display_entity_data>
         - inventory adjust slot:1 destination:<[inventory]> "lore:<&[lore]>Transformation<&co> <[data.item_transform].custom_color[emphasis]>"
         - inventory adjust slot:3 destination:<[inventory]> "lore:<&[lore]>Rotation XL<&co> <[data.transformation_left_rotation].get[1].custom_color[emphasis]>"
         - inventory adjust slot:4 destination:<[inventory]> "lore:<&[lore]>Rotation XR<&co> <[data.transformation_right_rotation].get[1].custom_color[emphasis]>"
