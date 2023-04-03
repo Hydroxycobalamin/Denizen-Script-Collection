@@ -56,6 +56,7 @@ item_display_editor_gui:
     gui: true
     definitions:
         item-transform: armor_stand[flag=item_display_editor.type:item-transform;display=<white>ITEM TRANSFORM]
+        billboard: map[flag=item_display_editor.type:billboard;display=<white>BILLBOARD]
         left-x: torch[flag=item_display_editor.type:left-x;display=<white>ROTATION LEFT X]
         right-x: soul_torch[flag=item_display_editor.type:right-x;display=<white>ROTATION RIGHT X]
         glowing: glowstone[flag=item_display_editor.type:glowing;display=<white>GLOWING]
@@ -77,7 +78,7 @@ item_display_editor_gui:
         size: slime_ball[flag=item_display_editor.config:size;display=<white>Size]
         blocks: glass[flag=item_display_editor.config:blocks;display=<white>Ignore Blocks]
     slots:
-    - [item-transform] [] [left-x] [right-x] [] [] [] [glowing] [glow_color]
+    - [item-transform] [billboard] [left-x] [right-x] [] [] [] [glowing] [glow_color]
     - [] [] [left-y] [right-y] [] [scale-all] [scale-east-west] [scale-up-down] [scale-north-south]
     - [remove] [] [left-z] [right-z] [reset] [] [x] [y] [z]
     - [size] [blocks] [] [] [] [] [] [] []
@@ -179,6 +180,21 @@ item_display_editor_gui_handler:
                     - define index 1
                 - define transform <[ENUM_LIST].get[<[index]>]>
                 - adjust <[item_display]> display_entity_data:<[data].with[item_transform].as[<[transform]>]>
+                - narrate "<&[base]>Transformation set to <[transform].custom_color[emphasis]>."
+            - case billboard:
+                - if <[click_type]> == LEFT:
+                    - define add 1
+                - else:
+                    - define add -1
+                - define ENUM_LIST:|:FIXED|VERTICAL|HORIZONTAL|CENTER
+                - define billboard <[data.billboard]>
+                - define index <[ENUM_LIST].find[<[billboard]>].add[<[add]>]>
+                - if <[index]> == 0:
+                    - define index 4
+                - if <[index]> == 5:
+                    - define index 1
+                - define transform <[ENUM_LIST].get[<[index]>]>
+                - adjust <[item_display]> display_entity_data:<[data].with[billboard].as[<[transform]>]>
                 - narrate "<&[base]>Transformation set to <[transform].custom_color[emphasis]>."
             # remove
             - case remove:
@@ -290,6 +306,7 @@ IDE_open_inventory:
         - define display_item <player.flag[item_display_editor.selected_display]>
         - define data <[display_item].display_entity_data>
         - inventory adjust slot:1 destination:<[inventory]> "lore:<&[lore]>Transformation<&co> <[data.item_transform].custom_color[emphasis]>"
+        - inventory adjust slot:2 destination:<[inventory]> "lore:<&[lore]>Billboard<&co> <[data.billboard].custom_color[emphasis]>"
         - inventory adjust slot:3 destination:<[inventory]> "lore:<&[lore]>Rotation XL<&co> <[data.transformation_left_rotation].get[1].custom_color[emphasis]>"
         - inventory adjust slot:4 destination:<[inventory]> "lore:<&[lore]>Rotation XR<&co> <[data.transformation_right_rotation].get[1].custom_color[emphasis]>"
         - inventory adjust slot:8 destination:<[inventory]> "lore:<&[lore]>Glowing<&co> <[display_item].has_flag[item_display_editor.glowing].custom_color[emphasis]>"
