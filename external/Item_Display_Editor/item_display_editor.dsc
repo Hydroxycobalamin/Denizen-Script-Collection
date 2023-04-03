@@ -32,10 +32,7 @@ item_display_editor_command:
         - spawn item_display_editor_entity[item=<[item]>] <[location]> save:entity
         - flag <entry[entity].spawned_entity> owner:<player>
     - else if <[argument]> == gui:
-        - if <player.has_flag[item_display_editor.selected_display]>:
-            - inject IDE_create_inventory
-            - inventory open destination:<[inventory]>
-        - inventory open destination:item_display_editor_gui
+        - inject IDE_open_inventory
     - else if <[argument]> == item:
         - give item_display_editor_item
         - wait 1t
@@ -55,35 +52,66 @@ item_display_editor_gui:
     debug: false
     inventory: CHEST
     title: Item Display Editor
-    size: 27
+    size: 36
     gui: true
     definitions:
+        item-transform: armor_stand[flag=item_display_editor.type:item-transform;display=<white>ITEM TRANSFORM]
+        left-x: torch[flag=item_display_editor.type:left-x;display=<white>ROTATION LEFT X]
+        right-x: soul_torch[flag=item_display_editor.type:right-x;display=<white>ROTATION RIGHT X]
+        glowing: glowstone[flag=item_display_editor.type:glowing;display=<white>GLOWING]
+        glow_color: glow_berries[flag=item_display_editor.type:glow_color;display=<white>GLOW_COLOR]
+        left-y: lantern[flag=item_display_editor.type:left-y;display=<white>ROTATION LEFT Y]
+        right-y: soul_lantern[flag=item_display_editor.type:right-y;display=<white>ROTATION RIGHT Y]
+        scale-east-west: copper_block[flag=item_display_editor.type:scale-east-west;display=<white>SCALE EAST/WEST]
+        scale-up-down: iron_block[flag=item_display_editor.type:scale-up-down;display=<white>SCALE UP/DOWN]
+        scale-north-south: gold_block[flag=item_display_editor.type:scale-north-south;display=<white>SCALE NORTH/SOUTH]
+        remove: barrier[flag=item_display_editor.type:remove;display=<red>REMOVE]
+        left-z: campfire[flag=item_display_editor.type:left-z;display=<white>ROTATION LEFT Z]
+        right-z: soul_campfire[flag=item_display_editor.type:right-z;display=<white>ROTATION RIGHT Z]
+        reset: light[block_material=light[level=1];flag=item_display_editor.type:reset;display=<aqua>RESET]
         y: iron_ingot[flag=item_display_editor.type:up-down;display=<white>UP/DOWN]
         x: copper_ingot[flag=item_display_editor.type:east-west;display=<white>EAST/WEST]
         z: gold_ingot[flag=item_display_editor.type:north-south;display=<white>NORTH/SOUTH]
-        scale-up-down: iron_block[flag=item_display_editor.type:scale-up-down;display=<white>SCALE UP/DOWN]
-        scale-east-west: copper_block[flag=item_display_editor.type:scale-east-west;display=<white>SCALE EAST/WEST]
-        scale-north-south: gold_block[flag=item_display_editor.type:scale-north-south;display=<white>SCALE NORTH/SOUTH]
-        item-transform: armor_stand[flag=item_display_editor.type:item-transform;display=<white>ITEM TRANSFORM]
-        remove: barrier[flag=item_display_editor.type:remove;display=<red>REMOVE]
-        right-x: soul_torch[flag=item_display_editor.type:right-x;display=<white>ROTATION RIGHT X]
-        right-y: soul_lantern[flag=item_display_editor.type:right-y;display=<white>ROTATION RIGHT Y]
-        right-z: soul_campfire[flag=item_display_editor.type:right-z;display=<white>ROTATION RIGHT Z]
-        left-x: torch[flag=item_display_editor.type:left-x;display=<white>ROTATION LEFT X]
-        left-y: lantern[flag=item_display_editor.type:left-y;display=<white>ROTATION LEFT Y]
-        left-z: campfire[flag=item_display_editor.type:left-z;display=<white>ROTATION LEFT Z]
-        reset: light[block_material=light[level=1];flag=item_display_editor.type:reset;display=<aqua>RESET]
-        glowing: glowstone[flag=item_display_editor.type:glowing;display=<white>GLOWING]
-        glow_color: glow_berries[flag=item_display_editor.type:glow_color;display=<white>GLOW_COLOR]
+        # Player configuration
+        size: slime_ball[flag=item_display_editor.config:size;display=<white>Size]
+        blocks: glass[flag=item_display_editor.config:blocks;display=<white>Ignore Blocks]
     slots:
-    - [item-transform] [] [left-x] [right-x] [] [] [] [glowing] [glow_color]
-    - [] [] [left-y] [right-y] [] [] [scale-east-west] [scale-up-down] [scale-north-south]
-    - [remove] [] [left-z] [right-z] [reset] [] [x] [y] [z]
+    - [item-transform] [air] [left-x] [right-x] [air] [air] [air] [glowing] [glow_color]
+    - [air] [air] [left-y] [right-y] [air] [air] [scale-east-west] [scale-up-down] [scale-north-south]
+    - [remove] [air] [left-z] [right-z] [reset] [air] [x] [y] [z]
+    - [size] [blocks] [] [] [] [] [] [] []
 item_display_editor_gui_handler:
     type: world
     debug: false
     events:
-        on player clicks item_flagged:item_display_editor.type in item_display_editor_gui:
+        on player left|right clicks item_flagged:item_display_editor.config in item_display_editor_gui:
+        - define config <context.item.flag[item_display_editor.config]>
+        - define player_config <proc[IDE_get_player_config]>
+        - choose <[config]>:
+            - case size:
+                - define size:|:0.1|0.5|1|2|5
+                - if <context.click> == LEFT:
+                    - define add 1
+                - else:
+                    - define add -1
+                - define index <[size].find[<[player_config.size]>].add[<[add]>]>
+                - if <[index]> == 0:
+                    - define index 5
+                - if <[index]> == 6:
+                    - define index 1
+                - define size <[size].get[<[index]>]>
+                - flag <player> item_display_editor.config.size:<[size]>
+                - inventory adjust destination:<player.open_inventory> slot:<context.slot> "lore:<&[lore]>Size<&co> <[size].custom_color[emphasis]>"
+            - case blocks:
+                - if <[player_config.blocks]>:
+                    - flag <player> item_display_editor.config.blocks:false
+                    - inventory adjust destination:<player.open_inventory> slot:<context.slot> "lore:<&[lore]>Ignoring Blocks<&co> <&[emphasis]>false"
+                - else:
+                    - flag <player> item_display_editor.config.blocks:true
+                    - inventory adjust destination:<player.open_inventory> slot:<context.slot> "lore:<&[lore]>Ignoring Blocks<&co> <&[emphasis]>true"
+            - default:
+                - debug error "<&[error]>Event misfired or flag value did not match. Value was: '<context.item.flag[item_display_editor.config].custom_color[emphasis]>'"
+        on player left clicks item_flagged:item_display_editor.type in item_display_editor_gui:
         - define type <context.item.flag[item_display_editor.type]>
         - if <player.item_in_hand> not matches item_display_editor_item:
             - narrate "<&[error]>You must hold the Item Script Editor item in your main hand."
@@ -97,8 +125,7 @@ item_display_editor_gui_handler:
             - narrate "<&[error]>You don't have an item_display selected."
             - stop
         - define data <[display_item].display_entity_data>
-        - inject IDE_create_inventory
-        - inventory open destination:<[inventory]>
+        - inject IDE_open_inventory
         on player clicks block with:item_flagged:item_display_editor.type:
         - determine passively cancelled
         - define item_display <player.flag[item_display_editor.selected_display].if_null[null]>
@@ -193,7 +220,7 @@ item_display_editor_gui_handler:
                 - flag <player> item_display_editor.chat_input expire:30s
                 - narrate "<&[base]>Type a RGB or HEX value in chat for the color. Example: 255,255,255 or #ffff00."
             - default:
-                - stop
+                - debug error "<&[error]>Event misfired or flag value did not match. Value was: '<context.item.flag[item_display_editor.type].custom_color[emphasis]>'"
         on player chats flagged:item_display_editor.chat_input ignorecancelled:true priority:-100:
         - determine passively cancelled
         - if <player.item_in_hand> not matches item_display_editor_item:
@@ -212,17 +239,16 @@ item_display_editor_gui_handler:
         - ratelimit <player> 2t
         - if <player.item_in_hand> not matches item_display_editor_item:
             - stop
-        - define location <player.eye_location.ray_trace[range=5;default=air]>
-        - define list <[location].find_entities[item_display].within[5]>
+        - define player_config <player.flag[item_display_editor.config]>
+        - define item_display <player.eye_location.ray_trace_target[entities=item_display;blocks=<[player_config.blocks]>;range=10;raysize=<[player_config.size]>].if_null[null]>
         # If no display item is in range. Remove the glowing and the flag.
         - define display_item <player.flag[item_display_editor.selected_display].if_null[<player>]>
-        - if <[list].is_empty>:
+        - if <[item_display]> == null:
             - if <player.has_flag[item_display_editor.selected_display]>:
                 - if !<[display_item].has_flag[item_display_editor.glowing]>:
                     - adjust <[display_item]> glowing:false
                 - flag <player> item_display_editor.selected_display:!
             - stop
-        - define item_display <[list].first>
         # If the player selected item is not equal the new item, remove the glowing from the old one and add it to the new one.
         - if <[display_item]> != <[item_display]> && !<[display_item].has_flag[item_display_editor.glowing]>:
             - adjust <[display_item]> glowing:false
@@ -253,26 +279,31 @@ item_display_editor_item:
     - <gold>Sneak
     - <&[base]>Sneaking while clicking doubles the value.
 ## Helper methods
-IDE_create_inventory:
+IDE_open_inventory:
     type: task
     debug: false
     script:
+    - define config <proc[IDE_get_player_config]>
     - define inventory <inventory[item_display_editor_gui]>
-    - inventory adjust slot:1 destination:<[inventory]> "lore:<&[lore]>Transformation<&co> <[data.item_transform].custom_color[emphasis]>"
-    - inventory adjust slot:3 destination:<[inventory]> "lore:<&[lore]>Rotation XL<&co> <[data.transformation_left_rotation].get[1].custom_color[emphasis]>"
-    - inventory adjust slot:4 destination:<[inventory]> "lore:<&[lore]>Rotation XR<&co> <[data.transformation_right_rotation].get[1].custom_color[emphasis]>"
-    - inventory adjust slot:8 destination:<[inventory]> "lore:<&[lore]>Glowing<&co> <[display_item].has_flag[item_display_editor.glowing].custom_color[emphasis]>"
-    - inventory adjust slot:9 destination:<[inventory]> "lore:<&[lore]>Glow color<&co> <&color[<[data.glow_color].if_null[white]>]>COLOR"
-    - inventory adjust slot:12 destination:<[inventory]> "lore:<&[lore]>Rotation YL<&co> <[data.transformation_left_rotation].get[2].custom_color[emphasis]>"
-    - inventory adjust slot:13 destination:<[inventory]> "lore:<&[lore]>Rotation YR<&co> <[data.transformation_right_rotation].get[2].custom_color[emphasis]>"
-    - inventory adjust slot:16 destination:<[inventory]> "lore:<&[lore]>Scale EW<&co> <[data.transformation_scale].x.custom_color[emphasis]>"
-    - inventory adjust slot:17 destination:<[inventory]> "lore:<&[lore]>Scale UD<&co> <[data.transformation_scale].y.custom_color[emphasis]>"
-    - inventory adjust slot:18 destination:<[inventory]> "lore:<&[lore]>Scale NS<&co> <[data.transformation_scale].z.custom_color[emphasis]>"
-    - inventory adjust slot:21 destination:<[inventory]> "lore:<&[lore]>Rotation ZL<&co> <[data.transformation_left_rotation].get[3].custom_color[emphasis]>"
-    - inventory adjust slot:22 destination:<[inventory]> "lore:<&[lore]>Rotation ZR<&co> <[data.transformation_right_rotation].get[3].custom_color[emphasis]>"
-    - inventory adjust slot:25 destination:<[inventory]> "lore:<&[lore]>Location X <[display_item].location.x.round_to[4].custom_color[emphasis]>"
-    - inventory adjust slot:26 destination:<[inventory]> "lore:<&[lore]>Location Y <[display_item].location.y.round_to[4].custom_color[emphasis]>"
-    - inventory adjust slot:27 destination:<[inventory]> "lore:<&[lore]>Location Z <[display_item].location.z.round_to[4].custom_color[emphasis]>"
+    - inventory adjust slot:28 destination:<[inventory]> "lore:<&[lore]>Size<&co> <[config.size].custom_color[emphasis]>"
+    - inventory adjust slot:29 destination:<[inventory]> "lore:<&[lore]>Ignoring Blocks<&co> <[config.blocks].custom_color[emphasis]>"
+    - if <player.has_flag[item_display_editor.selected_display]>:
+        - inventory adjust slot:1 destination:<[inventory]> "lore:<&[lore]>Transformation<&co> <[data.item_transform].custom_color[emphasis]>"
+        - inventory adjust slot:3 destination:<[inventory]> "lore:<&[lore]>Rotation XL<&co> <[data.transformation_left_rotation].get[1].custom_color[emphasis]>"
+        - inventory adjust slot:4 destination:<[inventory]> "lore:<&[lore]>Rotation XR<&co> <[data.transformation_right_rotation].get[1].custom_color[emphasis]>"
+        - inventory adjust slot:8 destination:<[inventory]> "lore:<&[lore]>Glowing<&co> <[display_item].has_flag[item_display_editor.glowing].custom_color[emphasis]>"
+        - inventory adjust slot:9 destination:<[inventory]> "lore:<&[lore]>Glow color<&co> <&color[<[data.glow_color].if_null[white]>]>COLOR"
+        - inventory adjust slot:12 destination:<[inventory]> "lore:<&[lore]>Rotation YL<&co> <[data.transformation_left_rotation].get[2].custom_color[emphasis]>"
+        - inventory adjust slot:13 destination:<[inventory]> "lore:<&[lore]>Rotation YR<&co> <[data.transformation_right_rotation].get[2].custom_color[emphasis]>"
+        - inventory adjust slot:16 destination:<[inventory]> "lore:<&[lore]>Scale EW<&co> <[data.transformation_scale].x.custom_color[emphasis]>"
+        - inventory adjust slot:17 destination:<[inventory]> "lore:<&[lore]>Scale UD<&co> <[data.transformation_scale].y.custom_color[emphasis]>"
+        - inventory adjust slot:18 destination:<[inventory]> "lore:<&[lore]>Scale NS<&co> <[data.transformation_scale].z.custom_color[emphasis]>"
+        - inventory adjust slot:21 destination:<[inventory]> "lore:<&[lore]>Rotation ZL<&co> <[data.transformation_left_rotation].get[3].custom_color[emphasis]>"
+        - inventory adjust slot:22 destination:<[inventory]> "lore:<&[lore]>Rotation ZR<&co> <[data.transformation_right_rotation].get[3].custom_color[emphasis]>"
+        - inventory adjust slot:25 destination:<[inventory]> "lore:<&[lore]>Location X<&co> <[display_item].location.x.round_to[4].custom_color[emphasis]>"
+        - inventory adjust slot:26 destination:<[inventory]> "lore:<&[lore]>Location Y<&co> <[display_item].location.y.round_to[4].custom_color[emphasis]>"
+        - inventory adjust slot:27 destination:<[inventory]> "lore:<&[lore]>Location Z<&co> <[display_item].location.z.round_to[4].custom_color[emphasis]>"
+    - inventory open destination:<[inventory]>
 IDE_disable_selection:
     type: task
     debug: false
@@ -305,6 +336,18 @@ IDE_set_location:
     script:
     - teleport <[item_display]> <[item_display].location.add[<[vector]>].round_to_precision[0.03125]>
     - narrate "<&[base]>The location of the item_display was set to <[item_display].location.format[sx sy sz world].custom_color[emphasis]>."
+IDE_get_player_config:
+    type: procedure
+    debug: false
+    script:
+    - definemap config:
+        size: 1
+        blocks: true
+    - foreach <[config]> key:key as:value:
+        - define flag <player.flag[item_display_editor.config.<[key]>].if_null[null]>
+        - if <[flag]> != null:
+            - define config.<[key]> <[flag]>
+    - determine <[config]>
 ## Quaternion math.
 IDE_quaternion:
     type: procedure
