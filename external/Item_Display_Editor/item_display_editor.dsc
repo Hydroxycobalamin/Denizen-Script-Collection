@@ -2,7 +2,7 @@
 #                                                                                        #
 #                                   Item Display Editor                                  #
 #                         Place and adjust items in your world!                          #
-#                Version: 1.0.4                            Author: Icecapade             #
+#                Version: 1.0.5                            Author: Icecapade             #
 #                                                                                        #
 #                                     Documentation:                                     #
 # https://github.com/Hydroxycobalamin/Denizen-Script-Collection/wiki/Item-Display-Editor #
