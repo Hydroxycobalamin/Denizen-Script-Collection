@@ -55,8 +55,8 @@ item_display_editor_gui:
     size: 36
     gui: true
     definitions:
-        item-transform: armor_stand[flag=item_display_editor.type:item-transform;display=<white>ITEM TRANSFORM]
-        billboard: map[flag=item_display_editor.type:billboard;display=<white>BILLBOARD]
+        display: armor_stand[flag=item_display_editor.type:display;display=<white>ITEM TRANSFORM]
+        pivot: map[flag=item_display_editor.type:pivot;display=<white>BILLBOARD]
         left-x: torch[flag=item_display_editor.type:left-x;display=<white>ROTATION LEFT X]
         right-x: soul_torch[flag=item_display_editor.type:right-x;display=<white>ROTATION RIGHT X]
         glowing: glowstone[flag=item_display_editor.type:glowing;display=<white>GLOWING]
@@ -78,7 +78,7 @@ item_display_editor_gui:
         size: slime_ball[flag=item_display_editor.config:size;display=<white>Size]
         blocks: glass[flag=item_display_editor.config:blocks;display=<white>Ignore Blocks]
     slots:
-    - [item-transform] [billboard] [left-x] [right-x] [] [] [] [glowing] [glow_color]
+    - [display] [pivot] [left-x] [right-x] [] [] [] [glowing] [glow_color]
     - [] [] [left-y] [right-y] [] [scale-all] [scale-east-west] [scale-up-down] [scale-north-south]
     - [remove] [] [left-z] [right-z] [reset] [] [x] [y] [z]
     - [size] [blocks] [] [] [] [] [] [] []
@@ -129,7 +129,7 @@ item_display_editor_gui_handler:
         - if <[item_display]> == null:
             - narrate "<&[error]>You don't have an item_display selected."
             - stop
-        - define data <[item_display].display_entity_data>
+        - define data <[item_display].proc[IDE_get_data]>
         - if <player.is_sneaking>:
             - define value 0.03125
         - else:
@@ -166,35 +166,35 @@ item_display_editor_gui_handler:
                 - define vector <location[<[value]>,<[value]>,<[value]>]>
                 - inject IDE_set_transformation_scale
             # item_transform
-            - case item-transform:
+            - case display:
                 - if <[click_type]> == LEFT:
                     - define add 1
                 - else:
                     - define add -1
                 - define ENUM_LIST:|:NONE|THIRDPERSON_LEFTHAND|THIRDPERSON_RIGHTHAND|FIRSTPERSON_LEFTHAND|FIRSTPERSON_RIGHTHAND|HEAD|GUI|GROUND|FIXED
-                - define item_transform <[data.item_transform]>
+                - define item_transform <[data.display]>
                 - define index <[ENUM_LIST].find[<[item_transform]>].add[<[add]>]>
                 - if <[index]> == 0:
                     - define index 9
                 - if <[index]> == 10:
                     - define index 1
                 - define transform <[ENUM_LIST].get[<[index]>]>
-                - adjust <[item_display]> display_entity_data:<[data].with[item_transform].as[<[transform]>]>
+                - adjust <[item_display]> display:<[transform]>
                 - narrate "<&[base]>Transformation set to <[transform].custom_color[emphasis]>."
-            - case billboard:
+            - case pivot:
                 - if <[click_type]> == LEFT:
                     - define add 1
                 - else:
                     - define add -1
                 - define ENUM_LIST:|:FIXED|VERTICAL|HORIZONTAL|CENTER
-                - define billboard <[data.billboard]>
-                - define index <[ENUM_LIST].find[<[billboard]>].add[<[add]>]>
+                - define pivot <[data.pivot]>
+                - define index <[ENUM_LIST].find[<[pivot]>].add[<[add]>]>
                 - if <[index]> == 0:
                     - define index 4
                 - if <[index]> == 5:
                     - define index 1
                 - define transform <[ENUM_LIST].get[<[index]>]>
-                - adjust <[item_display]> display_entity_data:<[data].with[billboard].as[<[transform]>]>
+                - adjust <[item_display]> pivot:<[transform]>
                 - narrate "<&[base]>Billboard set to <[transform].custom_color[emphasis]>."
             # remove
             - case remove:
@@ -216,7 +216,8 @@ item_display_editor_gui_handler:
             - case left-z:
                 - run IDE_set_transformation_rotation def.item_display:<[item_display]> def.data:<[data]> def.axis:<list[0|0|1]> def.type:transformation_left_rotation def.click_type:<[click_type]>
             - case reset:
-                - adjust <[item_display]> display_entity_data:<[data].with[transformation_right_rotation].as[0|0|0|1].with[transformation_left_rotation].as[0|0|0|1]>
+                - adjust <[item_display]> left_rotation:0,0,0,1
+                - adjust <[item_display]> right_rotation:0,0,0,1
                 - flag <[item_display]> item_display_editor.transformation_left_rotation:!
                 - flag <[item_display]> item_display_editor.transformation_right_rotation:!
             - case glowing:
@@ -230,7 +231,7 @@ item_display_editor_gui_handler:
                     - narrate "<&[base]>Display item will glow now."
             - case glow_color:
                 - if <player.item_in_hand.has_flag[item_display_editor.glow_color]>:
-                    - adjust <[item_display]> display_entity_data:<[data].with[glow_color].as[<player.item_in_hand.flag[item_display_editor.glow_color]>]>
+                    - adjust <[item_display]> glow_color:<player.item_in_hand.flag[item_display_editor.glow_color]>
                     - stop
                 - flag <player> item_display_editor.chat_input expire:30s
                 - narrate "<&[base]>Type a RGB or HEX value in chat for the color. Example: 255,255,255 or #ffff00."
@@ -304,20 +305,20 @@ IDE_open_inventory:
     - inventory adjust slot:29 destination:<[inventory]> "lore:<&[lore]>Ignoring Blocks<&co> <[config.blocks].custom_color[emphasis]>"
     - if <player.has_flag[item_display_editor.selected_display]>:
         - define display_item <player.flag[item_display_editor.selected_display]>
-        - define data <[display_item].display_entity_data>
-        - inventory adjust slot:1 destination:<[inventory]> "lore:<&[lore]>Transformation<&co> <[data.item_transform].custom_color[emphasis]>"
-        - inventory adjust slot:2 destination:<[inventory]> "lore:<&[lore]>Billboard<&co> <[data.billboard].custom_color[emphasis]>"
-        - inventory adjust slot:3 destination:<[inventory]> "lore:<&[lore]>Rotation XL<&co> <[data.transformation_left_rotation].get[1].custom_color[emphasis]>"
-        - inventory adjust slot:4 destination:<[inventory]> "lore:<&[lore]>Rotation XR<&co> <[data.transformation_right_rotation].get[1].custom_color[emphasis]>"
+        - define data <[display_item].proc[IDE_get_data]>
+        - inventory adjust slot:1 destination:<[inventory]> "lore:<&[lore]>Transformation<&co> <[data.display].custom_color[emphasis]>"
+        - inventory adjust slot:2 destination:<[inventory]> "lore:<&[lore]>Billboard<&co> <[data.pivot].custom_color[emphasis]>"
+        - inventory adjust slot:3 destination:<[inventory]> "lore:<&[lore]>Rotation XL<&co> <[data.transformation_left_rotation].x.custom_color[emphasis]>"
+        - inventory adjust slot:4 destination:<[inventory]> "lore:<&[lore]>Rotation XR<&co> <[data.transformation_right_rotation].x.custom_color[emphasis]>"
         - inventory adjust slot:8 destination:<[inventory]> "lore:<&[lore]>Glowing<&co> <[display_item].has_flag[item_display_editor.glowing].custom_color[emphasis]>"
         - inventory adjust slot:9 destination:<[inventory]> "lore:<&[lore]>Glow color<&co> <&color[<[data.glow_color].if_null[white]>]>COLOR"
-        - inventory adjust slot:12 destination:<[inventory]> "lore:<&[lore]>Rotation YL<&co> <[data.transformation_left_rotation].get[2].custom_color[emphasis]>"
-        - inventory adjust slot:13 destination:<[inventory]> "lore:<&[lore]>Rotation YR<&co> <[data.transformation_right_rotation].get[2].custom_color[emphasis]>"
-        - inventory adjust slot:16 destination:<[inventory]> "lore:<&[lore]>Scale EW<&co> <[data.transformation_scale].x.custom_color[emphasis]>"
-        - inventory adjust slot:17 destination:<[inventory]> "lore:<&[lore]>Scale UD<&co> <[data.transformation_scale].y.custom_color[emphasis]>"
-        - inventory adjust slot:18 destination:<[inventory]> "lore:<&[lore]>Scale NS<&co> <[data.transformation_scale].z.custom_color[emphasis]>"
-        - inventory adjust slot:21 destination:<[inventory]> "lore:<&[lore]>Rotation ZL<&co> <[data.transformation_left_rotation].get[3].custom_color[emphasis]>"
-        - inventory adjust slot:22 destination:<[inventory]> "lore:<&[lore]>Rotation ZR<&co> <[data.transformation_right_rotation].get[3].custom_color[emphasis]>"
+        - inventory adjust slot:12 destination:<[inventory]> "lore:<&[lore]>Rotation YL<&co> <[data.transformation_left_rotation].y.custom_color[emphasis]>"
+        - inventory adjust slot:13 destination:<[inventory]> "lore:<&[lore]>Rotation YR<&co> <[data.transformation_right_rotation].y.custom_color[emphasis]>"
+        - inventory adjust slot:16 destination:<[inventory]> "lore:<&[lore]>Scale EW<&co> <[data.scale].x.custom_color[emphasis]>"
+        - inventory adjust slot:17 destination:<[inventory]> "lore:<&[lore]>Scale UD<&co> <[data.scale].y.custom_color[emphasis]>"
+        - inventory adjust slot:18 destination:<[inventory]> "lore:<&[lore]>Scale NS<&co> <[data.scale].z.custom_color[emphasis]>"
+        - inventory adjust slot:21 destination:<[inventory]> "lore:<&[lore]>Rotation ZL<&co> <[data.transformation_left_rotation].z.custom_color[emphasis]>"
+        - inventory adjust slot:22 destination:<[inventory]> "lore:<&[lore]>Rotation ZR<&co> <[data.transformation_right_rotation].z.custom_color[emphasis]>"
         - inventory adjust slot:25 destination:<[inventory]> "lore:<&[lore]>Location X<&co> <[display_item].location.x.round_to[4].custom_color[emphasis]>"
         - inventory adjust slot:26 destination:<[inventory]> "lore:<&[lore]>Location Y<&co> <[display_item].location.y.round_to[4].custom_color[emphasis]>"
         - inventory adjust slot:27 destination:<[inventory]> "lore:<&[lore]>Location Z<&co> <[display_item].location.z.round_to[4].custom_color[emphasis]>"
@@ -335,9 +336,9 @@ IDE_set_transformation_scale:
     type: task
     debug: false
     script:
-    - define transformation_scale <[data.transformation_scale]>
-    - adjust <[item_display]> display_entity_data:<[data].with[transformation_scale].as[<[transformation_scale].add[<[vector]>]>]>
-    - narrate "<&[base]>Transformation scale was set to: <[item_display].display_entity_data.get[transformation_scale].xyz.custom_color[emphasis]>"
+    - define transformation_scale <[data.scale]>
+    - adjust <[item_display]> scale:<[transformation_scale].add[<[vector]>]>
+    - narrate "<&[base]>Transformation scale was set to: <[item_display].scale.xyz.custom_color[emphasis]>"
 IDE_set_transformation_rotation:
     type: task
     debug: false
@@ -347,7 +348,11 @@ IDE_set_transformation_rotation:
         - flag <[item_display]> item_display_editor.<[type]>.angle:+:5
     - else:
         - flag <[item_display]> item_display_editor.<[type]>.angle:-:5
-    - adjust <[item_display]> display_entity_data:<[data].with[<[type]>].as[<[axis].proc[IDE_quaternion].context[<[item_display].flag[item_display_editor.<[type]>.angle]>]>]>
+    - narrate <[type]>
+    - if <[type]> == transformation_left_rotation:
+        - adjust <[item_display]> left_rotation:<[axis].proc[IDE_quaternion].context[<[item_display].flag[item_display_editor.<[type]>.angle]>]>
+    - else:
+        - adjust <[item_display]> right_rotation:<[axis].proc[IDE_quaternion].context[<[item_display].flag[item_display_editor.<[type]>.angle]>]>
 IDE_set_location:
     type: task
     debug: false
@@ -366,6 +371,19 @@ IDE_get_player_config:
         - if <[flag]> != null:
             - define config.<[key]> <[flag]>
     - determine <[config]>
+IDE_get_data:
+    type: procedure
+    debug: false
+    definitions: entity
+    data:
+        display: <[entity].display>
+        pivot: <[entity].pivot>
+        scale: <[entity].scale>
+        glow_color: <[entity].glow_color.if_null[WHITE]>
+        transformation_left_rotation: <[entity].left_rotation>
+        transformation_right_rotation: <[entity].right_rotation>
+    script:
+    - determine <script.parsed_key[data]>
 ## Quaternion math.
 IDE_quaternion:
     type: procedure
@@ -378,5 +396,5 @@ IDE_quaternion:
     - define y <[axis].get[2].mul[<[angle_div]>]>
     - define z <[axis].get[3].mul[<[angle_div]>]>
     - define w <[angle].div[2].cos>
-    - define axis <[x]>|<[y]>|<[z]>|<[w]>
+    - define axis <[x]>,<[y]>,<[z]>,<[w]>
     - determine <[axis]>
