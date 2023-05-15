@@ -1,0 +1,72 @@
+name: Bug Report
+description: Use this form to report a bug.
+labels: ["Bug"]
+body:
+  - type: checkboxes
+    attributes:
+      label: I confirm that...
+      description: Answer the questions. If the answer is not yes, do what it describes first.
+      options:
+        - label: "I have tested the reproducion steps on a vanilla client, with the Server-Resourcepack enabled."
+          required: true
+        - label: "Checked the issues page for similar issues. This Bug report won't be a duplicate."
+          required: true
+  - type: dropdown
+    id: project
+    attributes:
+      label: Script
+      description: What script do you create this Bug Report for?
+      options:
+        - Custom Crates
+        - Custom Name Droplets
+        - dCreative
+        - Flag Visualizer
+        - GriefPrevention to dPrevention Converter
+        - Hammer Time
+        - Item Display Editor
+        - Street Lights
+        - Player Exporter
+        - PreChunk
+        - Simple Sit
+        - WorldGuard Converter
+        - Lore Formatter
+        - Time Formatter
+        - Meteorite
+        - Metric Number
+        - Pyramid
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: Expected Behavior
+      description: Please tell us what you expect to happen.
+      placeholder: |-
+        A description of what you expected to happen.
+    validations:
+      required: true
+  - type: textarea
+    id: actual-behavior
+    attributes:
+      label: Actual Behavior
+      description: Please tell us what actual happened instead.
+      placeholder: |-
+        A description of what actually happened.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      description: Please explain what steps are required to reproduce the issue.
+      placeholder: |-
+        1. Login to the Server
+        2. Go to the Fisher and try to measure a fish.
+        3. Observe the bug.
+    validations:
+      required: true
+  - type: textarea
+    id: additional-information
+    attributes:
+      label: Additional Information
+      description: Please prove additional information that might help diagnose and understand the issue, such as images and videos.
+    validations:
+      required: false
