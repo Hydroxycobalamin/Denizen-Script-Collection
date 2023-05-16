@@ -255,7 +255,7 @@ item_display_editor_gui_handler:
         - ratelimit <player> 2t
         - if <player.item_in_hand> not matches item_display_editor_item:
             - stop
-        - define player_config <player.flag[item_display_editor.config]>
+        - define player_config <proc[IDE_get_player_config]>
         - define item_display <player.eye_location.ray_trace_target[entities=item_display;blocks=<[player_config.blocks]>;range=10;raysize=<[player_config.size]>].if_null[null]>
         # If no display item is in range. Remove the glowing and the flag.
         - define display_item <player.flag[item_display_editor.selected_display].if_null[<player>]>
