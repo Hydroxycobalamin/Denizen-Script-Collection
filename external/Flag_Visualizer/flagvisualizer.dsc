@@ -8,6 +8,43 @@
 #   https://github.com/Hydroxycobalamin/Denizen-Script-Collection/wiki/Flag-Visualizer   #
 #                                                                                        #
 ##########################################################################################
+
+## <--[information]
+## @name Flag Visualizer Commands
+## @group Flag Visualizer
+## @description
+## Data Gathering
+## To visualize location flags, data gathering is required. Newly gathered blocks will be automatically displayed as the specified material (default: bedrock) for 10 seconds.
+## You can gather data by flying around and using one of the following commands to start:
+##
+## # Gathers data for all blocks flagged with my.cool.sub.flag.path within a range of 50 blocks from the player's location. Flagged blocks will be shown as red_wool.
+## /visualizeflag search my.cool.sub.flag.path location red_wool
+##
+## # Gathers data for all blocks flagged with my.cool.sub.flag.path in the chunk the player is currently in. Flagged blocks will be shown as red_wool.
+## /visualizeflag search my.cool.sub.flag.path chunk red_wool
+##
+## # Gathers data for all blocks flagged with my_flag in the chunk the player is currently in. Flagged blocks will be shown as bedrock.
+## /visualizeflag search my_flag
+##
+## Once you have finished gathering data, use /visualizeflag again to stop gathering.
+##
+## Data Visualization
+## To display all the location flags you have gathered, use:
+##
+## # Shows all location flags gathered to the player for 1 minute (ignores unloaded chunks).
+## /visualizeflag show my_flag
+##
+## Clearing Data
+## To clear your data, you can use the following commands:
+##
+## # Clears the data of the my_flag flag for the player.
+## /visualizeflag clear my_flag
+##
+## # Clears all data and resets everything for the player.
+## /visualizeflag clearall
+##
+## -->
+
 flagvisualizer:
     type: command
     debug: false
