@@ -19,13 +19,13 @@
 ## @example
 ## # Creates a new progressbar with 20 | characters. 8 of them will be green, the rest will be gray.
 ## - definemap progressbar:
-##     element: |
+##     element: "|"
 ##     color: <green>
 ##     barColor: <gray>
 ##     size: 20
 ##     currentValue: 40
 ##     maxValue: 100
-## - narrate <[progressbar].proc[progressbar]>
+## - actionbar <[progressbar].proc[progressbar]>
 ## -->
 progressbar:
     type: procedure
