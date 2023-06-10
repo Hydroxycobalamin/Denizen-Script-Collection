@@ -8,6 +8,18 @@
 #     https://github.com/Hydroxycobalamin/Denizen-Script-Collection/wiki/MetricNumber    #
 #                                                                                        #
 ##########################################################################################
+
+## <--[procedure]
+## @attribute <ElementTag.proc[metric_number]>
+## @returns ElementTag
+## @description
+## Returns a formatted number.
+## @Group MetricNumber
+## @Script MetricNumber
+## @example
+## # Returns '250k'.
+## - narrate <element[250000].proc[metric_number]>
+## -->
 metric_number:
     type: procedure
     debug: false

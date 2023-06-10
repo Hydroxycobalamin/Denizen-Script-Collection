@@ -8,6 +8,30 @@
 #    https://github.com/Hydroxycobalamin/Denizen-Script-Collection/wiki/LoreFormatter    #
 #                                                                                        #
 ##########################################################################################
+
+## <--[procedure]
+## @attribute <ScriptTag.proc[format_lore]>
+## @returns ElementTag
+## @description
+## Returns a formatted lore. Should be used in an Item script.
+## @Group LoreFormatter
+## @Script LoreFormatter
+## @example
+## sample_item:
+##     type: item
+##     data:
+##         lore:
+##         - [line]
+##         - <gold>This is my fancy lore. It's especially long but I'd like to split it into more lines, but I'm to lazy to do that manually.
+##         - [line]
+##         - <bold>This is just bold text.
+##         - [line]
+##     material: stick
+##     display name: Fancy Stick
+##     lore:
+##     - <script[sample_item].proc[format_lore]>
+##
+## -->
 format_lore:
     type: procedure
     debug: false

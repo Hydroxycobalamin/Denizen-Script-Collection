@@ -8,6 +8,16 @@
 #      https://github.com/Hydroxycobalamin/Denizen-Script-Collection/wiki/Meteorite      #
 #                                                                                        #
 ##########################################################################################
+
+## <--[task]
+## @name fire_meteorite
+## @description
+## Spawns a meteorite that falls down near the linked player.
+## @Usage
+## Use to spawn a meteorite on a random player.
+## - run fire_meteorite player:<server.players.random>
+## @Script Meteorite
+## -->
 fire_meteorite:
     type: task
     description: This task fires a meteorite that crashes down on the world. Can be injected. Requires a linked player.

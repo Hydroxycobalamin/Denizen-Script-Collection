@@ -8,6 +8,25 @@
 #    https://github.com/Hydroxycobalamin/Denizen-Script-Collection/wiki/TimeFormatter    #
 #                                                                                        #
 ##########################################################################################
+
+## <--[procedure]
+## @attribute <ObjectTag.proc[format_time]>
+## @returns ElementTag
+## @description
+## Returns a formatted time.
+## @Group TimeFormatter
+## @Script TimerFormatter
+## @example
+## # Formats the players world time in a 12 hour format with period. Output: '02:10AM Night'
+## - narrate <player.world.proc[format_time].context[12|true]>
+##
+## # Formats the players time in a 12 hour format without period. Output: '02:10AM'
+## - narrate <player.proc[format_time].context[12]>
+##
+## # Formats a specific time in a 24 hour format with period. Output: '18:07 Day'
+## - narrate <element[12123].proc[format_time].context[24|true]>
+##
+## -->
 format_time:
     type: procedure
     debug: false
