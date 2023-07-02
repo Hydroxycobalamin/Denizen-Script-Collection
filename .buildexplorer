@@ -1,16 +1,118 @@
 {
-  "projects": [
-    {
-      "name": "Custom Name Droplets",
-      "paths": [
-        "external/Custom_Name_Droplets"
-      ]
-    },
-    {
-      "name": "dCreative",
-      "paths": [
-        "external/dCreative"
-      ]
-    }
-  ]
+    "projects": [
+        {
+            "name": "Custom Name Droplets",
+            "paths": [
+                "external/Custom_Name_Droplets"
+            ]
+        },
+        {
+            "name": "dCreative",
+            "paths": [
+                "external/dCreative"
+            ]
+        },
+        {
+            "name": "Custom Crates",
+            "paths": [
+                "external/Custom_Creates"
+            ]
+        },
+        {
+            "name": "Flag Visualizer",
+            "paths": [
+                "external/Flag_Visualizer"
+            ]
+        },
+        {
+            "name": "GriefPrevention Converter",
+            "paths": [
+                "external/GPtodPConverter"
+            ]
+        },
+        {
+            "name": "Hammer Time",
+            "paths": [
+                "external/Hammer Time"
+            ]
+        },
+        {
+            "name": "Item Display Editor",
+            "paths": [
+                "external/Item_Display_Editor"
+            ]
+        },
+        {
+            "name": "Street Lights",
+            "paths": [
+                "external/Lights"
+            ]
+        },
+        {
+            "name": "Player Exporter",
+            "paths": [
+                "external/Player_Exporter"
+            ]
+        },
+        {
+            "name": "PreChunk",
+            "paths": [
+                "external/PreChunk"
+            ]
+        },
+        {
+            "name": "Simple Sit",
+            "paths": [
+                "external/SitScript"
+            ]
+        },
+        {
+            "name": "WorldGuard Converter",
+            "paths": [
+                "external/WorldGuard_Converter"
+            ]
+        },
+        {
+            "name": "Meteorite",
+            "paths": [
+                "scripter_utilities/Meteorite"
+            ]
+        },
+        {
+            "name": "Economy Parser",
+            "paths": [
+                "scripter_utilities/economy"
+            ]
+        },
+        {
+            "name": "Lore Formatter",
+            "paths": [
+                "scripter_utilities/format_lore"
+            ]
+        },
+        {
+            "name": "Time Formatter",
+            "paths": [
+                "scripter_utilities/format_time"
+            ]
+        },
+        {
+            "name": "MetricNumber",
+            "paths": [
+                "scripter_utilities/metric_number"
+            ]
+        },
+        {
+            "name": "Progressbar",
+            "paths": [
+                "scripter_utilities/progressbar"
+            ]
+        },
+        {
+            "name": "Pyramid",
+            "paths": [
+                "scripter_utilities/pyramid"
+            ]
+        }
+    ]
 }
