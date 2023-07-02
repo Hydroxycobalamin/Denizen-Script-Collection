@@ -1,0 +1,16 @@
+{
+  "projects": [
+    {
+      "name": "Custom Name Droplets",
+      "paths": [
+        "external/Custom_Name_Droplets"
+      ]
+    },
+    {
+      "name": "dCreative",
+      "paths": [
+        "external/Custom_Name_Droplets"
+      ]
+    }
+  ]
+}
