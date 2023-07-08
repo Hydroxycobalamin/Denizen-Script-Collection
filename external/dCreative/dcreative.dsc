@@ -2,7 +2,7 @@
 #                                                                                        #
 #                                        dCreative                                       #
 #                               A server-sided creative mode                             #
-#                Version: 1.1.0                            Author: Icecapade             #
+#                Version: 1.1.3                            Author: Icecapade             #
 #                                                                                        #
 #                                     Documentation:                                     #
 #      https://github.com/Hydroxycobalamin/Denizen-Script-Collection/wiki/dCreative      #
