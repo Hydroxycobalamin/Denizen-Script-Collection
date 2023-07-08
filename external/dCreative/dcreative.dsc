@@ -98,6 +98,10 @@ creative_handlers:
         - run creative_inventory_creation_helper def.items:<script[creative_data].data_key[inventory.<context.item.flag[type]>]> def.type:<context.item.flag[type]>
         after player left clicks item_flagged:denizen in creative_inventory:
         - run creative_inventory_creation_helper def.items:<util.scripts.filter[container_type.equals[item]].parse[name]> def.type:denizen
+        after player left clicks item_flagged:horns in creative_inventory:
+        - foreach ADMIRE_GOAT_HORN|CALL_GOAT_HORN|DREAM_GOAT_HORN|FEEL_GOAT_HORN|PONDER_GOAT_HORN|SEEK_GOAT_HORN|SING_GOAT_HORN|YEARN_GOAT_HORN as:instrument:
+            - define items:->:<item[goat_horn].with[instrument=<[instrument]>]>
+        - run creative_inventory_creation_helper def.items:<[items]> def.type:horns
         after player left clicks item_flagged:potions in creative_inventory:
         - foreach <server.potion_types> as:effect:
             - choose <[effect]>:
@@ -251,6 +255,7 @@ creative_inventory:
         weapons_and_armor: <item[iron_sword].with_flag[type:weapons_and_armor].with[display=<&f>Weapons and Armor]>
         smithing_templates: <item[netherite_upgrade_smithing_template].with_flag[type:smithing_templates].with[display=<&f>Smithing Templates]>
         pottery: <item[decorated_pot].with_flag[type:pottery].with[display=<&f>Pottery]>
+        horns: <item[goat_horn].with_flag[horns].with[display=<&f>Horns]>
         blocks: <item[grass_block].with_flag[type:blocks].with[display=<&f>Building Blocks]>
         copper: <item[copper_block].with_flag[type:copper].with[display=<&color[#c9803c]>Copper]>
         container: <item[chest].with_flag[type:container].with[display=<&f>Container]>
@@ -277,9 +282,9 @@ creative_inventory:
     - define shortcuts <[shortcuts].replace[<empty>].with[<[book]>]>
     - determine <[shortcuts]>
     slots:
-    - [trees_and_logs] [nature] [oceanic] [brewing] [potions] [smithing_templates] [food] [tools] [weapons_and_armor]
-    - [glass] [terracotta] [wool] [enchanted_books] [pottery] [transport] [redstone] [light] [misc]
-    - [blocks] [ores] [copper] [air] [air] [fences_and_walls] [stairs_and_slabs] [container] [interactables]
+    - [trees_and_logs] [nature] [pottery] [oceanic] [brewing] [food] [tools] [weapons_and_armor] [smithing_templates]
+    - [glass] [terracotta] [wool] [enchanted_books] [potions] [transport] [redstone] [light] [misc]
+    - [blocks] [ores] [copper] [air] [horns] [fences_and_walls] [stairs_and_slabs] [container] [interactables]
     - [air] [air] [air] [air] [air] [air] [denizen] [special] [spawn_eggs]
     - [] [] [] [] [] [] [] [] [search]
     - [] [] [] [] [] [] [] [] []
@@ -292,7 +297,6 @@ creative_inventory_data:
 creative_data:
     type: data
     debug: false
-    #TODO: Add Goathorns
     inventory:
         trees_and_logs:
             - oak_sapling
