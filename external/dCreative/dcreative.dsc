@@ -129,13 +129,13 @@ creative_handlers:
             - define items:|:<util.list_numbers_to[<enchantment[<[enchantment]>].max_level>].parse_tag[enchanted_book[enchantments=[<[enchantment]>=<[parse_value]>]]]>
         - run creative_inventory_creation_helper def.items:<[items]> def.type:enchanted_books
         after player left clicks item_flagged:search in creative_inventory:
-        - flag <player> dcreative.search expire:30s
         - inventory close
-        - narrate "Enter the name of the material or script you searching for. You have 30 seconds."
-        on player chats flagged:dcreative.search:
+        - inventory open destination:generic[contents=paper[flag=dcreative.search;display=Search...];holder=anvil]
+        on player prepares anvil craft item_flagged:dcreative.search:
+        - determine passively 0
+        on player clicks item_flagged:dcreative.search in anvil:
         - determine cancelled passively
-        - flag <player> dcreative.search:!
-        - define matches <server.material_types.parse[item.material.name].include[<util.scripts.filter[data_key[type].equals[item]].parse[name]>].filter[contains_any_text[<context.message>]]>
+        - define matches <server.material_types.parse[item.material.name].include[<util.scripts.filter[data_key[type].equals[item]].parse[name]>].filter[contains_any_text[<context.item.display>]]>
         - if <[matches].is_empty>:
             - narrate "No Match! :("
             - inventory open d:creative_inventory
