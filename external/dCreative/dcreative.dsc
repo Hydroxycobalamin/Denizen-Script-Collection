@@ -249,6 +249,8 @@ creative_inventory:
         glass: <item[glass].with_flag[type:glass].with[display=<&f>Glass]>
         tools: <item[iron_pickaxe].with_flag[type:tools].with[display=<&f>Tools]>
         weapons_and_armor: <item[iron_sword].with_flag[type:weapons_and_armor].with[display=<&f>Weapons and Armor]>
+        smithing_templates: <item[netherite_upgrade_smithing_template].with_flag[type:smithing_templates].with[display=<&f>Smithing Templates]>
+        pottery: <item[decorated_pot].with_flag[type:pottery].with[display=<&f>Pottery]>
         blocks: <item[grass_block].with_flag[type:blocks].with[display=<&f>Building Blocks]>
         copper: <item[copper_block].with_flag[type:copper].with[display=<&color[#c9803c]>Copper]>
         container: <item[chest].with_flag[type:container].with[display=<&f>Container]>
@@ -275,8 +277,8 @@ creative_inventory:
     - define shortcuts <[shortcuts].replace[<empty>].with[<[book]>]>
     - determine <[shortcuts]>
     slots:
-    - [trees_and_logs] [nature] [oceanic] [brewing] [potions] [air] [food] [tools] [weapons_and_armor]
-    - [glass] [terracotta] [wool] [enchanted_books] [air] [transport] [redstone] [light] [misc]
+    - [trees_and_logs] [nature] [oceanic] [brewing] [potions] [smithing_templates] [food] [tools] [weapons_and_armor]
+    - [glass] [terracotta] [wool] [enchanted_books] [pottery] [transport] [redstone] [light] [misc]
     - [blocks] [ores] [copper] [air] [air] [fences_and_walls] [stairs_and_slabs] [container] [interactables]
     - [air] [air] [air] [air] [air] [air] [denizen] [special] [spawn_eggs]
     - [] [] [] [] [] [] [] [] [search]
@@ -299,6 +301,7 @@ creative_data:
             - jungle_sapling
             - acacia_sapling
             - dark_oak_sapling
+            - cherry_sapling
             - mangrove_propagule
             - oak_leaves
             - spruce_leaves
@@ -307,6 +310,7 @@ creative_data:
             - acacia_leaves
             - dark_oak_leaves
             - mangrove_leaves
+            - cherry_leaves
             - azalea_leaves
             - flowering_azalea_leaves
             - oak_log
@@ -316,6 +320,7 @@ creative_data:
             - acacia_log
             - dark_oak_log
             - mangrove_log
+            - cherry_log
             - mangrove_roots
             - muddy_mangrove_roots
             - crimson_stem
@@ -327,6 +332,7 @@ creative_data:
             - stripped_acacia_log
             - stripped_dark_oak_log
             - stripped_mangrove_log
+            - stripped_bamboo_block
             - stripped_crimson_stem
             - stripped_warped_stem
             - stripped_oak_wood
@@ -345,6 +351,7 @@ creative_data:
             - acacia_wood
             - dark_oak_wood
             - mangrove_wood
+            - cherry_wood
             - crimson_hyphae
             - warped_hyphae
             - oak_planks
@@ -354,6 +361,8 @@ creative_data:
             - acacia_planks
             - dark_oak_planks
             - mangrove_planks
+            - cherry_planks
+            - bamboo_planks
             - crimson_planks
             - warped_planks
         ores:
@@ -447,6 +456,12 @@ creative_data:
             - birch_slab
             - jungle_stairs
             - jungle_slab
+            - cherry_stairs
+            - cherry_slab
+            - bamboo_stairs
+            - bamboo_slab
+            - bamboo_mosaic_slab
+            - bamboo_mosaic_stairs
             - crimson_stairs
             - crimson_slab
             - warped_stairs
@@ -459,6 +474,10 @@ creative_data:
             - acacia_slab
             - dark_oak_stairs
             - dark_oak_slab
+            - mangrove_stairs
+            - mangrove_slab
+            - mud_brick_stairs
+            - mud_brick_slab
             - prismarine_stairs
             - prismarine_slab
             - prismarine_brick_stairs
@@ -557,6 +576,9 @@ creative_data:
             - jungle_door
             - acacia_door
             - dark_oak_door
+            - mangrove_door
+            - cherry_door
+            - bamboo_door
             - crimson_door
             - warped_door
             - iron_door
@@ -566,6 +588,9 @@ creative_data:
             - jungle_button
             - acacia_button
             - dark_oak_button
+            - mangrove_button
+            - cherry_button
+            - bamboo_button
             - crimson_button
             - warped_button
             - air
@@ -575,6 +600,9 @@ creative_data:
             - jungle_pressure_plate
             - acacia_pressure_plate
             - dark_oak_pressure_plate
+            - mangrove_pressure_plate
+            - cherry_pressure_plate
+            - bamboo_pressure_plate
             - crimson_pressure_plate
             - warped_pressure_plate
             - heavy_weighted_pressure_plate
@@ -584,6 +612,9 @@ creative_data:
             - jungle_trapdoor
             - acacia_trapdoor
             - dark_oak_trapdoor
+            - mangrove_trapdoor
+            - cherry_trapdoor
+            - bamboo_trapdoor
             - crimson_trapdoor
             - warped_trapdoor
             - iron_trapdoor
@@ -593,6 +624,9 @@ creative_data:
             - jungle_fence_gate
             - acacia_fence_gate
             - dark_oak_fence_gate
+            - mangrove_fence_gate
+            - cherry_fence_gate
+            - bamboo_fence_gate
             - crimson_fence_gate
             - warped_fence_gate
         transportation:
@@ -623,6 +657,10 @@ creative_data:
             - dark_oak_chest_boat
             - mangrove_boat
             - mangrove_chest_boat
+            - cherry_boat
+            - cherry_chest_boat
+            - bamboo_raft
+            - bamboo_chest_raft
         wool:
             - white_dye
             - orange_dye
@@ -823,9 +861,11 @@ creative_data:
             - jungle_sapling
             - acacia_sapling
             - dark_oak_sapling
-            - mangrove_sapling
+            - mangrove_propagule
+            - cherry_sapling
             - cobweb
             - flower_pot
+            - decorated_pot
             - grass
             - tall_grass
             - fern
@@ -851,6 +891,11 @@ creative_data:
             - lilac
             - rose_bush
             - peony
+            - pink_petals
+            - torchflower
+            - torchflower_seeds
+            - pitcher_plant
+            - pitcher_pod
             - wither_rose
             - spore_blossom
             - brown_mushroom
@@ -1050,6 +1095,33 @@ creative_data:
             - golden_horse_armor
             - diamond_horse_armor
             - leather_horse_armor
+        smithing_templates:
+            - coast_armor_trim_smithing_template
+            - dune_armor_trim_smithing_template
+            - eye_armor_trim_smithing_template
+            - netherite_upgrade_smithing_template
+            - raiser_armor_trim_smithing_template
+            - rib_armor_trim_smithing_template
+            - sentry_armor_trim_smithing_template
+            - silence_armor_trim_smithing_template
+            - shaper_armor_trim_smithing_template
+            - snout_armor_trim_smithing_template
+            - spire_armor_trim_smithing_template
+            - vex_armor_trim_smithing_template
+            - ward_armor_trim_smithing_template
+            - wayfinder_armor_trim_smithing_template
+            - wild_armor_trim_smithing_template
+        pottery:
+            - flower_pot
+            - decorated_pot
+            - plenty_pottery_sherd
+            - prize_pottery_sherd
+            - sheaf_pottery_sherd
+            - shelter_pottery_sherd
+            - snort_pottery_sherd
+            - skull_pottery_sherd
+            - suspicious_gravel
+            - suspicious_sand
         blocks:
             - stone
             - granite
@@ -1080,9 +1152,14 @@ creative_data:
             - dark_oak_planks
             - crimson_planks
             - warped_planks
+            - mangrove_planks
+            - cherry_planks
+            - bamboo_block
+            - bamboo_mosaic
             - bedrock
             - sand
             - red_sand
+            - suspicious_sand
             - gravel
             - ancient_debris
             - sandstone
@@ -1093,24 +1170,12 @@ creative_data:
             - smooth_sandstone
             - smooth_stone
             - bricks
+            - chiseled_bookshelf
             - bookshelf
             - mossy_cobblestone
             - purpur_block
             - purpur_pillar
-            - ancient_debris
-            - sandstone
-            - chiseled_sandstone
-            - cut_sandstone
-            - smooth_quartz
-            - smooth_red_sandstone
-            - smooth_sandstone
-            - smooth_stone
-            - bricks
-            - bookshelf
-            - mossy_cobblestone
             - obsidian
-            - purpur_block
-            - purpur_pillar
             - snow
             - ice
             - snow_block
@@ -1134,6 +1199,7 @@ creative_data:
             - mossy_stone_bricks
             - cracked_stone_bricks
             - chiseled_stone_bricks
+            - mud
             - packed_mud
             - mud_bricks
             - deepslate_bricks
@@ -1212,6 +1278,7 @@ creative_data:
             - chest
             - trapped_chest
             - barrel
+            - chiseled_bookshelf
             - shulker_box
             - white_shulker_box
             - orange_shulker_box
@@ -1247,6 +1314,7 @@ creative_data:
             - loom
             - composter
             - barrel
+            - chiseled_bookshelf
             - smoker
             - blast_furnace
             - cartography_table
@@ -1269,17 +1337,32 @@ creative_data:
             - jack_o_lantern
             - dried_kelp_block
             - oak_sign
+            - oak_hanging_sign
             - spruce_sign
+            - spruce_hanging_sign
             - birch_sign
+            - birch_hanging_sign
             - jungle_sign
+            - jungle_hanging_sign
             - acacia_sign
+            - acacia_hanging_sign
             - dark_oak_sign
+            - dark_oak_hanging_sign
+            - mangrove_sign
+            - mangrove_hanging_sign
+            - cherry_sign
+            - cherry_hanging_sign
+            - bamboo_sign
+            - bamboo_hanging_sign
             - crimson_sign
+            - crimson_hanging_sign
             - warped_sign
+            - warped_hanging_sign
         fences_and_walls:
             - cobblestone_wall
             - mossy_cobblestone_wall
             - brick_wall
+            - mud_brick_wall
             - prismarine_wall
             - red_sandstone_wall
             - mossy_stone_brick_wall
@@ -1304,6 +1387,9 @@ creative_data:
             - jungle_fence
             - acacia_fence
             - dark_oak_fence
+            - mangrove_fence
+            - cherry_fence
+            - bamboo_fence
             - crimson_fence
             - warped_fence
             - nether_brick_fence
@@ -1313,6 +1399,9 @@ creative_data:
             - jungle_fence_gate
             - acacia_fence_gate
             - dark_oak_fence_gate
+            - mangrove_fence_gate
+            - cherry_fence_gate
+            - bamboo_fence_gate
             - crimson_fence_gate
             - warped_fence_gate
         terracotta:
@@ -1357,6 +1446,7 @@ creative_data:
             - bee_spawn_egg
             - blaze_spawn_egg
             - cat_spawn_egg
+            - camel_spawn_egg
             - cave_spider_spawn_egg
             - chicken_spawn_egg
             - cod_spawn_egg
@@ -1366,9 +1456,11 @@ creative_data:
             - donkey_spawn_egg
             - drowned_spawn_egg
             - elder_guardian_spawn_egg
+            - ender_dragon_spawn_egg
             - enderman_spawn_egg
             - endermite_spawn_egg
             - evoker_spawn_egg
+            - iron_golem_spawn_egg
             - fox_spawn_egg
             - frog_spawn_egg
             - ghast_spawn_egg
@@ -1400,6 +1492,8 @@ creative_data:
             - silverfish_spawn_egg
             - skeleton_spawn_egg
             - skeleton_horse_spawn_egg
+            - sniffer_spawn_egg
+            - snow_golem_spawn_egg
             - slime_spawn_egg
             - spider_spawn_egg
             - squid_spawn_egg
@@ -1416,6 +1510,7 @@ creative_data:
             - wandering_trader_spawn_egg
             - witch_spawn_egg
             - wither_skeleton_spawn_egg
+            - wither_spawn_egg
             - wolf_spawn_egg
             - zoglin_spawn_egg
             - zombie_spawn_egg
@@ -1424,6 +1519,7 @@ creative_data:
             - zombified_piglin_spawn_egg
         misc:
             - beacon
+            - sniffer_egg
             - turtle_egg
             - conduit
             - scute
@@ -1481,6 +1577,7 @@ creative_data:
             - chorus_fruit
             - popped_chorus_fruit
             - beetroot_seeds
+            - torchflower_seeds
             - shulker_shell
             - music_disc_13
             - music_disc_cat
@@ -1489,6 +1586,7 @@ creative_data:
             - music_disc_far
             - music_disc_mall
             - music_disc_mellohi
+            - music_disc_relic
             - music_disc_stal
             - music_disc_strad
             - music_disc_ward
@@ -1508,6 +1606,7 @@ creative_data:
             - player_head
             - zombie_head
             - creeper_head
+            - piglin_head
             - dragon_head
         special:
             - barrier
