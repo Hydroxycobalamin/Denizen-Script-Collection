@@ -71,6 +71,9 @@ hammer_handler:
         - run <script> path:stop_effect
         after player scrolls their hotbar item:!*_hammer flagged:hammer.effect.slow_digging:
         - run <script> path:stop_effect
+        on player prepares smithing netherite_hammer:
+        - if <context.inventory.slot[1].script.name.if_null[null]> != diamond_hammer || <context.inventory.slot[2]> not matches netherite_ingot:
+            - determine air
 hammer_durability_helper:
     type: task
     debug: false
@@ -290,6 +293,6 @@ netherite_hammer:
     recipes:
         1:
             type: smithing
-            base: diamond_hammer
+            base: material:diamond_pickaxe
             retain: display|enchantments
             upgrade: netherite_ingot
