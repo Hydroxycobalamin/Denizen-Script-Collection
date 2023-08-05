@@ -120,7 +120,7 @@ wooden_hammer:
             type: shaped
             input:
             - *_planks|*_planks|*_planks
-            - *_planks|*_planks|*_planks
+            - *_planks|stick|*_planks
             - air|stick|air
 stone_hammer:
     type: item
