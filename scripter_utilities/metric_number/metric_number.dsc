@@ -30,8 +30,7 @@ metric_number:
         1000: k
     definitions: number
     script:
-    - define length <[number].abs.log[10].round>
     - foreach <script.data_key[data]> key:div as:suffix:
-        - if <[length]> >= <[div].length.sub[1]>:
+        - if <[number].div[<[div]>].abs> >= 1:
             - determine <[number].div[<[div]>].round_to[2]><[suffix]>
-    - determine <[number].div[1000].round_to[2]>k
+    - determine <[number]>
