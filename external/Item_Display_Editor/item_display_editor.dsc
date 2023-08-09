@@ -262,15 +262,15 @@ item_display_editor_gui_handler:
         - if <[item_display]> == null:
             - if <player.has_flag[item_display_editor.selected_display]>:
                 - if !<[display_item].has_flag[item_display_editor.glowing]>:
-                    - adjust <[display_item]> glowing:false
+                    - glow <[display_item]> false for:<player>
                 - flag <player> item_display_editor.selected_display:!
             - stop
         # If the player selected item is not equal the new item, remove the glowing from the old one and add it to the new one.
         - if <[display_item]> != <[item_display]> && !<[display_item].has_flag[item_display_editor.glowing]>:
-            - adjust <[display_item]> glowing:false
+            - glow <[display_item]> false for:<player>
             - flag <player> item_display_editor.selected_display:<[item_display]>
         - flag <player> item_display_editor.selected_display:<[item_display]>
-        - adjust <[item_display]> glowing:true
+        - glow <[display_item]> true for:<player>
         on player scrolls their hotbar item:item_display_editor_item:
         - flag <player> item_display_editor.in_selection
         on player scrolls their hotbar item:!item_display_editor_item flagged:item_display_editor.in_selection:
