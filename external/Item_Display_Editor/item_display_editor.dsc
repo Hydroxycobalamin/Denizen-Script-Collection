@@ -199,17 +199,17 @@ item_display_editor_selector:
                             - narrate "<&[base]>Group '<player.flag[item_display_editor.groups].get[index].get[name].custom_color[emphasis]>' got removed because it does not contain display entities anymore."
                     - remove <[item_display]>
                 - case right-x:
-                    - run IDE_set_transformation_rotation def.item_display:<[item_display]> def.data:<[data]> def.axis:<list[1|0|0]> def.type:transformation_right_rotation def.click_type:<[click_type]>
+                    - run IDE_set_transformation_rotation def.item_display:<[item_display]> def.data:<[data]> def.axis:<location[1,0,0]> def.type:transformation_right_rotation def.click_type:<[click_type]>
                 - case right-y:
-                    - run IDE_set_transformation_rotation def.item_display:<[item_display]> def.data:<[data]> def.axis:<list[0|1|0]> def.type:transformation_right_rotation def.click_type:<[click_type]>
+                    - run IDE_set_transformation_rotation def.item_display:<[item_display]> def.data:<[data]> def.axis:<location[0,1,0]> def.type:transformation_right_rotation def.click_type:<[click_type]>
                 - case right-z:
-                    - run IDE_set_transformation_rotation def.item_display:<[item_display]> def.data:<[data]> def.axis:<list[0|0|1]> def.type:transformation_right_rotation def.click_type:<[click_type]>
+                    - run IDE_set_transformation_rotation def.item_display:<[item_display]> def.data:<[data]> def.axis:<location[0,0,1]> def.type:transformation_right_rotation def.click_type:<[click_type]>
                 - case left-x:
-                    - run IDE_set_transformation_rotation def.item_display:<[item_display]> def.data:<[data]> def.axis:<list[1|0|0]> def.type:transformation_left_rotation def.click_type:<[click_type]>
+                    - run IDE_set_transformation_rotation def.item_display:<[item_display]> def.data:<[data]> def.axis:<location[1,0,0]> def.type:transformation_left_rotation def.click_type:<[click_type]>
                 - case left-y:
-                    - run IDE_set_transformation_rotation def.item_display:<[item_display]> def.data:<[data]> def.axis:<list[0|1|0]> def.type:transformation_left_rotation def.click_type:<[click_type]>
+                    - run IDE_set_transformation_rotation def.item_display:<[item_display]> def.data:<[data]> def.axis:<location[0,1,0]> def.type:transformation_left_rotation def.click_type:<[click_type]>
                 - case left-z:
-                    - run IDE_set_transformation_rotation def.item_display:<[item_display]> def.data:<[data]> def.axis:<list[0|0|1]> def.type:transformation_left_rotation def.click_type:<[click_type]>
+                    - run IDE_set_transformation_rotation def.item_display:<[item_display]> def.data:<[data]> def.axis:<location[0,0,1]> def.type:transformation_left_rotation def.click_type:<[click_type]>
                 - case reset:
                     - adjust <[item_display]> left_rotation:0,0,0,1
                     - adjust <[item_display]> right_rotation:0,0,0,1
@@ -332,14 +332,13 @@ IDE_set_transformation_rotation:
     definitions: item_display|data|axis|type|click_type
     script:
     - if <[click_type]> == LEFT:
-        - flag <[item_display]> item_display_editor.<[type]>.angle:+:5
+        - define angle 5
     - else:
-        - flag <[item_display]> item_display_editor.<[type]>.angle:-:5
-    - narrate <[type]>
+        - define angle -5
     - if <[type]> == transformation_left_rotation:
-        - adjust <[item_display]> left_rotation:<[axis].proc[IDE_quaternion].context[<[item_display].flag[item_display_editor.<[type]>.angle]>]>
+        - adjust <[item_display]> left_rotation:<[axis].to_axis_angle_quaternion[<[item_display].left_rotation.represented_angle.to_degrees.add[<[angle]>].to_radians>]>
     - else:
-        - adjust <[item_display]> right_rotation:<[axis].proc[IDE_quaternion].context[<[item_display].flag[item_display_editor.<[type]>.angle]>]>
+        - adjust <[item_display]> right_rotation:<[axis].to_axis_angle_quaternion[<[item_display].right_rotation.represented_angle.to_degrees.add[<[angle]>].to_radians>]>
 IDE_set_location:
     type: task
     debug: false
@@ -373,17 +372,3 @@ IDE_get_data:
         transformation_right_rotation: <[entity].right_rotation>
     script:
     - determine <script.parsed_key[data]>
-## Quaternion math.
-IDE_quaternion:
-    type: procedure
-    debug: false
-    definitions: axis|angle
-    script:
-    - define angle <[angle].to_radians>
-    - define angle_div <[angle].div[2].sin>
-    - define x <[axis].get[1].mul[<[angle_div]>]>
-    - define y <[axis].get[2].mul[<[angle_div]>]>
-    - define z <[axis].get[3].mul[<[angle_div]>]>
-    - define w <[angle].div[2].cos>
-    - define axis <[x]>,<[y]>,<[z]>,<[w]>
-    - determine <[axis]>
