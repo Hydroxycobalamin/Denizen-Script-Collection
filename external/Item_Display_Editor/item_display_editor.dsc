@@ -75,12 +75,12 @@ item_display_editor_command:
         - if <player.item_in_hand> matches item_display_editor_item:
             - flag <player> item_display_editor.in_selection
         - narrate "<&[base]>Click <&[emphasis]>F(swap items) <&[base]>after you selected an item display."
-    - else if <[argument]> == save_group:
+    - else if <[argument]> == save_group && <proc[IDE_get_player_group].any>:
         - choose <context.args.size>:
             - case 2:
                 - definemap group:
                     name: <context.args.get[2].escaped>
-                    displays: <player.flag[item_display_editor.selected_displays]>
+                    displays: <proc[IDE_get_player_group]>
                     uuid: <util.random_uuid>
             - case 3:
                 - define candles <server.material_types.filter[advanced_matches[*candle]].parse[name]>
@@ -90,11 +90,11 @@ item_display_editor_command:
                 - definemap group:
                     candle: <item[<context.args.get[3]>]>
                     name: <context.args.get[2].escaped>
-                    displays: <player.flag[item_display_editor.selected_displays]>
+                    displays: <proc[IDE_get_player_group]>
                     uuid: <util.random_uuid>
             - default:
                 - definemap group:
-                    displays: <player.flag[item_display_editor.selected_displays]>
+                    displays: <proc[IDE_get_player_group]>
                     uuid: <util.random_uuid>
         - flag <player> item_display_editor.groups:->:<[group]>
         - narrate "<&[base]>Group was sucessfully saved."
@@ -112,9 +112,12 @@ item_display_editor_selector:
     events:
         on player clicks block with:item_flagged:item_display_editor.type:
         - determine passively cancelled
-        - foreach <player.flag[item_display_editor.selected_displays].if_null[<player.flag[item_display_editor.selected_display]>].if_null[null]> as:item_display:
+        - foreach <player.flag[item_display_editor.selected_displays].if_null[<player.flag[item_display_editor.selected_display]>]> as:item_display:
             - if <[item_display]> == null:
                 - narrate "<&[error]>You don't have an item_display selected."
+                - stop
+            - if !<[item_display].proc[IDE_player_is_owner]>:
+                - narrate "<&[error]>This item does not belong to you."
                 - stop
             - define data <[item_display].proc[IDE_get_data]>
             - if <player.is_sneaking>:
@@ -185,9 +188,6 @@ item_display_editor_selector:
                     - narrate "<&[base]>Billboard set to <[transform].custom_color[emphasis]>."
                 # remove
                 - case remove:
-                    - if <[item_display].flag[owner].if_null[null]> != <player> && !<player.is_op>:
-                        - narrate "<&[error]>This item does not belong to you."
-                        - stop
                     - give <[item_display].item.with[quantity=1]>
                     - define groups <[item_display].flag[owner].if_null[<player>].flag[item_display_editor.groups]>
                     - define matches <[groups].find_all_matches[*<[item_display]>*]>
@@ -256,19 +256,21 @@ item_display_editor_selector:
         - define display_item <player.flag[item_display_editor.selected_display].if_null[<player>]>
         - if <[item_display]> == null:
             - if <player.has_flag[item_display_editor.selected_display]>:
-                - if !<[display_item].has_flag[item_display_editor.glowing]> && <player.flag[item_display_editor.selected_displays].if_null[<list>]> not contains <[display_item]>:
+                - if !<[display_item].has_flag[item_display_editor.glowing]> && <proc[IDE_get_player_group]> not contains <[display_item]>:
                     - glow <[display_item]> false for:<player>
                 - flag <player> item_display_editor.selected_display:!
             - stop
         # If the player selected item is not equal the new item, remove the glowing from the old one and add it to the new one.
-        - if <[display_item]> != <[item_display]> && !<[display_item].has_flag[item_display_editor.glowing]> && <player.flag[item_display_editor.selected_displays].if_null[<list>]> not contains <[display_item]>:
+        - if <[display_item]> != <[item_display]> && !<[display_item].has_flag[item_display_editor.glowing]> && <proc[IDE_get_player_group]> not contains <[display_item]>:
             - glow <[display_item]> false for:<player>
             - flag <player> item_display_editor.selected_display:<[item_display]>
         - flag <player> item_display_editor.selected_display:<[item_display]>
-        - if <player.flag[item_display_editor.selected_displays].if_null[<list>]> not contains <[display_item]>:
+        - if <proc[IDE_get_player_group]> not contains <[display_item]>:
             - glow <[display_item]> false for:<player>
         - glow <[item_display]> true for:<player>
         on player clicks block with:item_display_editor_item:
+        - determine cancelled passively
+        - ratelimit <player> 1t
         - if <context.item.has_flag[item_display_editor.type]>:
             - stop
         - define item_display <player.flag[item_display_editor.selected_display].if_null[null]>
@@ -277,6 +279,9 @@ item_display_editor_selector:
             - stop
         - define player_config <proc[IDE_get_player_config]>
         - if <[player_config.selector]> == multi:
+            - if !<[item_display].proc[IDE_player_is_owner]>:
+                    - narrate "<&[error]>This item does not belong to you."
+                    - stop
             - if <context.click_type.before[_]> == LEFT:
                 - flag <player> item_display_editor.selected_displays:->:<[item_display]>
                 - narrate "<&[base]>You've added a display to the group."
@@ -372,3 +377,16 @@ IDE_get_data:
         transformation_right_rotation: <[entity].right_rotation>
     script:
     - determine <script.parsed_key[data]>
+IDE_player_is_owner:
+    type: procedure
+    debug: false
+    definitions: item_display
+    script:
+    - if <[item_display].flag[owner].if_null[null]> != <player> && !<player.is_op>:
+        - determine false
+    - determine true
+IDE_get_player_group:
+    type: procedure
+    debug: false
+    script:
+    - determine <player.flag[item_display_editor.selected_displays].if_null[<list>]>

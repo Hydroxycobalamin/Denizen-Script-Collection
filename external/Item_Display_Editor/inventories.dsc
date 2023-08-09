@@ -45,11 +45,10 @@ item_display_editor_gui_handler:
         after player clicks item_flagged:item_display_editor.groups in item_display_editor_gui:
         - inject IDE_open_inventory_group_gui
         after player clicks item_flagged:item_display_editor.reset_item in item_display_editor_gui:
-        - if <player.has_flag[item_display_editor.selected_displays]>:
-            - foreach <player.flag[item_display_editor.selected_displays]> as:display:
-                - if !<[display].has_flag[item_display_editor.glowing]>:
-                    - glow <[display]> false for:<player>
-            - flag <player> item_display_editor.selected_displays:!
+        - foreach <proc[IDE_get_player_group]> as:display:
+            - if !<[display].has_flag[item_display_editor.glowing]>:
+                - glow <[display]> false for:<player>
+        - flag <player> item_display_editor.selected_displays:!
         - inventory flag slot:hand item_display_editor.type:!
         on player left|right clicks item_flagged:item_display_editor.config in item_display_editor_gui:
         - define config <context.item.flag[item_display_editor.config]>
@@ -177,10 +176,9 @@ item_display_editor_group_gui_handler:
             - if <[display].distance[<player.location>]> > 25:
                 - narrate "<&[error]>You're to faw away to select this group."
                 - stop
-        - if <player.has_flag[item_display_editor.selected_displays]>:
-            - foreach <player.flag[item_display_editor.selected_displays]> as:display:
-                - if !<[display].has_flag[item_display_editor.glowing]>:
-                    - glow <[display]> false for:<player>
+        - foreach <proc[IDE_get_player_group]> as:display:
+            - if !<[display].has_flag[item_display_editor.glowing]>:
+                - glow <[display]> false for:<player>
         - flag <player> item_display_editor.selected_displays:<[displays]>
         - glow <[displays]> true for:<player>
         after player SHIFT_RIGHT clicks item_flagged:group in item_display_editor_group_gui:
