@@ -283,6 +283,9 @@ item_display_editor_selector:
                     - narrate "<&[error]>This item does not belong to you."
                     - stop
             - if <context.click_type.before[_]> == LEFT:
+                - if <proc[IDE_get_player_group]> contains <[item_display]>:
+                    - narrate "<&[error]>This item is already selected."
+                    - stop
                 - flag <player> item_display_editor.selected_displays:->:<[item_display]>
                 - narrate "<&[base]>You've added a display to the group."
                 - glow <[item_display]> true for:<player>
