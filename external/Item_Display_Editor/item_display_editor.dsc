@@ -324,7 +324,10 @@ IDE_disable_selection:
     script:
     - if <player.has_flag[item_display_editor.selected_display]>:
         - if !<player.flag[item_display_editor.selected_display].has_flag[item_display_editor.glowing]>:
-            - adjust <player.flag[item_display_editor.selected_display]> glowing:false
+            - glow <player.flag[item_display_editor.selected_display]> false for:<player>
+    - foreach <proc[IDE_get_player_group]> as:display:
+        - if !<[display].has_flag[item_display_editor.glowing]>:
+            - glow <[display]> false for:<player>
     - flag <player> item_display_editor.selected_display:!
     - flag <player> item_display_editor.in_selection:!
 IDE_set_transformation_scale:
