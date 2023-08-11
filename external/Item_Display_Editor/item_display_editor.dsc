@@ -117,7 +117,7 @@ item_display_editor_selector:
     events:
         on player clicks block with:item_flagged:item_display_editor.type:
         - determine passively cancelled
-        - foreach <player.flag[item_display_editor.selected_displays].if_null[<player.flag[item_display_editor.selected_display]>]> as:item_display:
+        - foreach <player.flag[item_display_editor.selected_displays].if_null[<player.flag[item_display_editor.selected_display].if_null[null]>]> as:item_display:
             - if <[item_display]> == null:
                 - narrate "<&[error]>You don't have an item_display selected."
                 - stop
@@ -199,13 +199,14 @@ item_display_editor_selector:
                         - define group <[groups].get[<[index]>]>
                         - flag <player> item_display_editor.groups[<[index]>]:<[group].with[displays].as[<[group.displays].exclude[<[item_display]>]>]>
                         - if <player.flag[item_display_editor.groups].get[<[index]>].get[displays].is_empty>:
-                            - flag <player> item_display_editor.groups[<[index]>]:<-
                             - narrate "<&[base]>Group '<player.flag[item_display_editor.groups].get[index].get[name].custom_color[emphasis]>' got removed because it does not contain display entities anymore."
+                            - flag <player> item_display_editor.groups[<[index]>]:<-
                     - if !<[item_display].is_spawned>:
                         - narrate "<&[error]>Item Display is not spawned. Is it deleted already or the chunk not loaded?"
                         - stop
                     - give <[item_display].item.with[quantity=1]>
                     - remove <[item_display]>
+                    - inject IDE_disable_selection
                 - case right-x:
                     - run IDE_set_transformation_rotation def.item_display:<[item_display]> def.data:<[data]> def.axis:<location[1,0,0]> def.type:transformation_right_rotation def.click_type:<[click_type]>
                 - case right-y:

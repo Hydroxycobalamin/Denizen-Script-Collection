@@ -34,7 +34,7 @@ item_display_editor_gui:
         rotate-y: redstone_torch[flag=item_display_editor.type:rotate-y;display=<white>Rotate Group Y]
         paste: piston[flag=item_display_editor.type:paste;display=<white>PASTE]
         # reset_de
-        reset_item: barrier[flag=item_display_editor.reset_item;display=<white>Reset Item Display Editor Item]
+        reset-item: barrier[flag=item_display_editor.reset-item;display=<white>Reset Item Display Editor Item]
         # rotate Y
     slots:
     - [display] [pivot] [left-x] [right-x] [] [] [] [glowing] [glow_color]
@@ -42,14 +42,14 @@ item_display_editor_gui:
     - [remove] [] [left-z] [right-z] [reset] [] [x] [y] [z]
     - [] [] [] [] [] [] [] [] []
     - [] [] [] [] [rotate-y] [paste] [] [] []
-    - [size] [blocks] [selector] [] [groups] [reset_item] [] [] []
+    - [size] [blocks] [selector] [] [groups] [reset-item] [] [] []
 item_display_editor_gui_handler:
     type: world
     debug: false
     events:
         after player clicks item_flagged:item_display_editor.groups in item_display_editor_gui:
         - inject IDE_open_inventory_group_gui
-        after player clicks item_flagged:item_display_editor.reset_item in item_display_editor_gui:
+        after player clicks item_flagged:item_display_editor.reset-item in item_display_editor_gui:
         - foreach <proc[IDE_get_player_group]> as:display:
             - if !<[display].has_flag[item_display_editor.glowing]>:
                 - glow <[display]> false for:<player>
@@ -105,9 +105,9 @@ IDE_open_inventory:
     script:
     - define config <proc[IDE_get_player_config]>
     - define inventory <inventory[item_display_editor_gui]>
-    - inventory adjust slot:28 destination:<[inventory]> "lore:<&[lore]>Size<&co> <[config.size].custom_color[emphasis]>"
-    - inventory adjust slot:29 destination:<[inventory]> "lore:<&[lore]>Ignoring Blocks<&co> <[config.blocks].custom_color[emphasis]>"
-    - inventory adjust slot:30 destination:<[inventory]> "lore:<&[lore]>Selector Mode<&co> <[config.selector].custom_color[emphasis]>"
+    - inventory adjust slot:46 destination:<[inventory]> "lore:<&[lore]>Size<&co> <[config.size].custom_color[emphasis]>"
+    - inventory adjust slot:47 destination:<[inventory]> "lore:<&[lore]>Ignoring Blocks<&co> <[config.blocks].custom_color[emphasis]>"
+    - inventory adjust slot:48 destination:<[inventory]> "lore:<&[lore]>Selector Mode<&co> <[config.selector].custom_color[emphasis]>"
     - if <player.has_flag[item_display_editor.selected_display]>:
         - define display_item <player.flag[item_display_editor.selected_display]>
         - define data <[display_item].proc[IDE_get_data]>
