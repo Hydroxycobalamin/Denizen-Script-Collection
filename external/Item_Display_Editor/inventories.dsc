@@ -3,7 +3,7 @@ item_display_editor_gui:
     debug: false
     inventory: CHEST
     title: Item Display Editor
-    size: 36
+    size: 54
     gui: true
     definitions:
         display: armor_stand[flag=item_display_editor.type:display;display=<white>ITEM TRANSFORM]
@@ -31,12 +31,17 @@ item_display_editor_gui:
         selector: stick[flag=item_display_editor.config:selector;display=<white>Selector Mode]
         # groups
         groups: candle[flag=item_display_editor.groups;display=<white>Groups]
-        # reset_groups
+        rotate-y: redstone_torch[flag=item_display_editor.type:rotate-y;display=<white>Rotate Group Y]
+        paste: piston[flag=item_display_editor.type:paste;display=<white>PASTE]
+        # reset_de
         reset_item: barrier[flag=item_display_editor.reset_item;display=<white>Reset Item Display Editor Item]
+        # rotate Y
     slots:
     - [display] [pivot] [left-x] [right-x] [] [] [] [glowing] [glow_color]
     - [] [] [left-y] [right-y] [] [scale-all] [scale-east-west] [scale-up-down] [scale-north-south]
     - [remove] [] [left-z] [right-z] [reset] [] [x] [y] [z]
+    - [] [] [] [] [] [] [] [] []
+    - [] [] [] [] [rotate-y] [paste] [] [] []
     - [size] [blocks] [selector] [] [groups] [reset_item] [] [] []
 item_display_editor_gui_handler:
     type: world
@@ -131,9 +136,11 @@ item_display_editor_group_gui:
         - <gold>Left-Click<&co>
         - <&[base]>Selects the group.
         - <gold>Right-Click<&co>
-        - <&[base]>Renames the group
+        - <&[base]>Renames the group.
         - <gold>Shift-Rightclick<&co>
-        - <&[base]>Deletes the group
+        - <&[base]>Deletes the group.
+        - <gold>Shift-Leftclick<&co>
+        - <&[base]>Copies the group.
     inventory: CHEST
     title: Groups
     gui: true
@@ -170,36 +177,59 @@ item_display_editor_group_gui_handler:
         - inventory close
         - define displays <context.item.flag[group]>
         - foreach <[displays]> as:display:
-            - if !<[display].is_spawned>:
-                - narrate "<&[error]>You can't select this group because its not loaded."
-                - stop
-            - if <[display].distance[<player.location>]> > 25:
-                - narrate "<&[error]>You're to faw away to select this group."
+            - if !<[display].proc[IDE_group_can_selected]>:
+                - narrate "<&[error]>You can't select this group because its not loaded or you are too far away."
                 - stop
         - foreach <proc[IDE_get_player_group]> as:display:
             - if !<[display].has_flag[item_display_editor.glowing]>:
                 - glow <[display]> false for:<player>
         - flag <player> item_display_editor.selected_displays:<[displays]>
+        - flag <player> item_display_editor.origin:<context.item.flag[origin]>
         - glow <[displays]> true for:<player>
         after player SHIFT_RIGHT clicks item_flagged:group in item_display_editor_group_gui:
         - inventory close
         - define inventory <inventory[item_display_editor_anvil_gui]>
         - inventory set destination:<[inventory]> slot:1 "origin:paper[lore=<&[lore]>Type DELETE to delete the claim;flag=uuid:<context.item.flag[uuid]>;flag=type:delete]"
         - inventory open destination:<[inventory]>
-        after player left clicks item_flagged:group in item_display_editor_group_gui:
+        after player right clicks item_flagged:group in item_display_editor_group_gui:
         - inventory close
         - define inventory <inventory[item_display_editor_anvil_gui]>
         - inventory set destination:<[inventory]> slot:1 "origin:paper[lore=<&[lore]>Type the new name into the field.;flag=uuid:<context.item.flag[uuid]>;flag=type:rename]"
         - inventory open destination:<[inventory]>
+        after player SHIFT_LEFT clicks item_flagged:group in item_display_editor_group_gui:
+        - inventory close
+        - define displays <context.item.flag[group]>
+        - foreach <[displays]> as:display:
+            - if !<[display].proc[IDE_group_can_selected]>:
+                - narrate "<&[error]>You can't copy this group because its not loaded or you are too far away."
+                - stop
+            - define items:->:<[display].item.material.name>
+            - definemap display_data:
+                vector: <context.item.flag[origin].sub[<[display].flag[item_display_editor.initial_location]>]>
+                properties:
+                    display: <[display].display>
+                    item: <[display].item>
+                    glow_color: <[display].glow_color.if_null[white]>
+                    left_rotation: <[display].left_rotation>
+                    right_rotation: <[display].right_rotation>
+                    scale: <[display].scale>
+                    pivot: <[display].pivot>
+                    glowing: <[display].has_flag[item_display_editor.glowing]>
+            - define displays_data:->:<[display_data]>
+        - definemap place:
+            items: <[items]>
+            data: <[displays_data]>
+        - flag <player> item_display_editor.place_mode:<[place]>
+        - narrate "<&[base]>You have copied a group."
 IDE_open_inventory_group_gui:
     type: task
     debug: false
     script:
     - define inventory <inventory[item_display_editor_group_gui]>
-    - define groups <player.flag[item_display_editor.groups].parse_tag[<[parse_value.candle].if_null[<item[candle]>].with[display=<[parse_value.name].if_null[<white>Group]>].with_flag[group:<[parse_value.displays]>].with_flag[uuid:<[parse_value.uuid]>]>].if_null[air]>
+    - define groups <player.flag[item_display_editor.groups].parse_tag[<[parse_value.candle].if_null[<item[candle]>].with[display=<[parse_value.name].if_null[<white>Group]>].with_flag[group:<[parse_value.displays]>].with_flag[origin:<[parse_value.origin]>].with_flag[uuid:<[parse_value.uuid]>]>].if_null[air]>
     - define pages <[groups].sub_lists[36]>
     - inventory set slot:44 destination:<[inventory]> origin:<item[IDE_pager].with_flag[groups:<[pages]>]>
-    - inventory set slot:1 destination:<[inventory]> origin:<[pages].first>
+    - inventory set slot:1 destination:<[inventory]> origin:<[pages].first.if_null[air]>
     - inventory open destination:<[inventory]>
 IDE_pager:
     type: item
@@ -239,3 +269,13 @@ item_display_editor_anvil_gui_handler:
                 - flag <player> item_display_editor.groups[<[index]>]:<[match].with[name].as[<player.open_inventory.anvil_rename_text.parse_color>]>
                 - narrate "<&[base]>The group was renamed."
         - inventory close
+IDE_group_can_selected:
+    type: procedure
+    debug: false
+    definitions: display
+    script:
+    - if !<[display].is_spawned>:
+        - determine false
+    - if <[display].location.distance[<player.location>]> > 25:
+        - determine false
+    - determine true

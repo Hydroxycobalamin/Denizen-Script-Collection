@@ -82,6 +82,7 @@ item_display_editor_command:
                     name: <context.args.get[2].escaped>
                     displays: <proc[IDE_get_player_group]>
                     uuid: <util.random_uuid>
+                    origin: <player.location.with_pitch[0].with_yaw[0]>
             - case 3:
                 - define candles <server.material_types.filter[advanced_matches[*candle]].parse[name]>
                 - if <[candles]> not contains <context.args.get[3]>:
@@ -92,10 +93,14 @@ item_display_editor_command:
                     name: <context.args.get[2].escaped>
                     displays: <proc[IDE_get_player_group]>
                     uuid: <util.random_uuid>
+                    origin: <player.location.with_pitch[0].with_yaw[0]>
             - default:
                 - definemap group:
                     displays: <proc[IDE_get_player_group]>
                     uuid: <util.random_uuid>
+                    origin: <player.location.with_pitch[0].with_yaw[0]>
+        - foreach <proc[IDE_get_player_group]> as:display:
+            - flag <[display]> item_display_editor.initial_location:<[display].location>
         - flag <player> item_display_editor.groups:->:<[group]>
         - narrate "<&[base]>Group was sucessfully saved."
     - else:
@@ -188,7 +193,6 @@ item_display_editor_selector:
                     - narrate "<&[base]>Billboard set to <[transform].custom_color[emphasis]>."
                 # remove
                 - case remove:
-                    - give <[item_display].item.with[quantity=1]>
                     - define groups <[item_display].flag[owner].if_null[<player>].flag[item_display_editor.groups]>
                     - define matches <[groups].find_all_matches[*<[item_display]>*]>
                     - foreach <[matches]> as:index:
@@ -197,6 +201,10 @@ item_display_editor_selector:
                         - if <player.flag[item_display_editor.groups].get[<[index]>].get[displays].is_empty>:
                             - flag <player> item_display_editor.groups[<[index]>]:<-
                             - narrate "<&[base]>Group '<player.flag[item_display_editor.groups].get[index].get[name].custom_color[emphasis]>' got removed because it does not contain display entities anymore."
+                    - if !<[item_display].is_spawned>:
+                        - narrate "<&[error]>Item Display is not spawned. Is it deleted already or the chunk not loaded?"
+                        - stop
+                    - give <[item_display].item.with[quantity=1]>
                     - remove <[item_display]>
                 - case right-x:
                     - run IDE_set_transformation_rotation def.item_display:<[item_display]> def.data:<[data]> def.axis:<location[1,0,0]> def.type:transformation_right_rotation def.click_type:<[click_type]>
@@ -230,6 +238,29 @@ item_display_editor_selector:
                         - stop
                     - flag <player> item_display_editor.chat_input expire:30s
                     - narrate "<&[base]>Type a RGB or HEX value in chat for the color. Example: 255,255,255 or #ffff00."
+                - case rotate-y:
+                    - inject IDE_group_rotate_y
+                - case paste:
+                    - ratelimit <player> 1t
+                    - if !<player.has_flag[item_display_editor.place_mode]>:
+                        - narrate "<&[error]>You must copy a group first."
+                        - stop
+                    - define location <player.eye_location.ray_trace[range=5].if_null[null]>
+                    - if <[location]> == null:
+                        - narrate "<&[error]>You can't place this group here."
+                        - stop
+                    - define place <player.flag[item_display_editor.place_mode]>
+                    - foreach <[place.items]> as:item:
+                        - if !<player.inventory.contains_item[<[item]>].quantity[<[place.items].count[<[item]>]>]>:
+                            - narrate "<&[error]>You can not place the group. You do not have enough ressources. (missing <[item].custom_color[emphasis]>)"
+                            - stop
+                    - foreach <[place.items]> as:item:
+                        - take item:<[item]>
+                    - foreach <[place.data]> as:display:
+                        - spawn <entity[item_display_editor_entity].with_map[<[display.properties]>]> <[location].add[<[display.vector]>]> save:entity
+                        - flag <entry[entity].spawned_entity> owner:<player>
+                    
+                    - narrate "<&[base]>Group was pasted sucessfully."
                 - default:
                     - debug error "<&[error]>Event misfired or flag value did not match. Value was: '<context.item.flag[item_display_editor.type].custom_color[emphasis]>'"
         on player chats flagged:item_display_editor.chat_input ignorecancelled:true priority:-100:
@@ -396,3 +427,37 @@ IDE_get_player_group:
     debug: false
     script:
     - determine <player.flag[item_display_editor.selected_displays].if_null[<list>]>
+IDE_group_rotate_y:
+    type: task
+    debug: false
+    script:
+    - define group <proc[IDE_get_player_group]>
+    - if <[group].is_empty>:
+        - narrate "<&[error]>No group selected."
+        - stop
+    # vector to origin position (player location) / origin should be a fixed point
+    - define origin <player.flag[item_display_editor.origin].if_null[null]>
+    - if <[origin]> == null:
+        - narrate "<&[error]>No origin is set. Did you forgot to select the group first? A group must be selected via GUI.
+        - stop
+    # click type
+    - if <[click_type]> == LEFT:
+        - define angle 5
+    - else:
+        - define angle -5
+    - foreach <[group]> as:display:
+        - define positions:->:<[origin].sub[<[display].flag[item_display_editor.initial_location]>]>
+    - foreach <[group]> as:display:
+        # rotate around origin position
+        - define rotation <[display].left_rotation.represented_angle.to_degrees.add[<[angle]>].to_radians>
+        ## ugly
+        - if <[rotation].to_degrees> > 180:
+            - define rotation <[rotation].sub[<element[180].to_radians>]>
+        - else if <[rotation].to_degrees> < 0:
+            - define rotation <[rotation].add[<element[180].to_radians>]>
+        - define location <[origin].add[<location[<[positions].get[<[loop_index]>].x>,0,0].rotate_around_y[<[rotation]>]>]>
+        - teleport <[display]> <[location]>
+        - adjust <[display]> left_rotation:<location[0,1,0].to_axis_angle_quaternion[<[rotation]>]>
+        - define degrees:->:<[rotation].to_degrees.round>
+    - narrate "Turned by <[angle]> degrees. Current degrees: <[degrees].comma_separated.custom_color[emphasis]>"
+    - stop
