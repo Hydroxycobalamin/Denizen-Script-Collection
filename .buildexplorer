@@ -113,6 +113,12 @@
             "paths": [
                 "scripter_utilities/pyramid"
             ]
+        },
+        {
+            "name": "Speech Bubbles",
+            "paths": [
+                "scripter_utilities/SpeechBubbles"
+            ]
         }
     ]
 }
