@@ -15,13 +15,8 @@
 ## @description
 ## Spawns a speech bubble
 ## @Usage
-## Use to spawn a speech bubble above the linked player.
-## speech_bubble_handler:
-##     type: world
-##     debug: false
-##     events:
-##         after player chats:
-##         - run speech_bubble_spawn def.text:<context.message.parse_color> def.recipients:<context.recipients>
+## # Use to spawn a speech bubble above the linked player.
+## - run speech_bubble_spawn def.text:<context.message.parse_color> def.recipients:<context.recipients>
 ## @Script SpeechBubbles
 ## -->
 speech_bubble_spawn:
