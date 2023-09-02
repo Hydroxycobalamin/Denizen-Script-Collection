@@ -11,6 +11,7 @@
 
 ## <--[task]
 ## @name speech_bubble_spawn
+## @input text:<ElementTag> recipients:<ListTag(PlayerTag)>
 ## @description
 ## Spawns a speech bubble
 ## @Usage
@@ -36,7 +37,7 @@ speech_bubble_spawn:
         - stop
     - foreach <[recipients].if_null[<list>]> as:player:
         - if !<[player].as[PlayerTag].exists>:
-            - debug error "<&[error]>Recipents do contain a non-player entity, ignoring them."
+            - debug error "<&[error]>Recipients do contain a non-player entity, ignoring them."
             - define recipients[<[loop_index]>]:<-
     - fakespawn speech_bubble[text=<[text]>] <player.location> players:<[recipients]> duration:9s save:bubble
     - run speech_bubble_fade_out def.entity:<entry[bubble].faked_entity>
