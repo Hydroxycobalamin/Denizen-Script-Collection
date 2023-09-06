@@ -30,6 +30,12 @@ metric_number:
         1000: k
     definitions: number
     script:
+    - if !<[number].exists>:
+        - debug error "<&[error]>No input given. This procedure requires a decimal input."
+        - determine null
+    - if !<[number].is_decimal>:
+        - debug error "<&[error]>Input is not a decimal. Did a tag not parse properly or did you input text? Input was: '<[number].custom_color[emphasis]>'."
+        - determine null
     - foreach <script.data_key[data]> key:div as:suffix:
         - if <[number].div[<[div]>].abs> >= 1:
             - determine <[number].div[<[div]>].round_to[2]><[suffix]>
