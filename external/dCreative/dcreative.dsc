@@ -65,6 +65,8 @@ creative_handlers:
         - define hotbar <player.inventory.slot[<util.list_numbers_to[9]>].parse[material.name]>
         - define slot <[hotbar].find[air]>
         - define item <player.cursor_on.material.item.if_null[<player.item_in_hand>]>
+        - if <[item].material.name> matches *torch*|*sign*:
+            - define item <[item].material.name.replace_text[wall_].as[ItemTag]>
         - if <[hotbar].contains[<[item].material.name>]>:
             - adjust <player> item_slot:<[hotbar].find[<[item].material.name>]>
             - stop
