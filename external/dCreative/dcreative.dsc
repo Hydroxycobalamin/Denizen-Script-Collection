@@ -56,9 +56,10 @@ creative_handlers:
         - determine cancelled
         on player item takes damage flagged:dcreative.active:
         - determine cancelled
-        after player places block flagged:dcreative.active:
-        - wait 1t
-        - give <context.material.item> slot:<player.held_item_slot>
+        after player right clicks !*air with:!air flagged:dcreative.active:
+        - if <context.item.quantity> > <player.item_in_hand.quantity>:
+            - give <context.item.material.name> slot:hand
+            - inventory update
         on player swaps items flagged:dcreative.active:
         - determine passively cancelled
         - wait 1t
