@@ -94,6 +94,9 @@ creative_handlers:
         - if <context.inventory.id_holder> != <player>:
             - stop
         - inventory open d:creative_inventory
+        after player left clicks in inventory with:!air:
+        - if <context.slot_type> == RESULT && <context.item.material.name> == air:
+            - adjust <player> item_on_cursor:air
         after player steps on block flagged:dcreative.active:
         - ratelimit <player> 2s
         - define barrier <player.location.find_blocks[barrier].within[30]>
