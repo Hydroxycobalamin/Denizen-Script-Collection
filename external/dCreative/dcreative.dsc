@@ -193,10 +193,11 @@ creative_handlers:
         - if <context.clicked_inventory.id_type> == PLAYER:
             - inventory set origin:air slot:<context.slot>
             - stop
-        - if !<player.inventory.can_fit[<[item]>].quantity[64]>:
-            - adjust <player> item_on_cursor:<[item].with[quantity=64]>
+        - define quantity <[item].material.max_stack_size>
+        - if !<player.inventory.can_fit[<[item]>].quantity[<[quantity]>]>:
+            - adjust <player> item_on_cursor:<[item].with[quantity=<[quantity]>]>
             - stop
-        - give <[item]> quantity:64
+        - give <[item]> quantity:<[quantity]>
 creative_inventory_creation_helper:
     type: task
     debug: false
