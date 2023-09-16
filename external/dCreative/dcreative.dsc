@@ -938,6 +938,11 @@ creative_data:
             - frogspawn
             - sculk_vein
             - pointed_dripstone
+            - dirt
+            - coarse_dirt
+            - rooted_dirt
+            - grass_block
+            - gravel
             - mossy_cobblestone
             - mossy_stone_bricks
             - mossy_cobblestone_wall
