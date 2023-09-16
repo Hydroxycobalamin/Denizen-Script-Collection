@@ -82,7 +82,7 @@ creative_handlers:
             - stop
         - inventory set slot:<[slot]> origin:<[item]>
         - adjust <player> item_slot:<[slot]>
-        after player left clicks !*air flagged:dcreative.active:
+        after player left clicks !*air with:!debug_stick flagged:dcreative.active:
         - ratelimit <context.location> 1t
         - wait 1t
         - define location <context.location>
