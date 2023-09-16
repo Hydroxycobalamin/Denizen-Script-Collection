@@ -158,7 +158,7 @@ creative_handlers:
         - if <context.item.flag[shortcuts]> == null:
             - stop
         - flag <player> dcreative.shortcuts.<context.item.flag[shortcuts]>:!
-        - inventory set slot:<context.slot> destination:<player.open_inventory> "origin:<item[writable_book].with_flag[shortcuts:null].with[display=Empty Shortcut;lore=<gray>Left click to set a shortcut]>"
+        - inventory set slot:<context.slot> destination:<player.open_inventory> origin:<item[writable_book].with_flag[shortcuts:null].with[display=Empty Shortcut;lore=<gray>Left click to set a shortcut]>
         - narrate "Shortcut <context.item.display> removed."
         on player chats flagged:dcreative.shortcuts.creation:
         - determine passively cancelled
@@ -167,7 +167,7 @@ creative_handlers:
             - flag <player> dcreative.shortcuts.creation:!
             - stop
         - narrate "Shortcut created."
-        - define name "<context.message.trim_to_character_set[abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890-_&# ]>"
+        - define name <context.message.trim_to_character_set[abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890-_&# ]>
         - definemap shortcut items:<player.inventory.list_contents> slot:<player.flag[dcreative.shortcuts.creation]>
         - flag <player> dcreative.shortcuts.<[name]>:<[shortcut]>
         - flag <player> dcreative.shortcuts.creation:!
@@ -240,52 +240,55 @@ creative_inventory:
     title: Creative
     gui: true
     definitions:
-        trees_and_logs: <item[oak_sapling].with_flag[type:trees_and_logs].with[display=<&color[#954520]>Trees and Logs]>
-        ores: <item[diamond_ore].with_flag[type:ores].with[display=<&color[#C0C0C0]>Ores]>
-        stairs_and_slabs: <item[stone_brick_stairs].with_flag[type:stairs_and_slabs].with[display=<&color[#999999]>Stairs and Slabs]>
-        redstone: <item[redstone].with_flag[type:redstone].with[display=<red>Redstone]>
-        transport: <item[powered_rail].with_flag[type:transportation].with[display=<&f>Transportation]>
-        wool: <item[white_wool].with_flag[type:wool].with[display=<&f>Wool and Colors]>
-        oceanic: <item[horn_coral].with_flag[type:oceanic].with[display=<aqua>Oceanic]>
-        light: <item[light[block_material=light[level=15]]].with_flag[type:light].with[display=<yellow>Light]>
-        nature: <item[poppy].with_flag[type:nature].with[display=<green>Nature]>
-        food: <item[apple].with_flag[type:food].with[display=<red>Food]>
-        glass: <item[glass].with_flag[type:glass].with[display=<&f>Glass]>
-        tools: <item[iron_pickaxe].with_flag[type:tools].with[display=<&f>Tools]>
-        weapons_and_armor: <item[iron_sword].with_flag[type:weapons_and_armor].with[display=<&f>Weapons and Armor]>
-        smithing_templates: <item[netherite_upgrade_smithing_template].with_flag[type:smithing_templates].with[display=<&f>Smithing Templates]>
-        pottery: <item[decorated_pot].with_flag[type:pottery].with[display=<&f>Pottery]>
-        horns: <item[goat_horn].with_flag[horns].with[display=<&f>Horns]>
-        blocks: <item[grass_block].with_flag[type:blocks].with[display=<&f>Building Blocks]>
-        copper: <item[copper_block].with_flag[type:copper].with[display=<&color[#c9803c]>Copper]>
-        container: <item[chest].with_flag[type:container].with[display=<&f>Container]>
-        interactables: <item[smoker].with_flag[type:interactables].with[display=<&f>Interactables]>
-        fences_and_walls: <item[oak_fence].with_flag[type:fences_and_walls].with[display=<&color[#bd9476]>Fences and Walls]>
-        terracotta: <item[terracotta].with_flag[type:terracotta].with[display=<&f>Terracotta]>
-        spawn_eggs: <item[axolotl_spawn_egg].with_flag[type:spawn_eggs].with[display=<&f>Spawn Eggs]>
-        misc: <item[lava_bucket].with_flag[type:misc].with[display=<&f>Miscellaneous]>
-        special: <item[barrier].with_flag[type:special].with[display=<light_purple>Special]>
-        banner: <item[red_banner].with_flag[type:banner].with[display=<&f>Banner]>
-        brewing: <item[brewing_stand].with_flag[type:brewing].with[display=<&f>Brewing]>
-        potions: <item[potion].with_flag[potions].with[display=<&f>Potions]>
-        enchanted_books: <item[enchanted_book].with_flag[enchanted_books].with[display=<dark_purple>Enchanted Books]>
-        denizen: <item[stick].with_flag[denizen:items].with[display=<yellow>Denizen]>
-        search: <item[spyglass].with_flag[search].with[display=<&f>Search]>
+        # Normal blocks
+        banner: red_banner[flag=type:banner;display=<&f>Banner]
+        blocks: grass_block[flag=type:blocks;display=<&f>Building Blocks]
+        brewing: brewing_stand[flag=type:brewing;display=<&f>Brewing]
+        concrete: white_concrete[flag=type:concrete;display=<&f>Concrete]
+        container: chest[flag=type:container;display=<&f>Container]
+        copper: copper_block[flag=type:copper;display=<&color[#c9803c]>Copper]
+        fences_and_walls: oak_fence[flag=type:fences_and_walls;display=<&color[#bd9476]>Fences and Walls]
+        food: apple[flag=type:food;display=<red>Food]
+        glass: glass[flag=type:glass;display=<&f>Glass]
+        horns: goat_horn[flag=type:horns;display=<&f>Horns]
+        interactables: smoker[flag=type:interactables;display=<&f>Interactables]
+        light: light[block_material=light[level=15];flag=type:light;display=<yellow>Light]
+        misc: lava_bucket[flag=type:misc;display=<&f>Miscellaneous]
+        nature: poppy[flag=type:nature;display=<green>Nature]
+        oceanic: horn_coral[flag=type:oceanic;display=<aqua>Oceanic]
+        ores: diamond_ore[flag=type:ores;display=<&color[#C0C0C0]>Ores]
+        pottery: decorated_pot[flag=type:pottery;display=<&f>Pottery]
+        redstone: redstone[flag=type:redstone;display=<red>Redstone]
+        smithing_templates: netherite_upgrade_smithing_template[flag=type:smithing_templates;display=<&f>Smithing Templates]
+        spawn_eggs: axolotl_spawn_egg[flag=type:spawn_eggs;display=<&f>Spawn Eggs]
+        special: barrier[flag=type:special;display=<light_purple>Special]
+        stairs_and_slabs: stone_brick_stairs[flag=type:stairs_and_slabs;display=<&color[#999999]>Stairs and Slabs]
+        terracotta: terracotta[flag=type:terracotta;display=<&f>Terracotta]
+        tools: iron_pickaxe[flag=type:tools;display=<&f>Tools]
+        transport: powered_rail[flag=type:transportation;display=<&f>Transportation]
+        trees_and_logs: oak_sapling[flag=type:trees_and_logs;display=<&color[#954520]>Trees and Logs]
+        weapons_and_armor: iron_sword[flag=type:weapons_and_armor;display=<&f>Weapons and Armor]
+        wool: white_wool[flag=type:wool;display=<&f>Wool and Colors]
+        # Special handler for special items
+        denizen: stick[flag=denizen:items;display=<yellow>Denizen]
+        enchanted_books: enchanted_book[flag=enchanted_books;display=<dark_purple>Enchanted Books]
+        potions: potion[flag=potions;display=<&f>Potions]
+        search: spyglass[flag=search;display=<&f>Search]
     procedural items:
-    - define book "<item[writable_book].with_flag[shortcuts:null].with[display=Empty Shortcut;lore=<gray>Left click to set a shortcut]>"
+    - define book <item[writable_book].with_flag[shortcuts:null].with[display=Empty Shortcut;lore=<gray>Left click to set a shortcut]>
     - define number_of_shortcuts <script.data_key[data.shortcuts]>
     - if !<player.flag[dcreative.shortcuts].exists> || <player.flag[dcreative.shortcuts].is_empty>:
         - determine <[book].repeat_as_list[<[number_of_shortcuts]>]>
     - define shortcuts <list.pad_right[<[number_of_shortcuts]>]>
     - foreach <player.flag[dcreative.shortcuts]> key:name as:shortcut:
-        - define shortcuts "<[shortcuts].set[<[book].with_flag[shortcuts:<[name]>].with[display=<[name].parse_color>;material=book;lore=<gray>Right click to remove the shortcut]>].at[<[shortcut.slot].sub[36]>]>"
+        - define shortcuts <[shortcuts].set[<[book].with_flag[shortcuts:<[name]>].with[display=<[name].parse_color>;material=book;lore=<gray>Right click to remove the shortcut]>].at[<[shortcut.slot].sub[36]>]>
     - define shortcuts <[shortcuts].replace[<empty>].with[<[book]>]>
     - determine <[shortcuts]>
     slots:
     - [trees_and_logs] [nature] [pottery] [oceanic] [brewing] [food] [tools] [weapons_and_armor] [smithing_templates]
     - [glass] [terracotta] [wool] [enchanted_books] [potions] [transport] [redstone] [light] [misc]
-    - [blocks] [ores] [copper] [air] [horns] [fences_and_walls] [stairs_and_slabs] [container] [interactables]
-    - [air] [air] [air] [air] [air] [air] [denizen] [special] [spawn_eggs]
+    - [blocks] [ores] [copper] [horns] [banner] [fences_and_walls] [stairs_and_slabs] [container] [interactables]
+    - [concrete] [air] [air] [air] [air] [air] [denizen] [special] [spawn_eggs]
     - [] [] [] [] [] [] [] [] [search]
     - [] [] [] [] [] [] [] [] []
 creative_inventory_data:
