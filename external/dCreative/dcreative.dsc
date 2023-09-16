@@ -94,7 +94,7 @@ creative_handlers:
         - if <context.inventory.id_holder> != <player>:
             - stop
         - inventory open d:creative_inventory
-        after player left clicks in inventory with:!air:
+        after player left clicks in inventory with:!air flagged:dcreative.active:
         - if <context.slot_type> == RESULT && <context.item.material.name> == air:
             - adjust <player> item_on_cursor:air
         after player steps on block flagged:dcreative.active:
@@ -149,6 +149,7 @@ creative_handlers:
         - inventory open destination:generic[contents=paper[flag=dcreative.search;display=Search...];holder=anvil]
         on player prepares anvil craft item_flagged:dcreative.search:
         - determine passively 0
+        - determine cancelled
         on player clicks item_flagged:dcreative.search in anvil:
         - determine cancelled passively
         - define matches <server.material_types.parse[item.material.name].include[<util.scripts.filter[data_key[type].equals[item]].parse[name]>].filter[contains_any_text[<context.item.display>]]>
