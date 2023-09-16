@@ -62,13 +62,20 @@ creative_handlers:
         on player swaps items flagged:dcreative.active:
         - determine passively cancelled
         - wait 1t
-        - define hotbar <player.inventory.slot[<util.list_numbers_to[9]>].parse[material.name]>
+        - define inventory <player.inventory>
+        - define hotbar <[inventory].slot[<util.list_numbers_to[9]>].parse[material.name]>
         - define slot <[hotbar].find[air]>
         - define item <player.cursor_on.material.item.if_null[<player.item_in_hand>]>
         - if <[item].material.name> matches *torch*|*sign*:
             - define item <[item].material.name.replace_text[wall_].as[ItemTag]>
         - if <[hotbar].contains[<[item].material.name>]>:
             - adjust <player> item_slot:<[hotbar].find[<[item].material.name>]>
+            - stop
+        - define inv_slot <[inventory].find_item[<[item].material.name>]>
+        - if <[inv_slot]> != -1:
+            - define item <[inventory].slot[<[inv_slot]>]>
+            - inventory set slot:<[inv_slot]> origin:<player.item_in_hand>
+            - inventory set slot:hand origin:<[item]>
             - stop
         - if <[slot]> <= 0:
             - inventory set slot:hand origin:<[item]>
