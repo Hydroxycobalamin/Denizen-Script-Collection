@@ -265,7 +265,6 @@ creative_inventory:
         fences_and_walls: oak_fence[flag=type:fences_and_walls;display=<&color[#bd9476]>Fences and Walls]
         food: apple[flag=type:food;display=<red>Food]
         glass: glass[flag=type:glass;display=<&f>Glass]
-        horns: goat_horn[flag=type:horns;display=<&f>Horns]
         interactables: smoker[flag=type:interactables;display=<&f>Interactables]
         light: light[block_material=light[level=15];flag=type:light;display=<yellow>Light]
         misc: lava_bucket[flag=type:misc;display=<&f>Miscellaneous]
@@ -287,6 +286,7 @@ creative_inventory:
         # Special handler for special items
         denizen: stick[flag=denizen:items;display=<yellow>Denizen]
         enchanted_books: enchanted_book[flag=enchanted_books;display=<dark_purple>Enchanted Books]
+        horns: goat_horn[flag=horns;display=<&f>Horns]
         potions: potion[flag=potions;display=<&f>Potions]
         search: spyglass[flag=search;display=<&f>Search]
     procedural items:
