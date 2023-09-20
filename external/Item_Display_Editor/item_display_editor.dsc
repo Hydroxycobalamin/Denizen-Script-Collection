@@ -193,13 +193,13 @@ item_display_editor_selector:
                     - narrate "<&[base]>Billboard set to <[transform].custom_color[emphasis]>."
                 # remove
                 - case remove:
-                    - define groups <[item_display].flag[owner].if_null[<player>].flag[item_display_editor.groups]>
+                    - define groups <[item_display].flag[owner].if_null[<player>].flag[item_display_editor.groups].if_null[<list>]>
                     - define matches <[groups].find_all_matches[*<[item_display]>*]>
                     - foreach <[matches]> as:index:
                         - define group <[groups].get[<[index]>]>
                         - flag <player> item_display_editor.groups[<[index]>]:<[group].with[displays].as[<[group.displays].exclude[<[item_display]>]>]>
                         - if <player.flag[item_display_editor.groups].get[<[index]>].get[displays].is_empty>:
-                            - narrate "<&[base]>Group '<player.flag[item_display_editor.groups].get[index].get[name].custom_color[emphasis]>' got removed because it does not contain display entities anymore."
+                            - narrate "<&[base]>Group '<player.flag[item_display_editor.groups].get[<[index]>].get[name].custom_color[emphasis]>' got removed because it does not contain display entities anymore."
                             - flag <player> item_display_editor.groups[<[index]>]:<-
                     - if !<[item_display].is_spawned>:
                         - narrate "<&[error]>Item Display is not spawned. Is it deleted already or the chunk not loaded?"
@@ -260,7 +260,6 @@ item_display_editor_selector:
                     - foreach <[place.data]> as:display:
                         - spawn <entity[item_display_editor_entity].with_map[<[display.properties]>]> <[location].add[<[display.vector]>]> save:entity
                         - flag <entry[entity].spawned_entity> owner:<player>
-                    
                     - narrate "<&[base]>Group was pasted sucessfully."
                 - default:
                     - debug error "<&[error]>Event misfired or flag value did not match. Value was: '<context.item.flag[item_display_editor.type].custom_color[emphasis]>'"
@@ -439,7 +438,7 @@ IDE_group_rotate_y:
     # vector to origin position (player location) / origin should be a fixed point
     - define origin <player.flag[item_display_editor.origin].if_null[null]>
     - if <[origin]> == null:
-        - narrate "<&[error]>No origin is set. Did you forgot to select the group first? A group must be selected via GUI.
+        - narrate "<&[error]>No origin is set. Did you forgot to select the group first? A group must be selected via GUI."
         - stop
     # click type
     - if <[click_type]> == LEFT:
