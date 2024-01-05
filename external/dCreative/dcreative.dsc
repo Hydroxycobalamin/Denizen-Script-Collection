@@ -139,7 +139,7 @@ creative_handlers:
         - determine cancelled
         on player clicks item_flagged:dcreative.search in anvil:
         - determine cancelled passively
-        - define matches <server.material_types.parse[item.material.name].include[<util.scripts.filter[data_key[type].equals[item]].parse[name]>].filter[contains_any_text[<context.item.display>]]>
+        - define matches <context.item.display.proc[creative_inventory_generate_all_items]>
         - if <[matches].is_empty>:
             - narrate "No Match! :("
             - inventory open d:creative_inventory
@@ -231,6 +231,19 @@ creative_inventory_creation_helper:
     - if <[has_opened].exists>:
         - stop
     - inventory open destination:<[destination]>
+creative_inventory_generate_all_items:
+    type: procedure
+    debug: false
+    definitions: search
+    script:
+    - define items.materials <server.material_types.parse[name]>
+    - define items.scripts <util.scripts.filter[container_type.equals[item]].parse[name.as[ItemTag]]>
+    - foreach <server.potion_types> as:effect:
+        - define items.potions:->:potion[potion_effects=[base_type=<[effect]>]]
+        - define items.splash_potions:->:splash_potion[potion_effects=[base_type=<[effect]>]]
+        - define items.lingering_potions:->:lingering_potion[potion_effects=[base_type=<[effect]>]]
+        - define items.tipped_arrows:->:tipped_arrow[potion_effects=[base_type=<[effect]>]]
+    - determine <[items].values.combine.filter[contains_any_text[<[search]>]]>
 creative_inventory:
     type: inventory
     debug: false
