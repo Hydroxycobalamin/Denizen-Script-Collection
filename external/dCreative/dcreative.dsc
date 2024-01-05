@@ -117,28 +117,9 @@ creative_handlers:
         - run creative_inventory_creation_helper def.items:<[items]> def.type:horns
         after player left clicks item_flagged:potions in creative_inventory:
         - foreach <server.potion_types> as:effect:
-            - choose <[effect]>:
-                # Not extendable potions
-                - case UNCRAFTABLE WATER MUNDANE THICK AWKWARD INSTANT_HEAL INSTANT_DAMAGE LUCK:
-                    - define potion_base [type=<[effect]>;upgraded=false;extended=false]
-                    - define potions:->:potion[potion_effects=<[potion_base]>]
-                    - define splash_potions:->:splash_potion[potion_effects=<[potion_base]>]
-                    - define lingering_potions:->:lingering_potion[potion_effects=<[potion_base]>]
-                # Not upgradable potions, but extendable
-                - case NIGHT_VISION INVISIBILITY FIRE_RESISTANCE WATER_BREATHING WEAKNESS SLOW_FALLING:
-                    - define potion_base [type=<[effect]>;upgraded=false;extended=false]
-                    - define extended [type=<[effect]>;upgraded=false;extended=true]
-                    - define potions:|:potion[potion_effects=<[potion_base]>]|potion[potion_effects=<[extended]>]
-                    - define splash_potions:|:splash_potion[potion_effects=<[potion_base]>]|splash_potion[potion_effects=<[extended]>]
-                    - define lingering_potions:|:lingering_potion[potion_effects=<[potion_base]>]|lingering_potion[potion_effects=<[extended]>]
-                # All other potions
-                - default:
-                    - define potion_base [type=<[effect]>;upgraded=false;extended=false]
-                    - define extended [type=<[effect]>;upgraded=false;extended=true]
-                    - define upgraded [type=<[effect]>;upgraded=true;extended=false]
-                    - define potions:|:potion[potion_effects=<[potion_base]>]|potion[potion_effects=<[upgraded]>]|potion[potion_effects=<[extended]>]
-                    - define splash_potions:|:splash_potion[potion_effects=<[potion_base]>]|splash_potion[potion_effects=<[upgraded]>]|splash_potion[potion_effects=<[extended]>]
-                    - define lingering_potions:|:lingering_potion[potion_effects=<[potion_base]>]|lingering_potion[potion_effects=<[upgraded]>]|lingering_potion[potion_effects=<[extended]>]
+            - define potions:->:potion[potion_effects=[base_type=<[effect]>]]
+            - define splash_potions:->:splash_potion[potion_effects=[base_type=<[effect]>]]
+            - define lingering_potions:->:lingering_potion[potion_effects=[base_type=<[effect]>]]
         - define items <[potions].include[<[splash_potions]>].include[<[lingering_potions]>]>
         - run creative_inventory_creation_helper def.items:<[items]> def.type:potions
         after player left clicks item_flagged:enchanted_books in creative_inventory:
