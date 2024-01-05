@@ -283,7 +283,7 @@ creative_inventory:
         weapons_and_armor: iron_sword[flag=type:weapons_and_armor;display=<&f>Weapons and Armor]
         wool: white_wool[flag=type:wool;display=<&f>Wool and Colors]
         # Special handler for special items
-        arrow: tipped_arrow[flag=arrows;display=<gold>Arrows;potion_effect=[base_type=UNCRAFTABLE]]
+        arrow: tipped_arrow[flag=arrows;display=<gold>Arrows;potion_effects=[base_type=UNCRAFTABLE]]
         denizen: stick[flag=denizen:items;display=<yellow>Denizen]
         enchanted_books: enchanted_book[flag=enchanted_books;display=<dark_purple>Enchanted Books]
         horns: goat_horn[flag=horns;display=<&f>Horns]
