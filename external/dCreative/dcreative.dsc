@@ -122,6 +122,11 @@ creative_handlers:
             - define lingering_potions:->:lingering_potion[potion_effects=[base_type=<[effect]>]]
         - define items <[potions].include[<[splash_potions]>].include[<[lingering_potions]>]>
         - run creative_inventory_creation_helper def.items:<[items]> def.type:potions
+        after player left clicks item_flagged:arrows in creative_inventory:
+        - define tipped_arrows:|:arrow|spectral_arrow
+        - foreach <server.potion_types> as:effect:
+            - define tipped_arrows:->:tipped_arrow[potion_effects=[base_type=<[effect]>]]
+        - run creative_inventory_creation_helper def.items:<[tipped_arrows]> def.type:arrow
         after player left clicks item_flagged:enchanted_books in creative_inventory:
         - foreach <server.enchantments> as:enchantment:
             - define items:|:<util.list_numbers_to[<enchantment[<[enchantment]>].max_level>].parse_tag[enchanted_book[enchantments=[<[enchantment]>=<[parse_value]>]]]>
@@ -265,6 +270,7 @@ creative_inventory:
         weapons_and_armor: iron_sword[flag=type:weapons_and_armor;display=<&f>Weapons and Armor]
         wool: white_wool[flag=type:wool;display=<&f>Wool and Colors]
         # Special handler for special items
+        arrow: tipped_arrow[flag=arrows;display=<gold>Arrows;potion_effect=[base_type=UNCRAFTABLE]]
         denizen: stick[flag=denizen:items;display=<yellow>Denizen]
         enchanted_books: enchanted_book[flag=enchanted_books;display=<dark_purple>Enchanted Books]
         horns: goat_horn[flag=horns;display=<&f>Horns]
@@ -283,8 +289,8 @@ creative_inventory:
     slots:
     - [trees_and_logs] [nature] [pottery] [oceanic] [brewing] [food] [tools] [weapons_and_armor] [smithing_templates]
     - [glass] [terracotta] [wool] [enchanted_books] [potions] [transport] [redstone] [light] [misc]
-    - [blocks] [ores] [copper] [horns] [banner] [fences_and_walls] [stairs_and_slabs] [container] [interactables]
-    - [concrete] [air] [air] [air] [air] [air] [denizen] [special] [spawn_eggs]
+    - [blocks] [ores] [copper] [horns] [arrow] [fences_and_walls] [stairs_and_slabs] [container] [interactables]
+    - [concrete] [air] [air] [air] [banner] [air] [denizen] [special] [spawn_eggs]
     - [] [] [] [] [] [] [] [] [search]
     - [] [] [] [] [] [] [] [] []
 creative_inventory_data:
