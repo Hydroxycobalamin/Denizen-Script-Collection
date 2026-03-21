@@ -53,7 +53,7 @@ flagvisualizer:
     usage: /visualizeflag [show/search/clear/clearall] [flag_name] ({chunk}/location) (color/{white}) (stained_glass/{lime_stained_glass})
     tab completions:
         1: search|clear|show|clearall
-        2: <context.args.first.equals[clearall].if_true[<empty>].if_false[<player.flag[flagvisualizer.flagged].keys.if_null[<&lt>flag_name<&gt>]>]>
+        2: <context.args.first.equals[clearall].if_true[<empty>].if_false[<player.flag[flagvisualizer.flagged].keys.parse[unescaped].if_null[<&lt>flag_name<&gt>]>]>
         3: <context.args.first.equals[search].if_true[chunk|location].if_false[<empty>]>
         4: <context.args.first.equals[search].if_true[&#ffffff].if_false[<empty>]>
         5: <context.args.first.equals[search].if_true[black_stained_glass|blue_stained_glass|brown_stained_glass|cyan_stained_glass|gray_stained_glass|green_stained_glass|light_blue_stained_glass|light_gray_stained_glass|lime_stained_glass|magenta_stained_glass|orange_stained_glass|pink_stained_glass|purple_stained_glass|red_stained_glass|white_stained_glass|yellow_stained_glass].if_false[<empty>]>
@@ -82,7 +82,7 @@ flagvisualizer:
                         - narrate "Showing entities <[flag_name].color[gold]> was cancelled!" format:flagvisualizer_format
                         - stop
                     # Don't show anything if no data was gathered.
-                    - define flag_data <player.flag[flagvisualizer.flagged.<[flag_name]>].if_null[null]>
+                    - define flag_data <player.flag[flagvisualizer.flagged.<[flag_name].escaped>].if_null[null]>
                     - if <[flag_data]> == null:
                         - narrate "There's no flag data for <[flag_name].color[gold]> stored. Populate data first with <element[/visualizeflag search flag_name].on_click[/visualizeflag search ].type[SUGGEST_COMMAND].on_hover[<gold>Click to prewrite the command]>" format:flagvisualizer_format
                         - stop
@@ -104,7 +104,7 @@ flagvisualizer:
                 # Clear data for a specific flag.
                 - case clear:
                     - narrate "Data cleared for <[flag_name].color[gold]>" format:flagvisualizer_format
-                    - flag <player> flagvisualizer.flagged.<[flag_name]>:!
+                    - flag <player> flagvisualizer.flagged.<[flag_name].escaped>:!
                 # Gather data of a specific flag.
                 - case search:
                     - run flagvisualizer_start_search def.flag_name:<[flag_name]> def.mode:chunk
@@ -142,8 +142,8 @@ flagvisualizer_start_search:
     # Start the search.
     - definemap search flag:<[flag_name]> mode:<[mode]> color:<[valid_color]> material:<[valid_material]>
     - flag <player> flagvisualizer.search:<[search]>
-    - flag <player> flagvisualizer.flagged.<[flag_name]>.color:<[valid_color]>
-    - flag <player> flagvisualizer.flagged.<[flag_name]>.material:<[valid_material]>
+    - flag <player> flagvisualizer.flagged.<[flag_name].escaped>.color:<[valid_color]>
+    - flag <player> flagvisualizer.flagged.<[flag_name].escaped>.material:<[valid_material]>
     - narrate "Searching for blocks flagged <[flag_name].color[gold]>! <gold>Mode:<[mode]>" format:flagvisualizer_format
 flagvisualizer_search_handler:
     type: world
@@ -157,14 +157,14 @@ flagvisualizer_search_handler:
             - define locations <context.location.find_blocks_flagged[<[search.flag]>].within[50].parse[round_down]>
         - else:
             - define locations <context.location.chunk.blocks_flagged[<[search.flag]>]>
-        - define locations <[locations].exclude[<player.flag[flagvisualizer.flagged.<[search.flag]>.locations].if_null[<list>]>]>
+        - define locations <[locations].exclude[<player.flag[flagvisualizer.flagged.<[search.flag].escaped>.locations].if_null[<list>]>]>
         - if <[locations].is_empty>:
             - stop
         # Display debugblocks.
         - run flagvisualizer_show_blocks def.locations:<[locations]> def.flag_name:<[search.flag]> def.color:<[search.color]> def.material:<[search.material]>
         - narrate "<[locations].size.color[gold]> new blocks flagged with <[search.flag].color[gold]> found!" format:flagvisualizer_format
         - narrate <element[Click to show all locations].on_click[/visualizeflag show <[search.flag]>].on_hover[<gold>Click]> format:flagvisualizer_format
-        - flag <player> flagvisualizer.flagged.<[search.flag]>.locations:|:<[locations]>
+        - flag <player> flagvisualizer.flagged.<[search.flag].escaped>.locations:|:<[locations]>
 flagvisualizer_teleport:
     type: task
     debug: false
