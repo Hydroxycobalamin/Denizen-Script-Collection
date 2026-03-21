@@ -66,7 +66,7 @@ flagvisualizer:
         - case 1:
             # Clear all data.
             - if <context.args.first> != clearall:
-                - narrate "Syntax: <gold><script.data_key[usage]>" format:flagvisualizer_format
+                - narrate "Syntax: <script.data_key[usage].custom_color[emphasis]>." format:flagvisualizer_format
                 - stop
             - narrate "All data was cleared." format:flagvisualizer_format
             - flag <player> flagvisualizer:!
@@ -79,17 +79,17 @@ flagvisualizer:
                     - if <[faked_entities].any>:
                         - foreach <[faked_entities]> as:faked_entity:
                             - fakespawn <[faked_entity]> cancel
-                        - narrate "Showing entities <[flag_name].color[gold]> was cancelled!" format:flagvisualizer_format
+                        - narrate "Showing entities for flag:<[flag_name].custom_color[emphasis]> was cancelled!" format:flagvisualizer_format
                         - stop
                     # Don't show anything if no data was gathered.
                     - define flag_data <player.flag[flagvisualizer.flagged.<[flag_name].escaped>].if_null[null]>
                     - if <[flag_data]> == null:
-                        - narrate "There's no flag data for <[flag_name].color[gold]> stored. Populate data first with <element[/visualizeflag search flag_name].on_click[/visualizeflag search ].type[SUGGEST_COMMAND].on_hover[<gold>Click to prewrite the command]>" format:flagvisualizer_format
+                        - narrate "There's no flag data for <[flag_name].custom_color[emphasis]> stored. Populate data first with <element[/visualizeflag search flag_name].on_click[/visualizeflag search ].type[SUGGEST_COMMAND].on_hover[Click to prewrite the command.].custom_color[emphasis]>" format:flagvisualizer_format
                         - stop
                     # Define flagged locations to show in loaded chunks.
                     - define locations <[flag_data.locations].filter[chunk.is_loaded].if_null[<list>]>
                     - if <[locations].is_empty>:
-                        - narrate "Loaded chunks don't contain blocks flagged with <[flag_name].color[gold]>!" format:flagvisualizer_format
+                        - narrate "Loaded chunks don't contain blocks flagged with <[flag_name].custom_color[emphasis]>!" format:flagvisualizer_format
                         - stop
                     # Create clickables to teleport to flagged locations.
                     - foreach <[locations]> as:location:
@@ -98,25 +98,25 @@ flagvisualizer:
                         - clickable flagvisualizer_teleport def.location:<[location]> for:<player> save:loc_<[loop_index]>
                         - define entry <[locations].get[<[loop_index]>]>
                         - define "clickables:->:<[entry].simple.on_click[<entry[loc_<[loop_index]>].command>].on_hover[Teleport to: <[entry].simple>]>"
-                    - narrate "<[locations].size.color[gold]> locations found. For the sake of clarity, only the first 32 entries are listed.<n>Locations: <[clickables].separated_by[<element[,].color[gold]> ]>" format:flagvisualizer_format
+                    - narrate "<[locations].size.custom_color[emphasis]> locations found. For the sake of clarity, only the first 32 entries are listed.<n>Locations: <[clickables].separated_by[<element[,].custom_color[emphasis]> ]>" format:flagvisualizer_format
                     # Display debugblocks.
                     - run flagvisualizer_show_blocks def.locations:<[locations]> def.flag_name:<[flag_name]> def.color:<[flag_data.color]> def.material:<[flag_data.material]>
                 # Clear data for a specific flag.
                 - case clear:
-                    - narrate "Data cleared for <[flag_name].color[gold]>" format:flagvisualizer_format
+                    - narrate "Data cleared for <[flag_name].custom_color[emphasis]>" format:flagvisualizer_format
                     - flag <player> flagvisualizer.flagged.<[flag_name].escaped>:!
                 # Gather data of a specific flag.
                 - case search:
                     - run flagvisualizer_start_search def.flag_name:<[flag_name]> def.mode:chunk
                 - default:
-                    - narrate "Syntax: <gold><script.data_key[usage]>" format:flagvisualizer_format
+                    - narrate "Syntax: <script.data_key[usage].custom_color[emphasis]>." format:flagvisualizer_format
         - case 3 4 5:
             - if <context.args.first> != search:
-                - narrate "Syntax: <gold><script.data_key[usage]>" format:flagvisualizer_format
+                - narrate "Syntax: <script.data_key[usage].custom_color[emphasis]>." format:flagvisualizer_format
                 - stop
             - run flagvisualizer_start_search def.flag_name:<context.args.get[2]> def.mode:<context.args.get[3]> def.color:<context.args.get[4].if_null[null]> def.material:<context.args.get[5].if_null[null]>
         - default:
-            - narrate "Syntax: <gold><script.data_key[usage]>" format:flagvisualizer_format
+            - narrate "Syntax: <script.data_key[usage].custom_color[emphasis]>" format:flagvisualizer_format
 flagvisualizer_start_search:
     type: task
     debug: false
@@ -134,17 +134,17 @@ flagvisualizer_start_search:
     # Define a color
     - define valid_color <&color[<[color].if_null[null]>].if_null[<&color[<[material].if_null[null]>].if_null[<white>]>]>
     # Define a material.
-    - define valid_material <[material].as[MaterialTag].if_null[<[color].as[MaterialTag].if_null[lime_stained_glass]>]>
+    - define valid_material <[material].as[MaterialTag].if_null[<[color].as[MaterialTag].if_null[<material[lime_stained_glass]>]>]>
     # Default to mode: chunk if an invalid mode was specified.
     - if !<script.data_key[data.valid_modes].contains[<[mode]>]>:
-        - narrate "<[mode].color[gold]> is not a valid mode. <gold>Default: chunk" format:flagvisualizer_format
+        - narrate "<[mode].custom_color[emphasis]> is not a valid mode. <&[emphasis]>Default: chunk<&[default]>." format:flagvisualizer_format
         - define mode chunk
     # Start the search.
     - definemap search flag:<[flag_name]> mode:<[mode]> color:<[valid_color]> material:<[valid_material]>
     - flag <player> flagvisualizer.search:<[search]>
     - flag <player> flagvisualizer.flagged.<[flag_name].escaped>.color:<[valid_color]>
     - flag <player> flagvisualizer.flagged.<[flag_name].escaped>.material:<[valid_material]>
-    - narrate "Searching for blocks flagged <[flag_name].color[gold]>! <gold>Mode:<[mode]>" format:flagvisualizer_format
+    - narrate "Searching for blocks flagged <[flag_name].custom_color[emphasis]>! <n><element[Mode: <[mode]> Material: <[valid_material].name> Color: <[valid_color]>█].custom_color[emphasis]>." format:flagvisualizer_format
 flagvisualizer_search_handler:
     type: world
     debug: false
@@ -162,8 +162,7 @@ flagvisualizer_search_handler:
             - stop
         # Display debugblocks.
         - run flagvisualizer_show_blocks def.locations:<[locations]> def.flag_name:<[search.flag]> def.color:<[search.color]> def.material:<[search.material]>
-        - narrate "<[locations].size.color[gold]> new blocks flagged with <[search.flag].color[gold]> found!" format:flagvisualizer_format
-        - narrate <element[Click to show all locations].on_click[/visualizeflag show <[search.flag]>].on_hover[<gold>Click]> format:flagvisualizer_format
+        - narrate "<[locations].size.custom_color[emphasis]> new blocks flagged with <[search.flag].custom_color[emphasis]> found!" format:flagvisualizer_format
         - flag <player> flagvisualizer.flagged.<[search.flag].escaped>.locations:|:<[locations]>
 flagvisualizer_teleport:
     type: task
@@ -171,7 +170,7 @@ flagvisualizer_teleport:
     definitions: location
     script:
     - teleport <[location]>
-    - narrate "You've been teleported to <[location].simple.color[gold]>!" format:flagvisualizer_format
+    - narrate "You've been teleported to <[location].simple.custom_color[emphasis]>!" format:flagvisualizer_format
 flagvisualizer_show_blocks:
     type: task
     debug: false
@@ -185,7 +184,7 @@ flagvisualizer_show_blocks:
 flagvisualizer_format:
     type: format
     debug: false
-    format: <yellow>[Flag Visualizer] <gray><[text]>
+    format: <yellow>[Flag Visualizer] <[text].custom_color[default]>
 flagvisualizer_debugblock_text:
     type: entity
     debug: false
