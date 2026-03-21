@@ -14,16 +14,16 @@
 ## @group Flag Visualizer
 ## @description
 ## Data Gathering
-## To visualize location flags, data gathering is required. Newly gathered blocks will be automatically displayed as the specified material (default: bedrock) for 10 seconds.
+## To visualize location flags, data gathering is required. Newly gathered blocks will be automatically displayed as the specified material (default: lime_stained_glass) for 1 minute. The color and material argument can be provided in any order.
 ## You can gather data by flying around and using one of the following commands to start:
 ##
-## # Gathers data for all blocks flagged with my.cool.sub.flag.path within a range of 50 blocks from the player's location. Flagged blocks will be shown as red_wool.
-## /visualizeflag search my.cool.sub.flag.path location red_wool
+## # Gathers data for all blocks flagged with my.cool.sub.flag.path within a range of 50 blocks from the player's location. Flagged blocks will be shown as lime_stained_glass with blue text.
+## /visualizeflag search my.cool.sub.flag.path location blue
 ##
-## # Gathers data for all blocks flagged with my.cool.sub.flag.path in the chunk the player is currently in. Flagged blocks will be shown as red_wool.
-## /visualizeflag search my.cool.sub.flag.path chunk red_wool
+## # Gathers data for all blocks flagged with my.cool.sub.flag.path in the chunk the player is currently in. Flagged blocks will be shown as red_stained_glass with white text.
+## /visualizeflag search my.cool.sub.flag.path chunk red_stained_glass
 ##
-## # Gathers data for all blocks flagged with my_flag in the chunk the player is currently in. Flagged blocks will be shown as bedrock.
+## # Gathers data for all blocks flagged with my_flag in the chunk the player is currently in. Flagged blocks will be shown as lime_stained_glass with white text.
 ## /visualizeflag search my_flag
 ##
 ## Once you have finished gathering data, use /visualizeflag again to stop gathering.
@@ -31,7 +31,7 @@
 ## Data Visualization
 ## To display all the location flags you have gathered, use:
 ##
-## # Shows all location flags gathered to the player for 1 minute (ignores unloaded chunks).
+## # Shows all location flags gathered to the player for 1 minute (ignores unloaded chunks). If the command is ran again, it will cancel for the specific flag.
 ## /visualizeflag show my_flag
 ##
 ## Clearing Data
@@ -50,7 +50,7 @@ flagvisualizer:
     debug: false
     name: visualizeflag
     description: Makes flagged locations visible.
-    usage: /visualizeflag [show/search/clear/clearall] [flag_name] ({chunk}/location) (color/{white}) (stained_glass/{lime_staned_glass})
+    usage: /visualizeflag [show/search/clear/clearall] [flag_name] ({chunk}/location) (color/{white}) (stained_glass/{lime_stained_glass})
     tab completions:
         1: search|clear|show|clearall
         2: <context.args.first.equals[clearall].if_true[<empty>].if_false[<player.flag[flagvisualizer.flagged].keys.if_null[<&lt>flag_name<&gt>]>]>
@@ -132,18 +132,18 @@ flagvisualizer_start_search:
         - flag <player> flagvisualizer.search:!
         - stop
     # Define a color
-    - define color <&color[<[color].if_null[null]>].if_null[<&color[white]>]>
+    - define valid_color <&color[<[color].if_null[null]>].if_null[<&color[<[material].if_null[null]>].if_null[<white>]>]>
     # Define a material.
-    - define material <[material].as[MaterialTag].if_null[lime_stained_glass]>
+    - define valid_material <[material].as[MaterialTag].if_null[<[color].as[MaterialTag].if_null[lime_stained_glass]>]>
     # Default to mode: chunk if an invalid mode was specified.
     - if !<script.data_key[data.valid_modes].contains[<[mode]>]>:
         - narrate "<[mode].color[gold]> is not a valid mode. <gold>Default: chunk" format:flagvisualizer_format
         - define mode chunk
     # Start the search.
-    - definemap search flag:<[flag_name]> mode:<[mode]> color:<[color]> material:<[material]>
+    - definemap search flag:<[flag_name]> mode:<[mode]> color:<[valid_color]> material:<[valid_material]>
     - flag <player> flagvisualizer.search:<[search]>
-    - flag <player> flagvisualizer.flagged.<[flag_name]>.color:<[color]>
-    - flag <player> flagvisualizer.flagged.<[flag_name]>.material:<[material]>
+    - flag <player> flagvisualizer.flagged.<[flag_name]>.color:<[valid_color]>
+    - flag <player> flagvisualizer.flagged.<[flag_name]>.material:<[valid_material]>
     - narrate "Searching for blocks flagged <[flag_name].color[gold]>! <gold>Mode:<[mode]>" format:flagvisualizer_format
 flagvisualizer_search_handler:
     type: world
