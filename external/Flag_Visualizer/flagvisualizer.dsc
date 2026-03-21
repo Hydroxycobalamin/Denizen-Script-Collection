@@ -154,7 +154,7 @@ flagvisualizer_search_handler:
         - define search <player.flag[flagvisualizer.search]>
         # If mode is location, search for flagged blocks within 50, else search for flagged blocks in the current chunk.
         - if <player.flag[flagvisualizer.search.mode]> == location:
-            - define locations <context.location.find_blocks_flagged[<[search.flag]>].within[50]>
+            - define locations <context.location.find_blocks_flagged[<[search.flag]>].within[50].parse[round_down]>
         - else:
             - define locations <context.location.chunk.blocks_flagged[<[search.flag]>]>
         - define locations <[locations].exclude[<player.flag[flagvisualizer.flagged.<[search.flag]>.locations].if_null[<list>]>]>
