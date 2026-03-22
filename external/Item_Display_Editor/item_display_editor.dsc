@@ -377,10 +377,11 @@ IDE_set_transformation_rotation:
         - define angle 5
     - else:
         - define angle -5
+    - define delta <[axis].to_axis_angle_quaternion[<[angle].to_radians>]>
     - if <[type]> == transformation_left_rotation:
-        - adjust <[item_display]> left_rotation:<[axis].to_axis_angle_quaternion[<[item_display].left_rotation.axis_angle_for[<[axis]>].to_degrees.add[<[angle]>].to_radians>]>
+        - adjust <[item_display]> left_rotation:<[item_display].left_rotation.mul[<[delta]>]>
     - else:
-        - adjust <[item_display]> right_rotation:<[axis].to_axis_angle_quaternion[<[item_display].right_rotation.axis_angle_for[<[axis]>].to_degrees.add[<[angle]>].to_radians>]>
+        - adjust <[item_display]> right_rotation:<[item_display].right_rotation.mul[<[delta]>]>
 IDE_set_location:
     type: task
     debug: false
