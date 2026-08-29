@@ -1,5 +1,5 @@
 ## <--[procedure]
-## @attribute <ObjectTag.proc[currency_parser]>
+## @attribute <ElementTag.proc[currency_parser]>
 ## @returns ElementTag
 ## @description
 ## Returns a number formatted in a currency.
