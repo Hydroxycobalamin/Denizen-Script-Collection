@@ -28,7 +28,7 @@
 ## - narrate "You have <player.money>!"
 ##
 ## # Basic usage
-## - narrate "<element[5928419264].proc[currency_parser]>"
+## - narrate <element[5928419264].proc[currency_parser]>
 ##
 ## -->
 currency_parser:
