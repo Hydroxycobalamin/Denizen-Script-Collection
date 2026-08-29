@@ -25,7 +25,7 @@
 ## - narrate "You have received <server.economy.format[60]>!"
 ##
 ## # Use to tell the player how much money they have.
-## - narrate "You have <player.money>!"
+## - narrate "You have <server.economy.format[<player.money>]>!"
 ##
 ## # Basic usage
 ## - narrate <element[5928419264].proc[currency_parser]>
